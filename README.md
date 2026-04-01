@@ -27,7 +27,7 @@ source /cvmfs/sw.hsf.org/key4hep/setup.sh --latest
 # 2) Build FCCAnalyses locally *inside this repo* (pick the matching branch)
 cd /path/to/fccee_lblgamma_study
 mkdir -p external && cd external
-git clone --branch main https://github.com/HEP-FCC/FCCAnalyses.git
+git clone --branch master https://github.com/HEP-FCC/FCCAnalyses.git
 # or: git clone --branch pre-edm4hep1 https://github.com/HEP-FCC/FCCAnalyses.git
 cd FCCAnalyses
 source ./setup.sh
