@@ -1,5 +1,6 @@
 .snakemake/
 .cache/
+.venv/
 outputs/
 work/
 cards/

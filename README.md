@@ -38,6 +38,18 @@ python3 -m pip install --user snakemake
 
 Then keep the same shell for running this repo (so `fccanalysis` stays on `PATH`).
 
+## Local Snakemake virtualenv (recommended on CERN)
+
+Some CERN environments have a broken `snakemake` wrapper function. A robust setup is to create a **local venv** inside the repo and run Snakemake via `python -m snakemake`.
+
+```bash
+cd /path/to/fccee_lblgamma_study
+./scripts/setup_venv.sh
+source .venv/bin/activate
+```
+
+Note: the venv is created with `--system-site-packages` so that `import ROOT` (from Key4hep) still works for the plotting step.
+
 ## Quick run
 
 ```bash

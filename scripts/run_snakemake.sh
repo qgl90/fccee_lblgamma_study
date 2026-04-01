@@ -18,8 +18,15 @@ mkdir -p "$HOME" "$TMPDIR"
 # Some CERN setups define a shell *function* called `snakemake` that sources an LCG view.
 # If that view is missing, calling `snakemake` fails before the real executable is reached.
 # Prefer `python3 -m snakemake` (module invocation) and otherwise bypass functions via `command`.
-if python3 -c "import snakemake" >/dev/null 2>&1; then
-  exec python3 -m snakemake -s "$ROOT_DIR/Snakefile" "$@"
+PYTHON_BIN="python3"
+if [[ -x "$ROOT_DIR/.venv/bin/python3" ]]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python3"
+elif [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+fi
+
+if "$PYTHON_BIN" -c "import snakemake" >/dev/null 2>&1; then
+  exec "$PYTHON_BIN" -m snakemake -s "$ROOT_DIR/Snakefile" "$@"
 else
   exec command snakemake -s "$ROOT_DIR/Snakefile" "$@"
 fi
