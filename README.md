@@ -54,6 +54,24 @@ source .venv/bin/activate
 
 Note: the venv is created with `--system-site-packages` so that `import ROOT` (from Key4hep) still works for the plotting step.
 
+## Using LHCb conda / lbconda for Snakemake (avoid Python mixing)
+
+If you run Snakemake from an LHCb conda env (python3.11) and also `source key4hep`, you can end up with **Key4hep Python packages (python3.10) on `PYTHONPATH`**, which breaks Snakemake (typical symptom: pandas/numpy import errors).
+
+Workaround: **do NOT `source key4hep` in the parent shell**. Instead, let each Snakemake job source Key4hep in its own subshell:
+
+1) Edit `/Users/renato/Desktop/fcee_b2lbgamma/config/config.yaml:1`:
+
+- `env.key4hep_setup: "/cvmfs/sw.hsf.org/key4hep/setup.sh"`
+- `env.key4hep_args: "--latest"` (or `-r 2024-03-10`)
+- `env.fccanalyses_setup: "external/FCCAnalyses/setup.sh"` (if you built FCCAnalyses locally)
+
+2) Run Snakemake from your conda env (without sourcing key4hep):
+
+```bash
+./scripts/run_snakemake.sh -j 4
+```
+
 ## Quick run
 
 ```bash

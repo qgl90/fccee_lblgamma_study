@@ -18,6 +18,24 @@ NEVENTS = int(cfg("production.nevents"))
 SEED = int(cfg("production.seed"))
 ANALYSIS_MODE = cfg("analysis.mode", "truth")
 
+KEY4HEP_SETUP = cfg("env.key4hep_setup", "") or ""
+KEY4HEP_ARGS = cfg("env.key4hep_args", "") or ""
+FCCANALYSES_SETUP = cfg("env.fccanalyses_setup", "") or ""
+
+
+def setup_cmd(needs_fccanalyses: bool) -> str:
+    parts = []
+    if KEY4HEP_SETUP:
+        if KEY4HEP_ARGS:
+            parts.append(f"source {KEY4HEP_SETUP} {KEY4HEP_ARGS}")
+        else:
+            parts.append(f"source {KEY4HEP_SETUP}")
+    if needs_fccanalyses and FCCANALYSES_SETUP:
+        parts.append(f"source {FCCANALYSES_SETUP}")
+    if not parts:
+        return ""
+    return " && ".join(parts) + " && "
+
 URL_PYTHIA = cfg("urls.pythia_cmd")
 URL_DELPHES = cfg("urls.delphes_card")
 URL_EDM4HEP = cfg("urls.edm4hep_tcl")
@@ -111,11 +129,12 @@ rule delphes_edm4hep:
         pdg_mother=cfg("signal.pdg_mother"),
         label=f"{SIGNAL}_SIGNAL",
         force=1,
+        setup=setup_cmd(needs_fccanalyses=False),
     shell:
         r"""
         set -euo pipefail
         mkdir -p $(dirname {output.root})
-        DelphesPythia8EvtGen_EDM4HEP_k4Interface \
+        {params.setup}DelphesPythia8EvtGen_EDM4HEP_k4Interface \
           {input.delphes} {input.edm4hep} \
           {input.pythia} {output.root} \
           {input.decay} {input.pdl} \
@@ -181,13 +200,14 @@ rule fccanalyses_tree:
     params:
         pdg_mother=str(cfg("signal.pdg_mother")),
         pdg_daughters=",".join(str(x) for x in cfg("signal.pdg_daughters")),
+        setup=setup_cmd(needs_fccanalyses=True),
     shell:
         r"""
         set -euo pipefail
         mkdir -p $(dirname {output.root})
-        FCC_SIG_PDG_MOTHER="{params.pdg_mother}" \
-        FCC_SIG_PDG_DAUGHTERS="{params.pdg_daughters}" \
-          fccanalysis run {input.script} --input-file-list {input.flist} --output {output.root}
+        {params.setup}FCC_SIG_PDG_MOTHER="{params.pdg_mother}" \
+          FCC_SIG_PDG_DAUGHTERS="{params.pdg_daughters}" \
+            fccanalysis run {input.script} --input-file-list {input.flist} --output {output.root}
         """
 
 
@@ -216,11 +236,12 @@ rule plot_mass_overlay:
         normalize=str(cfg("plot.normalize", "none")),
         signal_scale=float(cfg("plot.signal_scale", 1.0)),
         backgrounds=_bg_plot_args(),
+        setup=setup_cmd(needs_fccanalyses=False),
     shell:
         r"""
         set -euo pipefail
         mkdir -p $(dirname {output.png})
-        python3 {input.script} \
+        {params.setup}python3 {input.script} \
           --out {output.png} \
           --branch {params.branch} \
           --nbins {params.nbins} --xmin {params.xmin} --xmax {params.xmax} \

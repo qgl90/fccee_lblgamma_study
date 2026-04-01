@@ -5,6 +5,18 @@ signal:
   # (for anti-Lb, charge conjugation is handled in the analysis selection)
   pdg_daughters: [2212, -211, 22]
 
+env:
+  # If you run Snakemake from a python environment that is NOT Key4hep
+  # (e.g. LHCb conda), do NOT `source key4hep` in the parent shell.
+  # Instead, set these so each Snakemake job sources Key4hep in its own subshell.
+  #
+  # Leave empty ("") if you already run Snakemake from a Key4hep environment.
+  key4hep_setup: ""
+  key4hep_args: ""
+  # Optional: if you build FCCAnalyses inside this repo (recommended), set:
+  #   external/FCCAnalyses/setup.sh
+  fccanalyses_setup: ""
+
 analysis:
   # "truth" (current default): truth-seeded matching (fast sanity check, NOT a realistic background estimate)
   # "reco": simple combinatorial reco (gives a background shape, still very simplified)
