@@ -1,0 +1,5 @@
+# Put your background EDM4hep ROOT file(s) here, one per line.
+# Examples (NOT real paths):
+# /eos/experiment/fcc/ee/datasets/winter2023/....root
+# /eos/experiment/fcc/ee/datasets/winter2023/....root
+

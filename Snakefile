@@ -16,6 +16,7 @@ def cfg(path, default=None):
 SIGNAL = cfg("signal.name")
 NEVENTS = int(cfg("production.nevents"))
 SEED = int(cfg("production.seed"))
+ANALYSIS_MODE = cfg("analysis.mode", "truth")
 
 URL_PYTHIA = cfg("urls.pythia_cmd")
 URL_DELPHES = cfg("urls.delphes_card")
@@ -24,12 +25,35 @@ URL_DECAY = cfg("urls.decay_dec")
 URL_PDL = cfg("urls.evt_pdl")
 
 DELPHES_OUT = cfg("paths.delphes_out")
-ANALYSIS_OUT = cfg("paths.analysis_out")
+ANALYSIS_DIR = cfg("paths.analysis_dir", "outputs/analysis")
+PLOTS_DIR = cfg("paths.plots_dir", "outputs/plots")
+
+_bgs_raw = cfg("backgrounds", []) or []
+BACKGROUNDS = [b for b in _bgs_raw if b.get("enabled", True) and b.get("name")]
+SAMPLES = ["signal"] + [b["name"] for b in BACKGROUNDS]
+
+
+def analysis_script():
+    if ANALYSIS_MODE == "reco":
+        return "analysis/analysis_lb2lgamma_reco.py"
+    return "analysis/analysis_lb2lgamma.py"
+
+
+def filelist_out(sample: str) -> str:
+    return f"work/filelists/{sample}.txt"
+
+
+def background_by_name(name: str):
+    for b in BACKGROUNDS:
+        if b.get("name") == name:
+            return b
+    raise ValueError(f"Unknown background sample: {name}")
 
 
 rule all:
     input:
-        ANALYSIS_OUT
+        expand(f"{ANALYSIS_DIR}/{{sample}}_tree.root", sample=SAMPLES),
+        f"{PLOTS_DIR}/lb_reco_m.png"
 
 
 rule fetch_cards:
@@ -100,12 +124,58 @@ rule delphes_edm4hep:
         """
 
 
+def _filelist_inputs(wc):
+    if wc.sample == "signal":
+        return [DELPHES_OUT]
+    bg = background_by_name(wc.sample)
+    if bg.get("input_file_list"):
+        return [bg["input_file_list"]]
+    return []
+
+
+rule make_input_filelist:
+    output:
+        flist="work/filelists/{sample}.txt",
+    input:
+        _filelist_inputs,
+    run:
+        Path(output.flist).parent.mkdir(parents=True, exist_ok=True)
+        if wildcards.sample == "signal":
+            Path(output.flist).write_text(str(Path(DELPHES_OUT).resolve()) + "\n")
+            return
+
+        bg = background_by_name(wildcards.sample)
+        if bg.get("input_file_list"):
+            src = Path(bg["input_file_list"])
+            if not src.exists():
+                raise FileNotFoundError(
+                    f"Background file list not found: {src} (edit config/config.yaml)"
+                )
+            lines = []
+            for line in src.read_text().splitlines():
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                lines.append(line)
+            if not lines:
+                raise ValueError(f"Background file list is empty: {src}")
+            Path(output.flist).write_text("\n".join(lines) + "\n")
+            return
+
+        files = bg.get("input_files") or []
+        if not files:
+            raise ValueError(
+                f"Background '{wildcards.sample}' has no input_file_list or input_files (edit config/config.yaml)"
+            )
+        Path(output.flist).write_text("\n".join(files) + "\n")
+
+
 rule fccanalyses_tree:
     input:
-        root=DELPHES_OUT,
-        script="analysis/analysis_lb2lgamma.py",
+        flist="work/filelists/{sample}.txt",
+        script=lambda wc: analysis_script(),
     output:
-        root=ANALYSIS_OUT,
+        root=f"{ANALYSIS_DIR}/{{sample}}_tree.root",
     threads:
         int(cfg("resources.analysis_cores", 1)),
     params:
@@ -117,5 +187,44 @@ rule fccanalyses_tree:
         mkdir -p $(dirname {output.root})
         FCC_SIG_PDG_MOTHER="{params.pdg_mother}" \
         FCC_SIG_PDG_DAUGHTERS="{params.pdg_daughters}" \
-          fccanalysis run {input.script} --input {input.root} --output {output.root}
+          fccanalysis run {input.script} --input-file-list {input.flist} --output {output.root}
+        """
+
+
+def _bg_plot_args():
+    args = []
+    for b in BACKGROUNDS:
+        name = b.get("name")
+        if not name:
+            continue
+        scale = float(b.get("scale", 1.0))
+        args.append(f"{name}|{ANALYSIS_DIR}/{name}_tree.root|{scale}")
+    return ";".join(args)
+
+
+rule plot_mass_overlay:
+    input:
+        trees=expand(f"{ANALYSIS_DIR}/{{sample}}_tree.root", sample=SAMPLES),
+        script="plots/plot_mass_overlay.py",
+    output:
+        png=f"{PLOTS_DIR}/lb_reco_m.png",
+    params:
+        branch=cfg("plot.branch", "lb_reco_m"),
+        nbins=int(cfg("plot.nbins", 120)),
+        xmin=float(cfg("plot.xmin", 4.8)),
+        xmax=float(cfg("plot.xmax", 6.4)),
+        normalize=str(cfg("plot.normalize", "none")),
+        signal_scale=float(cfg("plot.signal_scale", 1.0)),
+        backgrounds=_bg_plot_args(),
+    shell:
+        r"""
+        set -euo pipefail
+        mkdir -p $(dirname {output.png})
+        python3 {input.script} \
+          --out {output.png} \
+          --branch {params.branch} \
+          --nbins {params.nbins} --xmin {params.xmin} --xmax {params.xmax} \
+          --normalize {params.normalize} \
+          --signal {ANALYSIS_DIR}/signal_tree.root|{params.signal_scale} \
+          --backgrounds {params.backgrounds}
         """

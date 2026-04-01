@@ -5,6 +5,21 @@ signal:
   # (for anti-Lb, charge conjugation is handled in the analysis selection)
   pdg_daughters: [2212, -211, 22]
 
+analysis:
+  # "truth" (current default): truth-seeded matching (fast sanity check, NOT a realistic background estimate)
+  # "reco": simple combinatorial reco (gives a background shape, still very simplified)
+  mode: "truth"
+
+# Background samples (edit to point to your centrally produced samples).
+# Provide either:
+#  - input_file_list: a text file with one ROOT path per line (recommended for large samples)
+#  - input_files: a short YAML list of ROOT paths
+backgrounds:
+  - name: "Zbb"
+    enabled: false
+    input_file_list: "data/background_Zbb_files.txt"
+    scale: 1.0
+
 production:
   ecm_gev: 91.0
   nevents: 20000
@@ -21,8 +36,16 @@ urls:
 
 paths:
   delphes_out: "outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root"
-  analysis_out: "outputs/analysis/Lb2LambdaGamma_tree.root"
+  analysis_dir: "outputs/analysis"
+  plots_dir: "outputs/plots"
 
 resources:
   analysis_cores: 4
 
+plot:
+  branch: "lb_reco_m"
+  nbins: 120
+  xmin: 4.8
+  xmax: 6.4
+  normalize: "none"   # "none" | "area"
+  signal_scale: 1.0   # multiply signal histogram by this factor for visibility

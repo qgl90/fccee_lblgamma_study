@@ -8,13 +8,35 @@ This repo is a **minimal template** to run a full chain:
 
 ## Prerequisites
 
-- A Key4hep environment that provides:
-  - `DelphesPythia8EvtGen_EDM4HEP_k4Interface`
-  - `fccanalysis`
-  - `python3`
+- A Key4hep environment that provides `DelphesPythia8EvtGen_EDM4HEP_k4Interface` and `python3`.
+- An FCCAnalyses setup that provides `fccanalysis` (usually by cloning + building FCCAnalyses).
 - `snakemake` available in your environment.
 
 If you want to stay compatible with **winter2023** centrally-produced samples, you typically need a matching Key4hep + FCCAnalyses setup (often `FCCAnalyses` `pre-edm4hep1` with the Key4hep release used for that campaign). See FCCAnalyses docs for details.
+
+## CERN / lxplus environment setup (example)
+
+In a fresh shell:
+
+```bash
+# 1) Key4hep (pick ONE)
+source /cvmfs/sw.hsf.org/key4hep/setup.sh --latest
+# or (commonly used for winter2023 compatibility)
+# source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
+
+# 2) Build FCCAnalyses (pick the matching branch)
+mkdir -p ~/fcc_work && cd ~/fcc_work
+git clone --branch main https://github.com/HEP-FCC/FCCAnalyses.git
+# or: git clone --branch pre-edm4hep1 https://github.com/HEP-FCC/FCCAnalyses.git
+cd FCCAnalyses
+source ./setup.sh
+fccanalysis build -j 8
+
+# 3) Install snakemake if not available
+python3 -m pip install --user snakemake
+```
+
+Then keep the same shell for running this repo (so `fccanalysis` stays on `PATH`).
 
 ## Quick run
 
@@ -36,14 +58,19 @@ If Snakemake fails with a cache permission error on your system, use:
 
 Outputs:
 
-- Delphes EDM4hep ROOT: `outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root`
-- FCCAnalyses flat tree: `outputs/analysis/Lb2LambdaGamma_tree.root`
+- Delphes EDM4hep ROOT (signal): `outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root`
+- FCCAnalyses flat tree(s): `outputs/analysis/signal_tree.root` (and one `*_tree.root` per enabled background)
+- Quick overlay plot: `outputs/plots/lb_reco_m.png`
 
 ## What to edit for your study
 
 - `config/config.yaml`: number of events, √s, seed, detector card URLs.
 - `evtgen/Lb2LambdaGamma.dec`: your forced decay(s).
-- `analysis/analysis_lb2lgamma.py`: selections + branches to snapshot.
+- `config/config.yaml`:
+  - `analysis.mode` = `truth` (sanity check) or `reco` (simple combinatorial)
+  - `backgrounds`: set `enabled: true` and point `input_file_list` to your background sample(s)
+- `analysis/analysis_lb2lgamma.py`: truth-seeded sanity-check analysis.
+- `analysis/analysis_lb2lgamma_reco.py`: simple combinatorial reconstruction (first-pass background shape).
 
 Useful targets:
 
@@ -64,3 +91,6 @@ snakemake -j 4 outputs/analysis/Lb2LambdaGamma_tree.root
 - The analysis reads the signal PDGs from env vars (set by the Snakefile):
   - `FCC_SIG_PDG_MOTHER` (default `5122`)
   - `FCC_SIG_PDG_DAUGHTERS` (default `2212,-211,22`)
+- Background vs signal:
+  - `analysis.mode: truth` uses truth matching, so it is **not** a realistic estimate of combinatorial background.
+  - Use `analysis.mode: reco` to get a first background shape (still simplified).
