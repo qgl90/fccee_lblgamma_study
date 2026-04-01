@@ -109,6 +109,114 @@ Outputs:
 - FCCAnalyses flat tree(s): `outputs/analysis/signal_tree.root` (and one `*_tree.root` per enabled background)
 - Quick overlay plot: `outputs/plots/lb_reco_m.png`
 
+## Manual run (no Snakemake)
+
+This section lists the same chain as explicit commands.
+
+### 0) Environment (do this once)
+
+Run in a clean shell and keep that shell:
+
+```bash
+source /cvmfs/sw.hsf.org/key4hep/setup.sh --latest
+# or: source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
+
+# FCCAnalyses (if built locally under ./external)
+source external/FCCAnalyses/setup.sh
+```
+
+If you are using an LHCb conda env (python3.11), do not mix it with Key4hep python in the same shell (use the Snakemake per-job setup described above, or run the manual recipe from a Key4hep shell).
+
+### 1) Fetch cards + EvtGen tables
+
+```bash
+mkdir -p cards evtgen work/cards work/filelists outputs/delphes outputs/analysis outputs/plots
+
+curl -L -o cards/p8_ee_Zbb_ecm91_EVTGEN.cmd https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/Pythia8/p8_ee_Zbb_ecm91_EVTGEN.cmd
+curl -L -o cards/card_IDEA.tcl https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/card_IDEA.tcl
+curl -L -o cards/edm4hep_IDEA.tcl https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/edm4hep_IDEA.tcl
+curl -L -o evtgen/DECAY.DEC https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/DECAY.DEC
+curl -L -o evtgen/evt.pdl https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/evt.pdl
+```
+
+### 2) Prepare the Pythia card (nevents + seed)
+
+```bash
+python3 scripts/prepare_pythia_card.py \
+  --input cards/p8_ee_Zbb_ecm91_EVTGEN.cmd \
+  --output work/cards/p8_ee_Zbb_ecm91_EVTGEN_nev20000_seed12345.cmd \
+  --nevents 20000 \
+  --seed 12345
+```
+
+### 3) Run Delphes IDEA + write EDM4hep ROOT (signal)
+
+Forced decay is defined in `evtgen/Lb2LambdaGamma.dec`.
+
+```bash
+DelphesPythia8EvtGen_EDM4HEP_k4Interface \
+  cards/card_IDEA.tcl cards/edm4hep_IDEA.tcl \
+  work/cards/p8_ee_Zbb_ecm91_EVTGEN_nev20000_seed12345.cmd \
+  outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root \
+  evtgen/DECAY.DEC evtgen/evt.pdl \
+  evtgen/Lb2LambdaGamma.dec \
+  5122 Lb2LambdaGamma_SIGNAL 1
+```
+
+### 4) Create input file lists (signal + background)
+
+Signal:
+
+```bash
+printf "%s\n" "$PWD/outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root" > work/filelists/signal.txt
+```
+
+Backgrounds:
+
+1) Put your background EDM4hep ROOT files (one per line) into `data/background_Zbb_files.txt`
+2) Then:
+
+```bash
+cp data/background_Zbb_files.txt work/filelists/Zbb.txt
+```
+
+### 5) Run FCCAnalyses (produce flat trees)
+
+Truth-seeded (fast sanity check, not a realistic background estimate):
+
+```bash
+FCC_SIG_PDG_MOTHER=5122 FCC_SIG_PDG_DAUGHTERS=2212,-211,22 \
+  fccanalysis run analysis/analysis_lb2lgamma.py \
+    --input-file-list work/filelists/signal.txt \
+    --output outputs/analysis/signal_tree.root
+
+FCC_SIG_PDG_MOTHER=5122 FCC_SIG_PDG_DAUGHTERS=2212,-211,22 \
+  fccanalysis run analysis/analysis_lb2lgamma.py \
+    --input-file-list work/filelists/Zbb.txt \
+    --output outputs/analysis/Zbb_tree.root
+```
+
+Reco/combinatorial (first-pass background shape):
+
+```bash
+fccanalysis run analysis/analysis_lb2lgamma_reco.py --input-file-list work/filelists/signal.txt --output outputs/analysis/signal_tree.root
+fccanalysis run analysis/analysis_lb2lgamma_reco.py --input-file-list work/filelists/Zbb.txt --output outputs/analysis/Zbb_tree.root
+```
+
+### 6) Overlay plot (signal vs background)
+
+```bash
+python3 plots/plot_mass_overlay.py \
+  --out outputs/plots/lb_reco_m.png \
+  --branch lb_reco_m \
+  --nbins 120 --xmin 4.8 --xmax 6.4 \
+  --normalize none \
+  --signal outputs/analysis/signal_tree.root|1.0 \
+  --backgrounds "Zbb|outputs/analysis/Zbb_tree.root|1.0"
+```
+
+Result: `outputs/plots/lb_reco_m.png`
+
 ## What to edit for your study
 
 - `config/config.yaml`: number of events, √s, seed, detector card URLs.
@@ -126,7 +234,7 @@ Useful targets:
 snakemake -j 4 outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root
 
 # Re-run only the FCCAnalyses step
-snakemake -j 4 outputs/analysis/Lb2LambdaGamma_tree.root
+snakemake -j 4 outputs/analysis/signal_tree.root
 ```
 
 ## Notes / common gotchas
