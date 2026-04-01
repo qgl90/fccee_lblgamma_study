@@ -1,0 +1,28 @@
+signal:
+  name: "Lb2LambdaGamma"
+  pdg_mother: 5122
+  # Stable daughters of Lb -> Lambda0(-> p pi) gamma
+  # (for anti-Lb, charge conjugation is handled in the analysis selection)
+  pdg_daughters: [2212, -211, 22]
+
+production:
+  ecm_gev: 91.0
+  nevents: 20000
+  seed: 12345
+
+urls:
+  # FCC-config cards (winter2023) used in the FCC fast-sim tutorial
+  # Adjust to other tags/campaigns if needed.
+  pythia_cmd: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/Pythia8/p8_ee_Zbb_ecm91_EVTGEN.cmd"
+  delphes_card: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/card_IDEA.tcl"
+  edm4hep_tcl: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/edm4hep_IDEA.tcl"
+  decay_dec: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/DECAY.DEC"
+  evt_pdl: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/evt.pdl"
+
+paths:
+  delphes_out: "outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root"
+  analysis_out: "outputs/analysis/Lb2LambdaGamma_tree.root"
+
+resources:
+  analysis_cores: 4
+

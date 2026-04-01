@@ -1,0 +1,16 @@
+.snakemake/
+.cache/
+outputs/
+work/
+cards/
+evtgen/DECAY.DEC
+evtgen/evt.pdl
+evtgen/DECAY.DEC.bak
+evtgen/evt.pdl.bak
+__pycache__/
+*.pyc
+*.root
+*.log
+*.json
+*.yaml.bak
+*.cmd.bak

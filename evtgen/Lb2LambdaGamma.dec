@@ -1,0 +1,22 @@
+# EvtGen user decay file.
+#
+# Forced signal decay:
+#   Lambda_b0 -> Lambda0 gamma
+# with Lambda0 forced to:
+#   Lambda0 -> p+ pi-
+#
+# If you want to keep the physical Lambda0 branching ratios, remove the
+# Lambda0 block and let it decay according to DECAY.DEC.
+
+Decay Lambda_b0
+  1.0 Lambda0 gamma PHSP;
+Enddecay
+CDecay anti-Lambda_b0
+
+Decay Lambda0
+  1.0 p+ pi- PHSP;
+Enddecay
+CDecay anti-Lambda0
+
+End
+
