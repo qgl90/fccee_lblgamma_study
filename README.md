@@ -56,6 +56,19 @@ If Snakemake fails with a cache permission error on your system, use:
 ./scripts/run_snakemake.sh -j 4
 ```
 
+If `snakemake` fails immediately because your shell defines a broken wrapper function (common on some CERN setups), do one of:
+
+```bash
+unset -f snakemake
+command snakemake -j 4
+```
+
+or just always use:
+
+```bash
+./scripts/run_snakemake.sh -j 4
+```
+
 Outputs:
 
 - Delphes EDM4hep ROOT (signal): `outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root`

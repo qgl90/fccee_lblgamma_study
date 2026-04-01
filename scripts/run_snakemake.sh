@@ -15,4 +15,11 @@ export TMPDIR="${TMPDIR:-$ROOT_DIR/work/tmp}"
 
 mkdir -p "$HOME" "$TMPDIR"
 
-exec snakemake -s "$ROOT_DIR/Snakefile" "$@"
+# Some CERN setups define a shell *function* called `snakemake` that sources an LCG view.
+# If that view is missing, calling `snakemake` fails before the real executable is reached.
+# Prefer `python3 -m snakemake` (module invocation) and otherwise bypass functions via `command`.
+if python3 -c "import snakemake" >/dev/null 2>&1; then
+  exec python3 -m snakemake -s "$ROOT_DIR/Snakefile" "$@"
+else
+  exec command snakemake -s "$ROOT_DIR/Snakefile" "$@"
+fi
