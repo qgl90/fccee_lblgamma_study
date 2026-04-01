@@ -24,13 +24,17 @@ source /cvmfs/sw.hsf.org/key4hep/setup.sh --latest
 # or (commonly used for winter2023 compatibility)
 # source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
 
-# 2) Build FCCAnalyses (pick the matching branch)
-mkdir -p ~/fcc_work && cd ~/fcc_work
+# 2) Build FCCAnalyses locally *inside this repo* (pick the matching branch)
+cd /path/to/fccee_lblgamma_study
+mkdir -p external && cd external
 git clone --branch main https://github.com/HEP-FCC/FCCAnalyses.git
 # or: git clone --branch pre-edm4hep1 https://github.com/HEP-FCC/FCCAnalyses.git
 cd FCCAnalyses
 source ./setup.sh
 fccanalysis build -j 8
+
+# (optional) go back to the study repo root
+cd /path/to/fccee_lblgamma_study
 
 # 3) Install snakemake if not available
 python3 -m pip install --user snakemake
