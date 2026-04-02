@@ -58,6 +58,12 @@ fccanalysis run analysis/analysis_lb2lgamma_reco.py \
   --output outputs/analysis/Zbb_reco_test.root
 ```
 
+If you see an error like:
+
+> `ERROR: The variable <prodTag> or <inputDir> is mandatory in your analysis script!`
+
+pull the latest repo version (the analysis scripts now define `inputDir`).
+
 Quick check that trees are non-empty:
 
 ```bash
@@ -86,4 +92,3 @@ python3 plots/plot_mass_overlay.py \
 ```
 
 Output: `outputs/plots/lb_reco_m_test.png`
-

@@ -22,6 +22,14 @@ nCPUS = 4
 runBatch = False
 batchQueue = "longlunch"
 
+# FCCAnalyses runner compatibility:
+# some setups require that at least one of `inputDir` or `prodTag` exists in the script
+# even if you override inputs via `--input` / `--input-file-list`.
+inputDir = "./"
+
+# Process dictionary (used by many FCCAnalyses templates; resolved via $FCCDICTSDIR)
+procDict = "FCCee_procDict_winter2023_IDEA.json"
+
 
 class RDFanalysis:
     @staticmethod
