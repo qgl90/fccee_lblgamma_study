@@ -145,7 +145,6 @@ rule delphes_edm4hep:
         pythia=rules.pythia_card.output.card,
         user_dec=USER_DEC
     output:
-        dir = directory( "output/delphes"),
         root=DELPHES_OUT,
     params:
         # DelphesPythia8EvtGen_EDM4HEP_k4Interface 

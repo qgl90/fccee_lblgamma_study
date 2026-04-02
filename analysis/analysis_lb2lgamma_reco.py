@@ -11,9 +11,12 @@ from __future__ import annotations
 import ROOT
 
 
-processList = {"Lb2LambdaGamma": {"fraction": 1.0}}
+processList = {
+  "Lb2LambdaGamma": {"fraction": 1.0}
+  
+}
 analysisName = "Lb2LambdaGamma"
-outputDir = "outputs/analysis"
+outputDir = "./outputs/analysis"
 nCPUS = 4
 runBatch = False
 batchQueue = "longlunch"

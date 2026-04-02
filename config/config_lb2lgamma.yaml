@@ -37,7 +37,7 @@ backgrounds:
 
 production:
   ecm_gev: 91.0
-  nevents: 100000
+  nevents: 10000
   seed: 12345
 
 urls:
