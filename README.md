@@ -60,7 +60,7 @@ If you run Snakemake from an LHCb conda env (python3.11) and also `source key4he
 
 Workaround: **do NOT `source key4hep` in the parent shell**. Instead, let each Snakemake job source Key4hep in its own subshell:
 
-1) Edit `/Users/renato/Desktop/fcee_b2lbgamma/config/config.yaml:1`:
+1) Edit `/Users/renato/Desktop/fcee_b2lbgamma/config/config_lb2lgamma.yaml:1`:
 
 - `env.key4hep_setup: "/cvmfs/sw.hsf.org/key4hep/setup.sh"`
 - `env.key4hep_args: "--latest"` (or `-r 2024-03-10`)
@@ -219,9 +219,9 @@ Result: `outputs/plots/lb_reco_m.png`
 
 ## What to edit for your study
 
-- `config/config.yaml`: number of events, √s, seed, detector card URLs.
+- `config/config_lb2lgamma.yaml`: number of events, √s, seed, detector card URLs.
 - `evtgen/Lb2LambdaGamma.dec`: your forced decay(s).
-- `config/config.yaml`:
+- `config/config_lb2lgamma.yaml`:
   - `analysis.mode` = `truth` (sanity check) or `reco` (simple combinatorial)
   - `backgrounds`: set `enabled: true` and point `input_file_list` to your background sample(s)
 - `analysis/analysis_lb2lgamma.py`: truth-seeded sanity-check analysis.

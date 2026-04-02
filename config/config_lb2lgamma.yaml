@@ -1,0 +1,61 @@
+signal:
+  name: "Lb2LambdaGamma"
+  pdg_mother: 5122
+  # Stable daughters of Lb -> Lambda0(-> p pi) gamma
+  # (for anti-Lb, charge conjugation is handled in the analysis selection)
+  pdg_daughters: [2212, -211, 22]
+
+  # EvtGen forced-decay steering for DelphesPythia8EvtGen_EDM4HEP_k4Interface
+  evt_gen_file: "evtgen/Lb2LambdaGamma.dec"
+  evt_gen_pid: 5122
+  evt_gen_label: "Lb2LambdaGamma_SIGNAL"
+
+env:
+  # Leave empty if you already run Snakemake inside a Key4hep + FCCAnalyses shell.
+  # If you run Snakemake from another python (e.g. LHCb conda), set these so each
+  # Snakemake job sources Key4hep/FCCAnalyses in its own clean subshell.
+  key4hep_setup: ""
+  key4hep_args: ""
+  fccanalyses_setup: ""
+
+analysis:
+  # "truth": truth-seeded matching (good for signal sanity-check, not realistic background)
+  # "reco": simple combinatorial reco (first-pass background shape)
+  mode: "truth"
+
+backgrounds:
+  - name: "Zbb"
+    enabled: false
+    # Put your EOS files in this text file (one ROOT path per line)
+    input_file_list: "data/background_Zbb_files.txt"
+    scale: 1.0
+
+production:
+  ecm_gev: 91.0
+  nevents: 20000
+  seed: 12345
+
+urls:
+  # FCC-config cards (winter2023) used in the FCC fast-sim tutorial
+  pythia_cmd: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/Pythia8/p8_ee_Zbb_ecm91_EVTGEN.cmd"
+  delphes_card: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/card_IDEA.tcl"
+  edm4hep_tcl: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/edm4hep_IDEA.tcl"
+  decay_dec: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/DECAY.DEC"
+  evt_pdl: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/evt.pdl"
+
+paths:
+  delphes_out: "outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root"
+  analysis_dir: "outputs/analysis"
+  plots_dir: "outputs/plots"
+
+resources:
+  analysis_cores: 4
+
+plot:
+  branch: "lb_reco_m"
+  nbins: 120
+  xmin: 4.8
+  xmax: 6.4
+  normalize: "none"
+  signal_scale: 1.0
+
