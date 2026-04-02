@@ -8,15 +8,29 @@
 # If you want to keep the physical Lambda0 branching ratios, remove the
 # Lambda0 block and let it decay according to DECAY.DEC.
 
-Decay Lambda_b0
-  1.0 Lambda0 gamma PHSP;
-Enddecay
-CDecay anti-Lambda_b0
+#
+Alias Lambda_b0_SIGNAL Lambda_b0
+Alias anti-Lambda_b0_SIGNAL anti-Lambda_b0
+ChargeConj Lambda_b0_SIGNAL  anti-Lambda_b0_SIGNAL
+#
 
-Decay Lambda0
-  1.0 p+ pi- PHSP;
-Enddecay
-CDecay anti-Lambda0
+#
+Alias MyLambda0 Lambda0
+Alias  Myanti-Lambda0 anti-Lambda0
+ChargeConj MyLambda0      Myanti-Lambda0
+#
 
+#
+Decay Lambda_b0_SIGNAL
+  1.000    MyLambda0  gamma HELAMP 0.   0.  1.   0.;
+Enddecay
+CDecay anti-Lambda_b0_SIGNAL
+#
+
+#
+Decay MyLambda0
+  1.000   p+          pi-        HELAMP .906   0.  .423  0.;
+Enddecay
+CDecay Myanti-Lambda0
+#
 End
-

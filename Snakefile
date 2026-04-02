@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-configfile: "config/config.yaml"
+configfile: "config/config_lb2lgamma.yaml"
 
 
 def cfg(path, default=None):
@@ -13,16 +13,22 @@ def cfg(path, default=None):
     return cur
 
 
-SIGNAL = cfg("signal.name")
+SIGNAL  = cfg("signal.name")
 NEVENTS = int(cfg("production.nevents"))
-SEED = int(cfg("production.seed"))
+SEED    = int(cfg("production.seed"))
 ANALYSIS_MODE = cfg("analysis.mode", "truth")
-
+USER_DEC = cfg("signal.evt_gen_file")
 KEY4HEP_SETUP = cfg("env.key4hep_setup", "") or ""
 KEY4HEP_ARGS = cfg("env.key4hep_args", "") or ""
 FCCANALYSES_SETUP = cfg("env.fccanalyses_setup", "") or ""
 
-
+print( f"KEY4HEP_SETUP     : {KEY4HEP_SETUP}")
+print( f"KEY4HEP_ARGS      : {KEY4HEP_ARGS}")
+print( f"FCCANALYSES_SETUP : {FCCANALYSES_SETUP}")
+print( f"SIGNAL            : {SIGNAL}")
+print( f"NEVENTS           : {NEVENTS}")
+print( f"SEED              : {SEED}")
+print( f"ANALYSIS_MODE     : {ANALYSIS_MODE}")
 def setup_cmd(needs_fccanalyses: bool) -> str:
     parts = []
     if KEY4HEP_SETUP:
@@ -34,7 +40,7 @@ def setup_cmd(needs_fccanalyses: bool) -> str:
         parts.append(f"source {FCCANALYSES_SETUP}")
     if not parts:
         return ""
-    return " && ".join(parts) + " && "
+    return " && ".join(parts) #+ " && "
 
 URL_PYTHIA = cfg("urls.pythia_cmd")
 URL_DELPHES = cfg("urls.delphes_card")
@@ -49,6 +55,21 @@ PLOTS_DIR = cfg("paths.plots_dir", "outputs/plots")
 _bgs_raw = cfg("backgrounds", []) or []
 BACKGROUNDS = [b for b in _bgs_raw if b.get("enabled", True) and b.get("name")]
 SAMPLES = ["signal"] + [b["name"] for b in BACKGROUNDS]
+
+
+
+print( f"URL_PYTHIA     : {URL_PYTHIA}")
+print( f"URL_DELPHES    : {URL_DELPHES}")
+print( f"URL_EDM4HEP    : {URL_EDM4HEP}")
+print( f"URL_DECAY      : {URL_DECAY}")
+print( f"URL_PDL        : {URL_PDL}")
+
+
+print( f"DELPHES_OUT    : {DELPHES_OUT}")
+print( f"ANALYSIS_DIR   : {ANALYSIS_DIR}")
+print( f"PLOTS_DIR      : {PLOTS_DIR}")
+print( f"BACKGROUNDS    : {BACKGROUNDS}")
+print( f"SAMPLES        : {SAMPLES}")
 
 
 def analysis_script():
@@ -90,7 +111,7 @@ rule fetch_cards:
     shell:
         r"""
         set -euo pipefail
-        mkdir -p cards evtgen
+        mkdir -p cards evtgen outputs outputs/delphes
         curl -L -o {output.pythia} {params.pythia_url}
         curl -L -o {output.delphes} {params.delphes_url}
         curl -L -o {output.edm4hep} {params.edm4hep_url}
@@ -122,24 +143,43 @@ rule delphes_edm4hep:
         decay="evtgen/DECAY.DEC",
         pdl="evtgen/evt.pdl",
         pythia=rules.pythia_card.output.card,
-        user_dec="evtgen/Lb2LambdaGamma.dec",
+        user_dec=USER_DEC
     output:
+        dir = directory( "output/delphes"),
         root=DELPHES_OUT,
     params:
-        pdg_mother=cfg("signal.pdg_mother"),
-        label=f"{SIGNAL}_SIGNAL",
+        # DelphesPythia8EvtGen_EDM4HEP_k4Interface 
+        # card_IDEA.tcl 
+        # edm4hep_IDEA.tcl \
+        # p8_ee_Zbb_ecm91_EVTGEN.cmd 
+        # Bu2TauNuTAUHADNU.root 
+        # DECAY.DEC 
+        # evt.pdl \
+        # Bu2TauNuTAUHADNU.dec 
+        # 521 
+        # Bu_SIGNAL 
+        # 1
+        evt_gen_pid=cfg("signal.evt_gen_pid"),
+        evt_gen_label=cfg("signal.evt_gen_label"),
         force=1,
         setup=setup_cmd(needs_fccanalyses=False),
     shell:
         r"""
-        set -euo pipefail
-        mkdir -p $(dirname {output.root})
-        {params.setup}DelphesPythia8EvtGen_EDM4HEP_k4Interface \
-          {input.delphes} {input.edm4hep} \
-          {input.pythia} {output.root} \
-          {input.decay} {input.pdl} \
-          {input.user_dec} \
-          {params.pdg_mother} {params.label} {params.force}
+        set -euo pipefail        
+        /bin/bash --noprofile --norc -c '
+            # Source the Key4hep environment in this clean shell
+            {params.setup}
+
+            # Now run your actual tool (which should now be in $PATH)
+            mkdir -p "$(dirname {output.root})"
+
+            DelphesPythia8EvtGen_EDM4HEP_k4Interface \
+              {input.delphes} {input.edm4hep} \
+              {input.pythia} {output.root} \
+              {input.decay} {input.pdl} \
+              {input.user_dec} \
+              {params.evt_gen_pid} {params.evt_gen_label} {params.force}
+        '
         """
 
 
