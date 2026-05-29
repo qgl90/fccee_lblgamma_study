@@ -27,6 +27,12 @@ fi
 
 if "$PYTHON_BIN" -c "import snakemake" >/dev/null 2>&1; then
   exec "$PYTHON_BIN" -m snakemake -s "$ROOT_DIR/Snakefile" "$@"
-else
-  exec command snakemake -s "$ROOT_DIR/Snakefile" "$@"
 fi
+
+SNAKEMAKE_BIN="$(command -v snakemake || true)"
+if [[ -z "$SNAKEMAKE_BIN" ]]; then
+  echo "Error: Snakemake is not available. Run ./scripts/setup_venv.sh or install Snakemake." >&2
+  exit 127
+fi
+
+exec "$SNAKEMAKE_BIN" -s "$ROOT_DIR/Snakefile" "$@"
