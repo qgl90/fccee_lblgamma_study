@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+# Default production config. Override per run with Snakemake, for example:
+#   snakemake -j 4 --configfile config/config_smoke.yaml
 configfile: "config/config_lb2lgamma.yaml"
 
 
