@@ -3,7 +3,7 @@
 This repo is a **minimal template** to run a full chain:
 
 1. **Production + fast simulation** with `DelphesPythia8EvtGen_EDM4HEP_k4Interface` (IDEA Delphes card, EDM4hep output).
-2. **FCCAnalyses** step to produce a **flat tree** (truth-seeded: MC decay products matched to reco objects).
+2. **FCCAnalyses** step to produce a **flat tree** in either reconstructed-candidate mode (default) or truth-validation mode.
 3. Orchestrated with **Snakemake**.
 
 ## Prerequisites
@@ -107,7 +107,15 @@ Outputs:
 
 - Delphes EDM4hep ROOT (signal): `outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root`
 - FCCAnalyses flat tree(s): `outputs/analysis/signal_tree.root` (and one `*_tree.root` per enabled background)
-- Quick overlay plot: `outputs/plots/lb_reco_m.png`
+- Quick overlay plot: `outputs/plots/lb_reco_m.png` (default `analysis.mode: reco`, `plot.branch: lb_reco_m`)
+
+
+## Analysis modes and plot branches
+
+The default configuration uses `analysis.mode: reco` with `plot.branch: lb_reco_m`, so the Snakemake workflow runs `analysis/analysis_lb2lgamma_reco.py` and plots a branch that this reco analysis writes.
+
+- `analysis.mode: reco` runs `analysis/analysis_lb2lgamma_reco.py`. This simple combinatorial reconstruction writes `lambda0_reco_m`, `lb_reco_m`, and `gamma_e`; use one of those branches for `plot.branch`.
+- `analysis.mode: truth` runs `analysis/analysis_lb2lgamma.py`. This mode is for MC validation/sanity checks and writes truth branches for the selected `Lambda_b`, photon, proton, and pion, such as `Lb_m` and `Gamma_e`; it does **not** write `lb_reco_m`. If you switch to truth mode, also switch `plot.branch` to an existing truth branch such as `Lb_m`.
 
 ## Manual run (no Snakemake)
 
@@ -224,8 +232,8 @@ Result: `outputs/plots/lb_reco_m.png`
 - `config/config_lb2lgamma.yaml`:
   - `analysis.mode` = `truth` (sanity check) or `reco` (simple combinatorial)
   - `backgrounds`: set `enabled: true` and point `input_file_list` to your background sample(s)
-- `analysis/analysis_lb2lgamma.py`: truth-seeded sanity-check analysis.
-- `analysis/analysis_lb2lgamma_reco.py`: simple combinatorial reconstruction (first-pass background shape).
+- `analysis/analysis_lb2lgamma.py`: truth MC-validation/sanity-check analysis; use truth branches such as `Lb_m` or `Gamma_e` for plotting.
+- `analysis/analysis_lb2lgamma_reco.py`: simple combinatorial reconstruction (first-pass background shape); produces `lambda0_reco_m`, `lb_reco_m`, and `gamma_e`.
 
 Useful targets:
 
@@ -247,5 +255,5 @@ snakemake -j 4 outputs/analysis/signal_tree.root
   - `FCC_SIG_PDG_MOTHER` (default `5122`)
   - `FCC_SIG_PDG_DAUGHTERS` (default `2212,-211,22`)
 - Background vs signal:
-  - `analysis.mode: truth` uses truth matching, so it is **not** a realistic estimate of combinatorial background.
-  - Use `analysis.mode: reco` to get a first background shape (still simplified).
+  - `analysis.mode: truth` uses truth matching/MC validation, so it is **not** a realistic estimate of combinatorial background and does not produce `lb_reco_m`.
+  - Use the default `analysis.mode: reco` to get a first background shape (still simplified) and reco plotting branches (`lambda0_reco_m`, `lb_reco_m`, `gamma_e`).

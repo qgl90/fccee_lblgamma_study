@@ -21,9 +21,9 @@ env:
   fccanalyses_setup: "external/FCCAnalyses/setup.sh"
 
 analysis:
-  # "truth" (current default): truth-seeded matching (fast sanity check, NOT a realistic background estimate)
-  # "reco": simple combinatorial reco (gives a background shape, still very simplified)
-  mode: "truth"
+  # "truth": truth-seeded matching (fast sanity check, NOT a realistic background estimate)
+  # "reco" (default): simple combinatorial reco (gives a background shape, still very simplified)
+  mode: "reco"
 
 # Background samples (edit to point to your centrally produced samples).
 # Provide either:
@@ -57,6 +57,8 @@ resources:
   analysis_cores: 4
 
 plot:
+  # For analysis.mode="reco", use reco branches such as "lb_reco_m", "lambda0_reco_m", or "gamma_e".
+  # For analysis.mode="truth", use MC-validation branches such as "Lb_m" or "Gamma_e".
   branch: "lb_reco_m"
   nbins: 120
   xmin: 4.8
