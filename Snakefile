@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from shlex import quote
 
 configfile: "config/config_lb2lgamma.yaml"
 
@@ -268,23 +269,25 @@ rule plot_mass_overlay:
     output:
         png=f"{PLOTS_DIR}/lb_reco_m.png",
     params:
-        branch=cfg("plot.branch", "lb_reco_m"),
+        script=lambda wc, input: quote(str(input.script)),
+        png=lambda wc, output: quote(str(output.png)),
+        branch=quote(str(cfg("plot.branch", "lb_reco_m"))),
         nbins=int(cfg("plot.nbins", 120)),
         xmin=float(cfg("plot.xmin", 4.8)),
         xmax=float(cfg("plot.xmax", 6.4)),
-        normalize=str(cfg("plot.normalize", "none")),
-        signal_scale=float(cfg("plot.signal_scale", 1.0)),
-        backgrounds=_bg_plot_args(),
+        normalize=quote(str(cfg("plot.normalize", "none"))),
+        signal=lambda wc: quote(f"{ANALYSIS_DIR}/signal_tree.root|{float(cfg('plot.signal_scale', 1.0))}"),
+        backgrounds=quote(_bg_plot_args()),
         setup=setup_cmd(needs_fccanalyses=False),
     shell:
         r"""
         set -euo pipefail
-        mkdir -p $(dirname {output.png})
-        {params.setup}python3 {input.script} \
-          --out {output.png} \
+        mkdir -p "$(dirname {params.png})"
+        {params.setup}python3 {params.script} \
+          --out {params.png} \
           --branch {params.branch} \
           --nbins {params.nbins} --xmin {params.xmin} --xmax {params.xmax} \
           --normalize {params.normalize} \
-          --signal {ANALYSIS_DIR}/signal_tree.root|{params.signal_scale} \
+          --signal {params.signal} \
           --backgrounds {params.backgrounds}
         """
