@@ -109,6 +109,41 @@ Outputs:
 - FCCAnalyses flat tree(s): `outputs/analysis/signal_tree.root` (and one `*_tree.root` per enabled background)
 - Quick overlay plot: `outputs/plots/lb_reco_m.png`
 
+## Smoke test with real produced input
+
+Use `config/config_smoke.yaml` for a tiny end-to-end plumbing check with real produced Delphes input. This smoke config runs only 10 generated events, fixes the random seed, uses reco analysis mode for the `lb_reco_m` plot branch, disables backgrounds, and writes to smoke-specific paths under the normal output directories so the default physics-production config is unchanged.
+
+In a fresh shell, source the runtime environments first:
+
+```bash
+source /cvmfs/sw.hsf.org/key4hep/setup.sh --latest
+# or a winter2023-compatible release, for example:
+# source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
+
+# FCCAnalyses (if built locally under ./external)
+source external/FCCAnalyses/setup.sh
+```
+
+Then run Snakemake with the alternate config file. The Snakefile supports Snakemake's standard `--configfile` mechanism; the smoke config overrides the default config only for this invocation:
+
+```bash
+snakemake -j 4 --configfile config/config_smoke.yaml
+```
+
+If your system needs the local Snakemake wrapper, pass the same Snakemake arguments through it:
+
+```bash
+./scripts/run_snakemake.sh -j 4 --configfile config/config_smoke.yaml
+```
+
+Expected smoke outputs:
+
+- Delphes EDM4hep ROOT: `outputs/delphes/smoke_Lb2LambdaGamma_IDEA_edm4hep.root`
+- FCCAnalyses flat tree: `outputs/analysis/smoke/signal_tree.root`
+- Quick reco-mass plot: `outputs/plots/smoke/lb_reco_m.png`
+
+This smoke test validates workflow plumbing only (card download/preparation, production, file-list creation, FCCAnalyses execution, and plotting). It is too small to validate physics performance, efficiencies, resolutions, backgrounds, or any final analysis conclusions.
+
 ## Manual run (no Snakemake)
 
 This section lists the same chain as explicit commands.
