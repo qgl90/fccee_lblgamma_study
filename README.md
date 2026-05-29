@@ -182,18 +182,36 @@ cp data/background_Zbb_files.txt work/filelists/Zbb.txt
 
 ### 5) Run FCCAnalyses (produce flat trees)
 
+The signal PDG configuration has a single source of truth: `config/config_lb2lgamma.yaml` (`signal.pdg_mother` and `signal.pdg_daughters`). Snakemake reads those values and exports `FCC_SIG_PDG_MOTHER` and `FCC_SIG_PDG_DAUGHTERS` for the truth analysis; if you bypass Snakemake, export those environment variables from the config before running `fccanalysis`:
+
+```bash
+eval "$(
+python3 - <<'PY'
+import ast
+import re
+from pathlib import Path
+
+config = Path("config/config_lb2lgamma.yaml").read_text(encoding="utf-8")
+mother = re.search(r"(?m)^\s*pdg_mother\s*:\s*([+-]?\d+)\s*$", config).group(1)
+daughters = ast.literal_eval(
+    re.search(r"(?m)^\s*pdg_daughters\s*:\s*(\[[^\]]+\])", config).group(1)
+)
+print(f'export FCC_SIG_PDG_MOTHER="{mother}"')
+print(f'export FCC_SIG_PDG_DAUGHTERS="{",".join(str(pdg) for pdg in daughters)}"')
+PY
+)"
+```
+
 Truth-seeded (fast sanity check, not a realistic background estimate):
 
 ```bash
-FCC_SIG_PDG_MOTHER=5122 FCC_SIG_PDG_DAUGHTERS=2212,-211,22 \
-  fccanalysis run analysis/analysis_lb2lgamma.py \
-    --input-file-list work/filelists/signal.txt \
-    --output outputs/analysis/signal_tree.root
+fccanalysis run analysis/analysis_lb2lgamma.py \
+  --input-file-list work/filelists/signal.txt \
+  --output outputs/analysis/signal_tree.root
 
-FCC_SIG_PDG_MOTHER=5122 FCC_SIG_PDG_DAUGHTERS=2212,-211,22 \
-  fccanalysis run analysis/analysis_lb2lgamma.py \
-    --input-file-list work/filelists/Zbb.txt \
-    --output outputs/analysis/Zbb_tree.root
+fccanalysis run analysis/analysis_lb2lgamma.py \
+  --input-file-list work/filelists/Zbb.txt \
+  --output outputs/analysis/Zbb_tree.root
 ```
 
 Reco/combinatorial (first-pass background shape):
@@ -219,11 +237,11 @@ Result: `outputs/plots/lb_reco_m.png`
 
 ## What to edit for your study
 
-- `config/config_lb2lgamma.yaml`: number of events, √s, seed, detector card URLs.
-- `evtgen/Lb2LambdaGamma.dec`: your forced decay(s).
-- `config/config_lb2lgamma.yaml`:
+- `config/config_lb2lgamma.yaml`: number of events, √s, seed, detector card URLs, and signal PDG settings.
+  - `signal.pdg_mother` and `signal.pdg_daughters` are the single source of truth for the truth analysis; charge-conjugate PDGs are derived automatically by `analysis/analysis_lb2lgamma.py`.
   - `analysis.mode` = `truth` (sanity check) or `reco` (simple combinatorial)
   - `backgrounds`: set `enabled: true` and point `input_file_list` to your background sample(s)
+- `evtgen/Lb2LambdaGamma.dec`: your forced decay(s).
 - `analysis/analysis_lb2lgamma.py`: truth-seeded sanity-check analysis.
 - `analysis/analysis_lb2lgamma_reco.py`: simple combinatorial reconstruction (first-pass background shape).
 
@@ -243,9 +261,7 @@ snakemake -j 4 outputs/analysis/signal_tree.root
   - At the Z pole, `Lambda_b` production fraction is not huge, so you may need large statistics (or add an event-filter strategy in production if you need “N signal decays” rather than “N Z→bb events”).
 - Collection names in EDM4hep files can differ between stacks / branches.
   - If `fccanalysis run` errors on missing collections, adjust the aliases at the top of `analysis/analysis_lb2lgamma.py`.
-- The analysis reads the signal PDGs from env vars (set by the Snakefile):
-  - `FCC_SIG_PDG_MOTHER` (default `5122`)
-  - `FCC_SIG_PDG_DAUGHTERS` (default `2212,-211,22`)
+- The truth analysis reads `FCC_SIG_PDG_MOTHER` and `FCC_SIG_PDG_DAUGHTERS` from the environment; the Snakefile sets them from `config/config_lb2lgamma.yaml`, so update the config rather than hard-coding PDGs in `analysis/analysis_lb2lgamma.py`.
 - Background vs signal:
   - `analysis.mode: truth` uses truth matching, so it is **not** a realistic estimate of combinatorial background.
   - Use `analysis.mode: reco` to get a first background shape (still simplified).

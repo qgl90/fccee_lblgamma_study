@@ -8,8 +8,9 @@ from __future__ import annotations
 # - Match those MC particles to reco objects using MCRecoAssociations
 # - Store a few sanity-check kinematics and reconstructed invariant masses
 
-import ROOT
 import os
+
+import ROOT
 
 
 # -----------------------------------------------------------------------------
@@ -22,11 +23,52 @@ nCPUS = 4
 runBatch = False
 batchQueue = "longlunch"
 
-inputDir = "/afs/cern.ch/user/r/rquaglia/work/fcc_ee/fccee_lblgamma_study/outputs/delphes/"
+inputDir = "./"
 procDict = "FCCee_procDict_winter2023_IDEA.json"
 
 
-import ROOT
+SELF_CONJUGATE_PDGS = {
+    21, 22, 23, 25,
+    111, 113, 115, 117,
+    221, 223, 225, 227,
+    331, 333, 335, 337,
+    441, 443, 445,
+}
+
+
+def _parse_env_int(name: str) -> int:
+    value = os.environ.get(name)
+    if value is None or not value.strip():
+        raise RuntimeError(f"Environment variable {name} must be set")
+    try:
+        return int(value.strip())
+    except ValueError as exc:
+        raise RuntimeError(f"Environment variable {name} must be an integer, got {value!r}") from exc
+
+
+def _parse_env_int_list(name: str) -> list[int]:
+    value = os.environ.get(name)
+    if value is None or not value.strip():
+        raise RuntimeError(f"Environment variable {name} must be set")
+    try:
+        parsed = [int(item.strip()) for item in value.split(",") if item.strip()]
+    except ValueError as exc:
+        raise RuntimeError(
+            f"Environment variable {name} must be a comma-separated integer list, got {value!r}"
+        ) from exc
+    if not parsed:
+        raise RuntimeError(f"Environment variable {name} must contain at least one PDG ID")
+    return parsed
+
+
+def _charge_conjugate_pdg(pdg: int) -> int:
+    return pdg if abs(pdg) in SELF_CONJUGATE_PDGS else -pdg
+
+
+def _cpp_vector(values: list[int]) -> str:
+    return "{" + ", ".join(str(value) for value in values) + "}"
+
+
 ROOT.gInterpreter.Declare("""
 using namespace FCCAnalyses;
 using namespace FCCAnalyses::MCParticle;
@@ -73,7 +115,7 @@ edm4hep::Vector3d MyMCDecayVertex(ROOT::VecOps::RVec<edm4hep::Vector3d> in1, ROO
       return vertex;
    }
    vertex = in1[0];
-   return vertex;  
+   return vertex;
 }
 """)
 ROOT.gInterpreter.Declare("""
@@ -89,19 +131,22 @@ float MyMinEnergy(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in) {
 class RDFanalysis:
     @staticmethod
     def analysers(df):
-        # Lb -> Lambda0( p pi) gamma
-        pdg_mother    =  ["5122",          "-5122"]        # Lambdab
-        pdg_daughters =  ["2212,-211,22" , "-2212,211,22" ]# ppi , gamma                
-        lb_pdg_daughters = pdg_mother        
-        lb_pdg_daughters_cpp = ["{" + ", ".join(str(x) for x in dau.split(",")) + "}" for dau in pdg_daughters]        
-        
-        print( lb_pdg_daughters)
-        print( lb_pdg_daughters_cpp)
-        # cdecay 
+        pdg_mother = _parse_env_int("FCC_SIG_PDG_MOTHER")
+        pdg_daughters = _parse_env_int_list("FCC_SIG_PDG_DAUGHTERS")
+        pdg_mothers = [pdg_mother, _charge_conjugate_pdg(pdg_mother)]
+        pdg_daughter_sets = [
+            pdg_daughters,
+            [_charge_conjugate_pdg(daughter) for daughter in pdg_daughters],
+        ]
+        lb_pdg_daughters_cpp = [_cpp_vector(daughters) for daughters in pdg_daughter_sets]
+
+        print("Configured signal mother PDGs:", pdg_mothers)
+        print("Configured signal daughter PDGs:", lb_pdg_daughters_cpp)
+        # cdecay
         dfProcessed = (
                 #############################################
                 ##          Aliases for # in python        ##
-                #############################################                   
+                #############################################
                 df
                 # .Alias("Particle0", "Particle#0.index")
                 .Alias("Particle1", "Particle#1.index")
@@ -109,21 +154,21 @@ class RDFanalysis:
                 .Alias("MCRecoAssociations1", "MCRecoAssociations#1.index")
                 # MC event primary vertex ( arg_genstatus = 21 means ? )
                 .Define("MC_PrimaryVertex",  "FCCAnalyses::MCParticle::get_EventPrimaryVertex(21)( Particle )" )
-                # Nb of tracks 
+                # Nb of tracks
                 .Define("ntracks","ReconstructedParticle2Track::getTK_n(EFlowTrack_1)")
                 # Retrieve the decay vertex of all MC particles
                 .Define("MC_DecayVertices",  "FCCAnalyses::MCParticle::get_endPoint( Particle, Particle1)" )
-                # Extract Lb    , p+  pi- gamma indices for Lb 
-                .Define("LbToPPiGamma_indices",     f"FCCAnalyses::MCParticle::get_indices_ExclusiveDecay(  {pdg_mother[0]} , {lb_pdg_daughters_cpp[0]}, true, false)( Particle, Particle1)")                
+                # Extract Lb    , p+  pi- gamma indices for Lb
+                .Define("LbToPPiGamma_indices",     f"FCCAnalyses::MCParticle::get_indices_ExclusiveDecay(  {pdg_mothers[0]} , {lb_pdg_daughters_cpp[0]}, true, false)( Particle, Particle1)")
                 # Extract Lbbar , p-~ pi+ gamma indices for Lb~
-                .Define("LbToPPiGamma_indices_bar", f"FCCAnalyses::MCParticle::get_indices_ExclusiveDecay(  {pdg_mother[1]} , {lb_pdg_daughters_cpp[1]}, true, false)( Particle, Particle1)")
+                .Define("LbToPPiGamma_indices_bar", f"FCCAnalyses::MCParticle::get_indices_ExclusiveDecay(  {pdg_mothers[1]} , {lb_pdg_daughters_cpp[1]}, true, false)( Particle, Particle1)")
                 .Filter("LbToPPiGamma_indices.size()==4 || LbToPPiGamma_indices_bar.size()==4")
-                
-                .Define("Lambda_b", "selMC_leg(0)   ( LbToPPiGamma_indices.size() !=0 ?  LbToPPiGamma_indices : LbToPPiGamma_indices_bar , Particle)")                
+
+                .Define("Lambda_b", "selMC_leg(0)   ( LbToPPiGamma_indices.size() !=0 ?  LbToPPiGamma_indices : LbToPPiGamma_indices_bar , Particle)")
                 .Define("Proton",   "selMC_leg(1)   ( LbToPPiGamma_indices.size() !=0 ?  LbToPPiGamma_indices : LbToPPiGamma_indices_bar , Particle)" )
                 .Define("Pion",     "selMC_leg(2)   ( LbToPPiGamma_indices.size() !=0 ?  LbToPPiGamma_indices : LbToPPiGamma_indices_bar , Particle)" )
                 .Define("Gamma",    "selMC_leg(3)   ( LbToPPiGamma_indices.size() !=0 ?  LbToPPiGamma_indices : LbToPPiGamma_indices_bar , Particle)" )
-                
+
                 .Define("LambdaMCDecayVertex",   "MyMCDecayVertex(FCCAnalyses::MCParticle::get_vertex(Proton),FCCAnalyses::MCParticle::get_vertex(Pion))")
                 .Define("LambdabMCDecayVertex",  "MyMCDecayVertex(FCCAnalyses::MCParticle::get_vertex(Gamma),FCCAnalyses::MCParticle::get_vertex(Gamma))")
                 # Kinematics of the Lambda_b :
@@ -135,7 +180,7 @@ class RDFanalysis:
                 .Define("Lb_z",     "FCCAnalyses::MCParticle::get_vertex_z(Lambda_b)")
                 .Define("Lb_e",     "FCCAnalyses::MCParticle::get_e(Lambda_b)")
                 .Define("Lb_m",     "FCCAnalyses::MCParticle::get_mass(Lambda_b)")
-                
+
                 .Define("Gamma_theta", "FCCAnalyses::MCParticle::get_theta( Gamma )")
                 .Define("Gamma_phi",   "FCCAnalyses::MCParticle::get_phi( Gamma )")
                 .Define("Gamma_PDG",   "FCCAnalyses::MCParticle::get_pdg(Gamma)")
@@ -143,9 +188,9 @@ class RDFanalysis:
                 .Define("Gamma_y",     "FCCAnalyses::MCParticle::get_vertex_y(Gamma)")
                 .Define("Gamma_z",     "FCCAnalyses::MCParticle::get_vertex_z(Gamma)")
                 .Define("Gamma_e",     "FCCAnalyses::MCParticle::get_e(Gamma)")
-                .Define("Gamma_m",     "FCCAnalyses::MCParticle::get_mass(Gamma)") 
-                
-                
+                .Define("Gamma_m",     "FCCAnalyses::MCParticle::get_mass(Gamma)")
+
+
                 .Define("Proton_theta", "FCCAnalyses::MCParticle::get_theta( Proton )")
                 .Define("Proton_phi",   "FCCAnalyses::MCParticle::get_phi( Proton )")
                 .Define("Proton_PDG",   "FCCAnalyses::MCParticle::get_pdg(Proton)")
@@ -162,74 +207,16 @@ class RDFanalysis:
                 .Define("Pion_y",     "FCCAnalyses::MCParticle::get_vertex_y(Pion)")
                 .Define("Pion_z",     "FCCAnalyses::MCParticle::get_vertex_z(Pion)")
                 .Define("Pion_e",     "FCCAnalyses::MCParticle::get_e(Pion)")
-                .Define("Pion_m",     "FCCAnalyses::MCParticle::get_mass(Pion)")                     
-                                
+                .Define("Pion_m",     "FCCAnalyses::MCParticle::get_mass(Pion)")
+
         )
-        #         # .Define(
-        #         #     "Lb_truth_idx_all",
-        #         #     f"MCParticle::get_indices_ExclusiveDecay({pdg_mother}, {pdg_daughters_cpp}, true, true)(Particle, Particle1)",
-        #         # )
-        #         # df = df.Filter("Lb_truth_idx_all.size() >= 3", "Lb -> L gamma in truth decay")
-                        
-                
-                
-        # )
-      
-        
-        # # Filter so that every event has as truth Lb->L gamma decays 
-        # ##############################################
-        # ##         Filter events so it has Lb truth ##
-        # ##############################################   
-       
-        
-        #        .Define("MC_PrimaryVertex",  "FCCAnalyses::MCParticle::get_EventPrimaryVertex(21)( Particle )" )
-
-        
-        # def define_pdg( node) : 
-        #     # get all the MC particles to check for Ks 
-        #     # get momenta & mass of all particles                                                                                                                                                                                                                                                        
-        #     return node.Define("MC_pdg", "FCCAnalyses::MCParticle::get_pdg(Particle)")
-        #                .Define("MC_p4", "FCCAnalyses::MCParticle::get_tlv(Particle)")
-        #                .Define("MC_mass", "FCCAnalyses::MCParticle::get_mass(Particle)")
-        
-        # df = define_pdg( df )
-                
-        # df = df.Define("LambdabLambdagamma_indices", "FCCAnalyses::MCParticle::get_indices_ExclusiveDecay(5122, {2212,-211,22}, true, true) (Particle, Particle1)")                
-        # df = df.Define("Lambda0ppi_indices", "FCCAnalyses::MCParticle::get_indices_ExclusiveDecay(        3122, {2212, -211}, true, true) (Particle, Particle1)")
-        
-
-       
-       
-        # df = df.Define("Lb_truth_idx", "ROOT::VecOps::Take(Lb_truth_idx_all, 3)")
-
-        # # -----------------------------------------------------------------------------
-        # # Truth-seeded reco matching (avoids combinatorics for the first iteration)
-        # df = df.Define(
-        #     "LbRecoParts",
-        #     "ReconstructedParticle2MC::selRP_matched_to_list(Lb_truth_idx, MCRecoAssociations0, MCRecoAssociations1, ReconstructedParticles, Particle)",
-        # )
-        # df = df.Filter("LbRecoParts.size() == 3")
-
-        # # -----------------------------------------------------------------------------
-        # # Reco kinematics and masses
-        # df = df.Define("p_tlv", "ReconstructedParticle::get_tlv(LbRecoParts, 0)")
-        # df = df.Define("pi_tlv", "ReconstructedParticle::get_tlv(LbRecoParts, 1)")
-        # df = df.Define("g_tlv", "ReconstructedParticle::get_tlv(LbRecoParts, 2)")
-
-        # df = df.Define("lambda0_reco_m", "(p_tlv + pi_tlv).M()")
-        # df = df.Define("lb_reco_m", "(p_tlv + pi_tlv + g_tlv).M()")
-
-        # df = df.Define("p_reco_p", "p_tlv.P()")
-        # df = df.Define("pi_reco_p", "pi_tlv.P()")
-        # df = df.Define("g_reco_e", "g_tlv.E()")
-
         return dfProcessed
 
     @staticmethod
     def output():
         vars = []
-        for part in ["Lb","Gamma","Proton","Pion"] : 
-            vars += [ 
+        for part in ["Lb","Gamma","Proton","Pion"] :
+            vars += [
                 f"{part}_theta",
                 f"{part}_phi",
                 f"{part}_PDG",
@@ -237,8 +224,8 @@ class RDFanalysis:
                 f"{part}_y",
                 f"{part}_z",
                 f"{part}_e",
-                f"{part}_m"                    
+                f"{part}_m"
             ]
-        for _ in vars : 
+        for _ in vars :
             print( f"Snapshot : {_}")
-        return vars 
+        return vars
