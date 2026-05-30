@@ -39,6 +39,10 @@ ROOT.gInterpreter.Declare(
     #include "ROOT/RVec.hxx"
     #include "TLorentzVector.h"
     #include "edm4hep/ReconstructedParticleData.h"
+    #include "edm4hep/TrackState.h"
+    #include "FCCAnalyses/ReconstructedParticle2Track.h"
+    #include "FCCAnalyses/VertexFitterSimple.h"
+    #include "FCCAnalyses/VertexingUtils.h"
 
     namespace lb2lgamma {
       using ROOT::VecOps::RVec;
@@ -150,6 +154,27 @@ ROOT.gInterpreter.Declare(
         const auto p4g = tlv_from_rp_energy(rps[gidx]);
         return (p4p + p4pi + p4g).M();
       }
+
+      RVec<edm4hep::ReconstructedParticleData> lambda_particles(
+          const RVec<edm4hep::ReconstructedParticleData> &rps, const RVec<int> &idx) {
+        RVec<edm4hep::ReconstructedParticleData> out;
+        if (idx.size() < 2 || idx[0] < 0 || idx[1] < 0)
+          return out;
+        out.emplace_back(rps[idx[0]]);
+        out.emplace_back(rps[idx[1]]);
+        return out;
+      }
+
+      double sum_momentum_tracks(const VertexingUtils::FCCAnalysesVertex &vertex) {
+        const RVec<TVector3> momenta = vertex.updated_track_momentum_at_vertex;
+        double sum = 0.;
+        for (const auto &p : momenta) {
+          const double px = p[0];
+          const double py = p[1];
+          sum += std::sqrt(px * px + py * py);
+        }
+        return sum;
+      }
     } // namespace lb2lgamma
 """
 )
@@ -158,6 +183,28 @@ ROOT.gInterpreter.Declare(
 class RDFanalysis:
     @staticmethod
     def analysers(df):
+        # Primary-vertex reconstruction following the FCC vertexing tutorial.
+        df = df.Define("MC_PrimaryVertex", "FCCAnalyses::MCParticle::get_EventPrimaryVertex(21)(Particle)")
+        df = df.Define("ntracks", "ReconstructedParticle2Track::getTK_n(EFlowTrack_1)")
+        df = df.Define(
+            "VertexObject_allTracks",
+            "VertexFitterSimple::VertexFitter_Tk(1, EFlowTrack_1, true, 4.5, 20e-3, 300)",
+        )
+        df = df.Define("Vertex_allTracks", "VertexingUtils::get_VertexData(VertexObject_allTracks)")
+        df = df.Define(
+            "RecoedPrimaryTracks",
+            "VertexFitterSimple::get_PrimaryTracks(EFlowTrack_1, true, 4.5, 20e-3, 300, 0., 0., 0.)",
+        )
+        df = df.Define(
+            "PrimaryVertexObject",
+            "VertexFitterSimple::VertexFitter_Tk(1, RecoedPrimaryTracks, true, 4.5, 20e-3, 300)",
+        )
+        df = df.Define("PrimaryVertex", "VertexingUtils::get_VertexData(PrimaryVertexObject)")
+        df = df.Define("SecondaryTracks", "VertexFitterSimple::get_NonPrimaryTracks(EFlowTrack_1, RecoedPrimaryTracks)")
+        df = df.Define("n_RecoedPrimaryTracks", "ReconstructedParticle2Track::getTK_n(RecoedPrimaryTracks)")
+        df = df.Define("n_SecondaryTracks", "ReconstructedParticle2Track::getTK_n(SecondaryTracks)")
+        df = df.Define("sum_pt_primaries", "lb2lgamma::sum_momentum_tracks(PrimaryVertexObject)")
+
         # Basic candidate building from the full reconstructed-particle list
         df = df.Define("lambda_idx", "lb2lgamma::best_lambda_indices(ReconstructedParticles)")
         df = df.Filter("lambda_idx.size() == 2 && lambda_idx[0] >= 0 && lambda_idx[1] >= 0")
@@ -169,6 +216,14 @@ class RDFanalysis:
         df = df.Define("lambda0_reco_m", "lb2lgamma::lambda_mass(ReconstructedParticles, lambda_idx)")
         df = df.Define("lb_reco_m", "lb2lgamma::lb_mass(ReconstructedParticles, lambda_idx, gamma_idx)")
 
+        # Lambda0 displaced-vertex reconstruction from the selected p/pi tracks.
+        df = df.Define("Lambda0RecoParticles", "lb2lgamma::lambda_particles(ReconstructedParticles, lambda_idx)")
+        df = df.Define("Lambda0Tracks", "ReconstructedParticle2Track::getRP2TRK(Lambda0RecoParticles, EFlowTrack_1)")
+        df = df.Define("n_Lambda0Tracks", "ReconstructedParticle2Track::getTK_n(Lambda0Tracks)")
+        df = df.Define("Lambda0VertexObject", "VertexFitterSimple::VertexFitter_Tk(2, Lambda0Tracks)")
+        df = df.Define("Lambda0Vertex", "VertexingUtils::get_VertexData(Lambda0VertexObject)")
+        df = df.Define("sum_pt_lambda0", "lb2lgamma::sum_momentum_tracks(Lambda0VertexObject)")
+
         df = df.Define(
             "gamma_e",
             "ReconstructedParticles.at(gamma_idx).energy",
@@ -178,7 +233,17 @@ class RDFanalysis:
     @staticmethod
     def output():
         return [
+            "MC_PrimaryVertex",
+            "ntracks",
+            "Vertex_allTracks",
+            "PrimaryVertex",
+            "n_RecoedPrimaryTracks",
+            "n_SecondaryTracks",
+            "sum_pt_primaries",
             "lambda0_reco_m",
             "lb_reco_m",
             "gamma_e",
+            "n_Lambda0Tracks",
+            "Lambda0Vertex",
+            "sum_pt_lambda0",
         ]

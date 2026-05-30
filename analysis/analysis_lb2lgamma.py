@@ -86,6 +86,34 @@ float MyMinEnergy(ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> in) {
 }
 """)
 
+ROOT.gInterpreter.Declare("""
+#include <cmath>
+#include "edm4hep/ReconstructedParticleData.h"
+#include "FCCAnalyses/VertexingUtils.h"
+
+namespace lb2lgamma {
+  ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> lambda_particles(
+      const ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData>& rps) {
+    ROOT::VecOps::RVec<edm4hep::ReconstructedParticleData> out;
+    if (rps.size() < 2) return out;
+    out.emplace_back(rps[0]);
+    out.emplace_back(rps[1]);
+    return out;
+  }
+
+  double sum_momentum_tracks(const VertexingUtils::FCCAnalysesVertex& vertex) {
+    ROOT::VecOps::RVec<TVector3> momenta = vertex.updated_track_momentum_at_vertex;
+    double sum = 0.;
+    for (const auto& p : momenta) {
+      const double px = p[0];
+      const double py = p[1];
+      sum += std::sqrt(px * px + py * py);
+    }
+    return sum;
+  }
+}
+""")
+
 class RDFanalysis:
     @staticmethod
     def analysers(df):
@@ -107,10 +135,20 @@ class RDFanalysis:
                 .Alias("Particle1", "Particle#1.index")
                 .Alias("MCRecoAssociations0", "MCRecoAssociations#0.index")
                 .Alias("MCRecoAssociations1", "MCRecoAssociations#1.index")
-                # MC event primary vertex ( arg_genstatus = 21 means ? )
+                # MC event primary vertex (arg_genstatus = 21) and reconstructed
+                # primary-vertex information following the FCC vertexing tutorial.
                 .Define("MC_PrimaryVertex",  "FCCAnalyses::MCParticle::get_EventPrimaryVertex(21)( Particle )" )
                 # Nb of tracks 
                 .Define("ntracks","ReconstructedParticle2Track::getTK_n(EFlowTrack_1)")
+                .Define("VertexObject_allTracks", "VertexFitterSimple::VertexFitter_Tk(1, EFlowTrack_1, true, 4.5, 20e-3, 300)")
+                .Define("Vertex_allTracks", "VertexingUtils::get_VertexData(VertexObject_allTracks)")
+                .Define("RecoedPrimaryTracks", "VertexFitterSimple::get_PrimaryTracks(EFlowTrack_1, true, 4.5, 20e-3, 300, 0., 0., 0.)")
+                .Define("PrimaryVertexObject", "VertexFitterSimple::VertexFitter_Tk(1, RecoedPrimaryTracks, true, 4.5, 20e-3, 300)")
+                .Define("PrimaryVertex", "VertexingUtils::get_VertexData(PrimaryVertexObject)")
+                .Define("SecondaryTracks", "VertexFitterSimple::get_NonPrimaryTracks(EFlowTrack_1, RecoedPrimaryTracks)")
+                .Define("n_RecoedPrimaryTracks", "ReconstructedParticle2Track::getTK_n(RecoedPrimaryTracks)")
+                .Define("n_SecondaryTracks", "ReconstructedParticle2Track::getTK_n(SecondaryTracks)")
+                .Define("sum_pt_primaries", "lb2lgamma::sum_momentum_tracks(PrimaryVertexObject)")
                 # Retrieve the decay vertex of all MC particles
                 .Define("MC_DecayVertices",  "FCCAnalyses::MCParticle::get_endPoint( Particle, Particle1)" )
                 # Extract Lb    , p+  pi- gamma indices for Lb 
@@ -126,6 +164,17 @@ class RDFanalysis:
                 
                 .Define("LambdaMCDecayVertex",   "MyMCDecayVertex(FCCAnalyses::MCParticle::get_vertex(Proton),FCCAnalyses::MCParticle::get_vertex(Pion))")
                 .Define("LambdabMCDecayVertex",  "MyMCDecayVertex(FCCAnalyses::MCParticle::get_vertex(Gamma),FCCAnalyses::MCParticle::get_vertex(Gamma))")
+
+                # Truth-seeded Lambda0 vertex from the reco particles matched to
+                # the selected p/pi legs.
+                .Define("LbRecoParticles", "ReconstructedParticle2MC::selRP_matched_to_list(LbToPPiGamma_indices.size() !=0 ? LbToPPiGamma_indices : LbToPPiGamma_indices_bar, MCRecoAssociations0, MCRecoAssociations1, ReconstructedParticles, Particle)")
+                .Define("Lambda0RecoParticles", "lb2lgamma::lambda_particles(LbRecoParticles)")
+                .Define("Lambda0Tracks", "ReconstructedParticle2Track::getRP2TRK(Lambda0RecoParticles, EFlowTrack_1)")
+                .Define("n_Lambda0Tracks", "ReconstructedParticle2Track::getTK_n(Lambda0Tracks)")
+                .Define("Lambda0VertexObject", "VertexFitterSimple::VertexFitter_Tk(2, Lambda0Tracks)")
+                .Define("Lambda0Vertex", "VertexingUtils::get_VertexData(Lambda0VertexObject)")
+                .Define("sum_pt_lambda0", "lb2lgamma::sum_momentum_tracks(Lambda0VertexObject)")
+
                 # Kinematics of the Lambda_b :
                 .Define("Lb_theta", "FCCAnalyses::MCParticle::get_theta( Lambda_b )")
                 .Define("Lb_phi",   "FCCAnalyses::MCParticle::get_phi( Lambda_b )")
@@ -227,7 +276,20 @@ class RDFanalysis:
 
     @staticmethod
     def output():
-        vars = []
+        vars = [
+            "MC_PrimaryVertex",
+            "ntracks",
+            "Vertex_allTracks",
+            "PrimaryVertex",
+            "n_RecoedPrimaryTracks",
+            "n_SecondaryTracks",
+            "sum_pt_primaries",
+            "LambdaMCDecayVertex",
+            "LambdabMCDecayVertex",
+            "n_Lambda0Tracks",
+            "Lambda0Vertex",
+            "sum_pt_lambda0",
+        ]
         for part in ["Lb","Gamma","Proton","Pion"] : 
             vars += [ 
                 f"{part}_theta",
