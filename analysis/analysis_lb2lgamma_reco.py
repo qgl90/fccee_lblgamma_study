@@ -11,31 +11,35 @@ from __future__ import annotations
 import ROOT
 
 
-processList = {"Lb2LambdaGamma": {"fraction": 1.0}}
+# processList = {"Lb2LambdaGamma": {"fraction": 1.0}}
 analysisName = "Lb2LambdaGamma"
-outputDir = "outputs/analysis"
+# outputDir = "outputs/analysis"
 nCPUS = 4
 runBatch = False
 batchQueue = "longlunch"
 
+#outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root
+# run with 
+"""
+fccanalysis run analysis/analysis_lb2lgamma_reco.py \
+--files-list outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root \
+--output outputs/analysis/Lb2LambdaGamma_tree_reco.root
+"""
 
 ROOT.gInterpreter.Declare(
     r"""
     #include <cmath>
     #include <limits>
     #include <utility>
-
     #include "ROOT/RVec.hxx"
     #include "TLorentzVector.h"
     #include "edm4hep/ReconstructedParticleData.h"
-
     namespace lb2lgamma {
       using ROOT::VecOps::RVec;
-
       static constexpr double kMP = 0.938272081;     // GeV
       static constexpr double kMPi = 0.13957039;     // GeV
       static constexpr double kMLambda0 = 1.115683;  // GeV
-
+      
       inline TLorentzVector tlv_from_p3m(double px, double py, double pz, double m) {
         const double e = std::sqrt(px * px + py * py + pz * pz + m * m);
         return TLorentzVector(px, py, pz, e);
@@ -147,9 +151,85 @@ ROOT.gInterpreter.Declare(
 class RDFanalysis:
     @staticmethod
     def analysers(df):
-        # Basic candidate building from the full reconstructed-particle list
-        df = df.Define("lambda_idx", "lb2lgamma::best_lambda_indices(ReconstructedParticles)")
-        df = df.Filter("lambda_idx.size() == 2 && lambda_idx[0] >= 0 && lambda_idx[1] >= 0")
+      df2 = (
+        #############################################
+        ##          Aliases for # in python        ##
+        #############################################
+        df.Alias("MCRecoAssociations0", "MCRecoAssociations#0.index")
+          .Alias("MCRecoAssociations1", "MCRecoAssociations#1.index")
+          .Alias("Particle0", "Particle#0.index")
+          .Alias("Particle1", "Particle#1.index")
+          .Define("MC_PDG", "FCCAnalyses::MCParticle::get_pdg(Particle)")
+          #############################################
+          ##MC record to study the Z->bb events types##
+          #############################################          
+          .Define("MC_n",   "int(MC_PDG.size())")
+          .Define("MC_M1",  "myUtils::get_MCMother1(Particle,Particle0)")
+          .Define("MC_M2",  "myUtils::get_MCMother2(Particle,Particle0)")
+          .Define("MC_D1",  "myUtils::get_MCDaughter1(Particle,Particle1)")
+          .Define("MC_D2",  "myUtils::get_MCDaughter2(Particle,Particle1)")                    
+          
+          
+          # loop over mc_pdg         
+          # decay is 
+          
+          
+          .Define("genBottom",   "FCCAnalyses::MCParticle::sel_pdgID(5, true)(Particle)")
+          .Define("n_genBottoms",     "FCCAnalyses::MCParticle::get_n(genBottom)")
+          .Define("genBottom_px",     "FCCAnalyses::MCParticle::get_px(genBottom)")
+          .Define("genBottom_py",     "FCCAnalyses::MCParticle::get_py(genBottom)")
+          .Define("genBottom_pz",     "FCCAnalyses::MCParticle::get_pz(genBottom)")
+          .Define("genBottom_phi",    "FCCAnalyses::MCParticle::get_phi(genBottom)")
+          .Define("genBottom_eta",    "FCCAnalyses::MCParticle::get_eta(genBottom)")
+          .Define("genBottom_energy", "FCCAnalyses::MCParticle::get_e(genBottom)")
+          .Define("genBottom_mass",   "FCCAnalyses::MCParticle::get_mass(genBottom)")
+          .Define("genBottom_pdg",    "FCCAnalyses::MCParticle::get_pdg(genBottom)")
+          .Define("genLb",       "FCCAnalyses::MCParticle::sel_pdgID(5122, true)(Particle)") # charge conjs
+          .Define("n_genLb",     "FCCAnalyses::MCParticle::get_n   (genLb)")
+          .Define("genLb_px",    "FCCAnalyses::MCParticle::get_px  (genLb)")
+          .Define("genLb_py",    "FCCAnalyses::MCParticle::get_py  (genLb)")
+          .Define("genLb_pz",    "FCCAnalyses::MCParticle::get_pz  (genLb)")
+          .Define("genLb_phi",   "FCCAnalyses::MCParticle::get_phi (genLb)")
+          .Define("genLb_eta",   "FCCAnalyses::MCParticle::get_eta (genLb)")
+          .Define("genLb_energy","FCCAnalyses::MCParticle::get_e   (genLb)")
+          .Define("genLb_mass",  "FCCAnalyses::MCParticle::get_mass(genLb)")
+          .Define("genLb_pdg",   "FCCAnalyses::MCParticle::get_pdg (genLb)")
+
+
+          # .Define( "Lb_Truth_P", "MCParticle.at("whateverindex")")
+          
+          # [ 5122 -> [PDGID(Lambda0) -> 2212,-211] 22 ] CC
+          # [ ^5122] 
+          # [ ^Lambda0 ]
+          # [ ^gamma]
+          # [ ^2212]
+          # [ ^-211]
+          # [ ^22]
+          # get_indices_ExclusiveDecay( int pdg_mother, std::vector<int> pdg_daughters, bool stableDaughters, bool chargeConjugate ) ;
+          # <list of index> get_indices_ExclusiveDecay( 5122, 2212, -211, 22, true, true, true, true)(Particle, Particle1)
+          # get_indices_ExclusiveDecay( 5122, 2212, -211, 22, true, true, true, true)(Particle, Particle1)
+          # get_indices_ExclusiveDecay( 5122, 2212, -211, 22, true, true, true, true)(Particle, Particle1)
+          # get_list_of_stable_particles_from_decay
+          # traverse list of index and get  
+          # MCParticles.at(index)
+          # struct get_decay {
+          #   get_decay(int arg_mother, int arg_daughters, bool arg_inf);
+          #   int m_mother = 0; //> mother pdg id
+          #   int m_daughters = 0;//> daughters pdg id
+          #   bool m_inf = false;//> boolean to check if the pdgid is below a value rather than equal
+          #   bool  operator() (ROOT::VecOps::RVec<edm4hep::MCParticleData> in, ROOT::VecOps::RVec<int> ind);
+          # };
+          
+          .Define("taupos_elenu", "FCCAnalyses::MCParticle::get_decay(-15, 11, false)(Particle, Particle1)")
+          .Define("taupos_munu",  "FCCAnalyses::MCParticle::get_decay(-15, 13, false)(Particle, Particle1)")
+          .Define("tauneg_elenu", "FCCAnalyses::MCParticle::get_decay( 15, 11, false)(Particle, Particle1)")
+          .Define("tauneg_munu",  "FCCAnalyses::MCParticle::get_decay( 15, 13, false)(Particle, Particle1)")
+          .Define("gen_semilep",  "1.0 * (taupos_elenu + taupos_munu + tauneg_elenu + tauneg_munu == 1)") ## TODO: this is not a good judgement, 
+          ## there could be other taus from other hemisphere
+                                                                                                                         
+                                   
+          # .Define("lambda_idx", "lb2lgamma::best_lambda_indices(ReconstructedParticles)")
+          # .Filter("lambda_idx.size() == 2 && lambda_idx[0] >= 0 && lambda_idx[1] >= 0")
 
         # photon: highest-energy neutral with small mass
         df = df.Define("gamma_idx", "lb2lgamma::best_gamma_index(ReconstructedParticles, 1.0f, 0.05f)")
@@ -157,13 +237,11 @@ class RDFanalysis:
 
         df = df.Define("lambda0_reco_m", "lb2lgamma::lambda_mass(ReconstructedParticles, lambda_idx)")
         df = df.Define("lb_reco_m", "lb2lgamma::lb_mass(ReconstructedParticles, lambda_idx, gamma_idx)")
-
         df = df.Define(
             "gamma_e",
             "ReconstructedParticles.at(gamma_idx).energy",
         )
         return df
-
     @staticmethod
     def output():
         return [

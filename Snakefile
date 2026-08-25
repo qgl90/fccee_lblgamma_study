@@ -198,29 +198,29 @@ rule delphes_edm4hep:
 #         Path(output.flist).write_text("\n".join(files) + "\n")
 
 
-rule fccanalyses_tree:
-    input:
-        flist="work/filelists/{sample}.txt",
-        script=lambda wc: analysis_script(),
-    output:
-        root=f"{ANALYSIS_DIR}/{{sample}}_tree.root",
-    threads:
-        int(cfg("resources.analysis_cores", 1)),
-    params:
-        outdir= str(cfg("paths.delphes_out_dir")),
-        pdg_mother=str(cfg("signal.pdg_mother")),
-        pdg_daughters=",".join(str(x) for x in cfg("signal.pdg_daughters")),
-        setup=setup_cmd(fcc_analysis=True, edm4hep=False),
-    shell:
-        r"""
-        exec env -i bash --norc --noprofile -c '
-        # Now do your normal work
-        mkdir -p {params.outdir}\
-        {params.setup}FCC_SIG_PDG_MOTHER="{params.pdg_mother}" \
-        FCC_SIG_PDG_DAUGHTERS="{params.pdg_daughters}" \
-        fccanalysis run {input.script} --input-file-list {input.flist} --output {output.root}
-        '                
-        """
+# rule fccanalyses_tree:
+#     input:
+#         flist="work/filelists/{sample}.txt",
+#         script=lambda wc: analysis_script(),
+#     output:
+#         root=f"{ANALYSIS_DIR}/{{sample}}_tree.root",
+#     threads:
+#         int(cfg("resources.analysis_cores", 1)),
+#     params:
+#         outdir= str(cfg("paths.delphes_out_dir")),
+#         pdg_mother=str(cfg("signal.pdg_mother")),
+#         pdg_daughters=",".join(str(x) for x in cfg("signal.pdg_daughters")),
+#         setup=setup_cmd(fcc_analysis=True, edm4hep=False),
+#     shell:
+#         r"""
+#         exec env -i bash --norc --noprofile -c '
+#         # Now do your normal work
+#         mkdir -p {params.outdir}\
+#         {params.setup}FCC_SIG_PDG_MOTHER="{params.pdg_mother}" \
+#         FCC_SIG_PDG_DAUGHTERS="{params.pdg_daughters}" \
+#         fccanalysis run {input.script} --input-file-list {input.flist} --output {output.root}
+#         '                
+#         """
 
 
 # def _bg_plot_args():
