@@ -290,7 +290,7 @@ def plot_pair_masses(output_dir):
     for ax, (name, filename) in zip(axes, samples):
         table = pq.read_table(output_dir / filename)
         cols = table.to_pydict()
-        masses = ak.to_list(table["same_hemisphere_diphoton_masses_gev"])
+        masses = table["same_hemisphere_diphoton_masses_gev"].to_pylist()
         p_parent = np.asarray(cols["proton_mc_parent_index"])
         p_grand = np.asarray(cols["proton_mc_grandparent_index"])
         eta_chain = ((p_parent >= 0) & (p_parent == np.asarray(cols["pion_mc_parent_index"])) &
@@ -308,7 +308,7 @@ def plot_pair_masses(output_dir):
         else:
             groups = ((np.ones(len(masses), dtype=bool), "All candidates", "C0"),)
         for mask, label, color in groups:
-            vals = [mass for keep, row in zip(mask, masses) if keep for mass in row]
+            vals = [float(mass) for keep, row in zip(mask, masses) if keep for mass in row]
             if vals:
                 counts, edges = np.histogram(vals, bins=bins)
                 ax.stairs(counts, edges, label=f"{label} (pairs={len(vals):,})", color=color)
