@@ -47,6 +47,72 @@ Outputs include ROOT reconstruction files, one-row-per-candidate Parquet
 tables, rejected rows, cut summaries, and Snakemake logs under
 `outputs/analysis/studies/nominal_preselection_1000/`.
 
+### FCCAnalyses native Condor batching for the full Zbb input directory
+
+[`analysis_preselection_zbb.py`](../../analysis/studies/analysis_preselection_zbb.py)
+uses the pinned FCCAnalyses `Analysis` interface and delegates chunk creation
+and Condor submission to `fccanalysis run`. Its `analyzers()` and output
+branches call the same reconstruction chain as the single-file runner, with
+the 15 MeV Lambda0 window and 4.5–6.5 GeV Lambda_b interval. The job writes
+ROOT chunks only; flattening and candidate tables remain a separate stage.
+
+On the Condor submission host, check the mounted input glob against the tracked
+4,398-file manifest and choose the FCCAnalyses Python from its build:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  scripts/validate_native_zbb_inputs.py
+
+set +u
+source external/FCCAnalyses/setup.sh
+set -u
+FCC_PYTHON=$(sed -n 's/^_Python_EXECUTABLE:INTERNAL=//p' \
+  external/FCCAnalyses/build/CMakeCache.txt | head -n 1)
+FCC="$PWD/external/FCCAnalyses/install/bin/fccanalysis"
+ANALYSIS="$PWD/analysis/studies/analysis_preselection_zbb.py"
+```
+
+The analysis options are parsed after the analysis path. To see them without
+submitting jobs:
+
+```bash
+"$FCC_PYTHON" "$FCC" run "$ANALYSIS" --zbb-help
+"$FCC_PYTHON" "$FCC" run "$ANALYSIS" \
+  --input-glob '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_*.root' \
+  --chunks 1200 --comp-group group_u_LHCBT3.e_lhcb_lbd \
+  --queue workday --ncpus 4 \
+  --output-eos /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/native_batch \
+  --eos-type eoslhcb --check-only
+```
+
+Once the check reports the expected file count, the same command without
+`--check-only` submits jobs. Keep `--test` out of the submission command:
+FCCAnalyses test mode is local and does not create a Condor campaign.
+
+```bash
+"$FCC_PYTHON" "$FCC" run "$ANALYSIS" \
+  --input-glob '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_*.root' \
+  --chunks 1200 --comp-group group_u_LHCBT3.e_lhcb_lbd \
+  --queue workday --ncpus 4 \
+  --output-eos /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/native_batch \
+  --eos-type eoslhcb
+```
+
+The mounted `/eos/experiment/...` input paths are converted by FCCAnalyses to
+`root://eospublic.cern.ch//eos/experiment/...` before reading. Each batch job
+copies its output through `xrdcp` to
+`root://eoslhcb.cern.ch//eos/lhcb/.../native_batch/p8_ee_Zbb_ecm91/chunk_N.root`.
+Logs, generated job scripts, and the submit description are stored under
+`external/FCCAnalyses/BatchOutputs/`. Check `condor_q -nobatch` and those logs
+from the submission host. Confirm that your CERN EOS XRootD endpoint is
+`eoslhcb.cern.ch`; `--eos-type` can be changed to the endpoint available to
+your account.
+
+Native chunks combine multiple source files. They are suitable for ROOT
+preselection outputs, but they do not preserve per-input-file `source_id` and
+do not run flattening or candidate Parquet generation. Use the existing
+per-file runner when making source-separated train/test tables.
+
 The scenario stores fitted PV/SV positions, flight distance/significance,
 proton and pion d0 significances, and signed Λ d0, its projected uncertainty,
 and signed significance. The Λ d0 uncertainty uses the fitted PV and SV xy
