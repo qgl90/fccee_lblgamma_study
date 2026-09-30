@@ -190,6 +190,12 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
 wc -l outputs/analysis/studies/Zbb_winter2023_all_files.txt
 ```
 
+The repository keeps the ordered 4,398-path snapshot in
+[`config/zbb_winter2023_full_file_list.txt`](../config/zbb_winter2023_full_file_list.txt).
+Use this tracked file for reproducible splitting. The catalog command above
+can still be used to refresh a campaign snapshot; compare the new paths and
+counts before replacing the tracked manifest.
+
 The generator writes plain ROOT file lists and separate job cards with all
 runner settings. A job card is the sole runner argument, both locally and in
 Condor. Generate the one-file, 1,000-event pilot and inspect its inputs and
@@ -256,7 +262,7 @@ The complete source list currently has 4,398 files; the generated chunks have
 ```bash
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/split_input_file_list.py \
-  --input-list outputs/analysis/studies/Zbb_winter2023_all_files.txt \
+  --input-list config/zbb_winter2023_full_file_list.txt \
   --output-dir outputs/analysis/studies/Zbb_winter2023_chunks_600 \
   --n-shards 600 \
   --job-spec-dir outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs \

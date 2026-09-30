@@ -1,9 +1,29 @@
 #!/usr/bin/env python3
-"""Generate visible contiguous Zbb batches and one runnable job card per batch.
+"""Generate visible contiguous Zbb batches and runnable job cards.
 
 Each ``file_list_chunkNNN.txt`` contains ROOT inputs. When ``--job-spec-dir``
 is supplied, a ``job_NNN.txt`` also records the exact runner arguments and a
-``job_specs.txt`` lists those cards for Condor queue itemdata.
+``jobs.txt`` lists those cards for Condor queue itemdata.
+
+Full Winter2023 Zbb production example (from the repository root)::
+
+  env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \\
+    studies/reconstruction/split_input_file_list.py \\
+    --input-list config/zbb_winter2023_full_file_list.txt \\
+    --output-dir outputs/analysis/studies/Zbb_winter2023_chunks_600 \\
+    --n-shards 600 \\
+    --job-spec-dir outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs \\
+    --queue-list outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs.txt \\
+    --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \\
+    --ncpus 4 --event-limit all \\
+    --reco-config config/lb_reco_preselection_15mev_45_65.json
+
+Inspect ``jobs/job_000.txt`` and ``file_list_chunk0.txt``. Run one generated
+job card locally with ``bash scripts/run_zbb_preselection_shard.sh JOB.txt``;
+submit the full Condor queue with ``condor_submit scripts/condor_zbb_full_eos_600.sub``.
+For a bounded Condor smoke test, use ``config/zbb_condor_pilot_1file.txt``,
+``--n-shards 1``, ``--ncpus 1``, and ``--event-limit 1000``, then submit
+``scripts/condor_zbb_full_eos_test.sub``.
 """
 
 import argparse
@@ -22,7 +42,9 @@ def read_list(path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--input-list", required=True, type=Path,
                         help="complete ordered source ROOT file manifest")
     parser.add_argument("--output-dir", required=True, type=Path,
