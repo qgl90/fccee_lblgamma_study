@@ -28,21 +28,39 @@ there rather than combining prototype scripts into the production chain.
 
 ## 0. Environment setup
 
-Use separate Key4hep environments for generation and FCCAnalyses. Generation
-uses the `2023-04-08` stack configured in `config/config.yaml`; the local
-FCCAnalyses checkout supplies the reconstruction environment. From the repo
-root, check local inputs and build once:
+Use separate environments for the analysis Python tools, event generation,
+and FCCAnalyses. The repository-local `myenv` is an LbConda virtual environment
+for Snakemake, flattening, plots, and BDT studies. Its `run` wrapper and Python
+venv are created together with `lb-conda-dev`; `myenv/` is ignored by git, so
+bootstrap it once in every checkout. The default environment is pinned to
+`default/2026-02-05_13-08` to reproduce the current working folder.
+
+On a CERN system with LbEnv available, from the repository root:
 
 ```bash
+scripts/bootstrap_analysis_env.sh
+myenv/run python --version
+myenv/bin/python -c 'import numpy, uproot, awkward, pyarrow, pandas, matplotlib, sklearn, xgboost, snakemake; print("analysis imports OK")'
 bash scripts/fetch_local_inputs.sh
 bash scripts/check_environment.sh
 bash scripts/build_fccanalyses.sh 4
 ```
 
-The build script checks the pinned FCCAnalyses checkout and records its
-revision. Do not source the generation stack in the shell that launches
-Snakemake. `produce_chunk.sh` sources it inside each generation job, while
-`run_reco_preselection.sh` sources the FCCAnalyses setup for reconstruction.
+The bootstrap uses `lb-conda-dev virtual-env default/2026-02-05_13-08 myenv`;
+this generates both `myenv/bin/` and `myenv/run`. It validates the Python
+version and the packages used by the analysis workflows. An existing
+environment is checked and left untouched. To choose another installed LbConda
+version, set `LB_ANALYSIS_CONDA_ENV=NAME/VERSION` when bootstrapping.
+
+Generation uses the `2023-04-08` Key4hep stack configured in
+`config/config.yaml`; the local FCCAnalyses build uses Key4hep `2024-03-10`.
+`run_reco_preselection.sh` invokes the Python executable recorded in the
+FCCAnalyses build's `CMakeCache.txt`, while flattening and BDT scripts use
+`myenv/bin/python`. This separation is required because the pinned FCCAnalyses
+build uses Python 3.10 and the analysis environment uses Python 3.11. The build
+script checks the pinned FCCAnalyses checkout and records its revision. Do not
+source the generation stack in the shell that launches Snakemake;
+`produce_chunk.sh` sources it inside each generation job.
 
 ## 1. Event generation
 

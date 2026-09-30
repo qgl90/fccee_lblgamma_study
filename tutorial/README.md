@@ -6,9 +6,12 @@ Use PHSP as the acceptance reference, `signal_physics` for the HELAMP angular mo
 
 ## 0. Check the local setup
 
-Generation uses the Key4hep setup in `config/config.yaml`; reconstruction uses the local FCCAnalyses build. Do not source both setups in the same shell.
+Analysis utilities use the repository-local LbConda `myenv`; generation and FCCAnalyses use their own Key4hep stacks. Set up `myenv` once per checkout before running Snakemake, flattening, plots, or BDT studies. Do not source the generation stack in the Snakemake parent shell.
 
 ```bash
+scripts/bootstrap_analysis_env.sh
+myenv/run python --version
+myenv/bin/python -c 'import numpy, uproot, awkward, pyarrow, pandas, matplotlib, sklearn, xgboost, snakemake; print("analysis imports OK")'
 bash scripts/fetch_local_inputs.sh
 bash scripts/check_environment.sh
 bash scripts/build_fccanalyses.sh 4
@@ -57,7 +60,7 @@ python3 scripts/check_root_entries.py outputs/delphes/Lb2LambdaEta_nev100000_IDE
 ls -lh outputs/delphes/*nev100000_IDEA_edm4hep.root
 ```
 
-Use a fresh shell for the reconstruction section below; it sources the local FCCAnalyses setup itself.
+Use a fresh shell for the reconstruction section below; it sources the local FCCAnalyses setup itself. Reconstruction uses the Python executable recorded in the FCCAnalyses build cache (Python 3.10), while the analysis tools above run in `myenv` (Python 3.11).
 
 Inspect production provenance in a chunk log:
 
@@ -267,7 +270,16 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
 
 Submit that card with Condor. First check that this pool exposes the shared
 repository, reads the input EOS file, and supports writes to the requested EOS
-output directory. Create the scheduler log directory before submission:
+output directory. The shared repository checkout must already contain the
+FCCAnalyses build and its repository-local `myenv`; bootstrap that environment
+in this checkout before submitting:
+
+```bash
+scripts/bootstrap_analysis_env.sh
+bash scripts/check_environment.sh
+```
+
+Create the scheduler log directory before submission:
 
 ```bash
 mkdir -p /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs
