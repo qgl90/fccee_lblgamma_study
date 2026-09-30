@@ -52,6 +52,7 @@ then validate and submit all 600 Condor jobs:
 ```bash
 cat condor/zbb_winter2023_full/batches/file_list_chunk0.txt
 cat condor/zbb_winter2023_full/job_cards/job_000.txt
+# This runs a complete 7–8-file production batch; use the bounded pilot below for local smoke tests.
 bash scripts/run_zbb_preselection_shard.sh condor/zbb_winter2023_full/job_cards/job_000.txt
 scripts/submit_zbb_full_condor.sh --dry-run
 scripts/submit_zbb_full_condor.sh
