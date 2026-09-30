@@ -1,0 +1,30 @@
+# FCC-ee adaptation of LHCb Sim10 dkfiles/Lb_gammaLambda=trpol.dec.
+# Source: https://gitlab.cern.ch/lhcb-datapkg/Gen/DecFiles/-/blob/Sim10/dkfiles/Lb_gammaLambda%3Dtrpol.dec
+# LHCb event type 15102303, dated 2016-05-24. Its HELAMP parameters are
+# copied below exactly; only the signal aliases are adapted to this Pythia8
+# interface, and no LHCbAcceptance generator cut is imported.
+#
+# This is a HELAMP angular-model scenario, distinct from the local PHSP
+# acceptance sample. The original LHCb metadata says PolarizedLambdab: yes;
+# this file alone does not prove the FCC-ee production polarization is modeled.
+# The forced 1.0 decay fractions are not physical branching fractions.
+
+Alias Lambdab0_SIGNAL Lambda_b0
+Alias aLambdab0_SIGNAL anti-Lambda_b0
+ChargeConj Lambdab0_SIGNAL aLambdab0_SIGNAL
+
+Alias Lambda0_TRPOL Lambda0
+Alias aLambda0_TRPOL anti-Lambda0
+ChargeConj Lambda0_TRPOL aLambda0_TRPOL
+
+Decay Lambdab0_SIGNAL
+  1.000 Lambda0_TRPOL gamma HELAMP 0. 0. 1. 0.;
+Enddecay
+CDecay aLambdab0_SIGNAL
+
+Decay Lambda0_TRPOL
+  1.000 p+ pi- HELAMP .906 0. .423 0.;
+Enddecay
+CDecay aLambda0_TRPOL
+
+End

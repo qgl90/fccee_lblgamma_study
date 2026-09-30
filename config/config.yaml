@@ -1,0 +1,55 @@
+# Generation uses the stack that supplies the legacy Delphes/EvtGen interface.
+env:
+  key4hep_generation: /cvmfs/sw.hsf.org/spackages7/key4hep-stack/2023-04-08/x86_64-centos7-gcc11.2.0-opt/urwcv/setup.sh
+
+production:
+  nevents: 500000
+  chunks: 10
+
+paths:
+  delphes_out_dir: outputs/delphes
+
+samples:
+  Lb2LambdaGamma:
+    seed: 22345
+    pdg_mother: 5122
+    signal_label: Lambdab0_SIGNAL
+    decay_file: evtgen/Lb2LambdaGamma.dec
+  Lb2LambdaEta:
+    seed: 22355
+    pdg_mother: 5122
+    signal_label: Lambdab0_SIGNAL
+    decay_file: evtgen/Lb2LambdaEta.dec
+
+# Independent 1,000-event reconstruction/preselection target. These inputs
+# reuse the local forced signal and one local Winter2023 Zbb file; they do not
+# alter the 500k generation target above.
+preselection:
+  events: 1000
+  output_dir: outputs/analysis/studies/nominal_preselection_1000
+  reconstruction_config: config/lb_reco_preselection_15mev_45_65.json
+  inputs:
+    signal_phsp: outputs/delphes/Lb2LambdaGamma_nev500000_IDEA_edm4hep.root
+    signal_physics: outputs/delphes/chunks/Lb2LambdaGammaPhysics_nev10000_chunk0_IDEA_edm4hep.root
+    lbgamma_eta: outputs/delphes/Lb2LambdaEta_nev500000_IDEA_edm4hep.root
+    zbb: work/cache/winter2023_zbb/events_000083138.root
+  source_ids:
+    signal_phsp: 100
+    signal_physics: 101
+    lbgamma_eta: 102
+    zbb: 0
+
+# Production target for 100k-event forced samples used after the local pilot.
+preselection_generation:
+  events: 100000
+  chunks: 10
+  samples:
+    Lb2LambdaGamma:
+      seed: 71501
+      decay_file: evtgen/Lb2LambdaGamma.dec
+    Lb2LambdaGammaPhysics:
+      seed: 71601
+      decay_file: evtgen/Lb2LambdaGamma_trpol.dec
+    Lb2LambdaEta:
+      seed: 71701
+      decay_file: evtgen/Lb2LambdaEta.dec

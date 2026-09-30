@@ -1,0 +1,14 @@
+Run the "reconstruction and preselection" on signal phsp MC inputs, ncores, selection criterias applied.
+```bash
+sh scripts/run_reco_preselection.sh signal_phsp outputs/delphes/Lb2LambdaGamma_nev50000_IDEA_edm4hep.root Lb2LambdaGamma_nev50000_IDEA.root all config/lb_reco_preselection_15mev_45_65.json 32
+```
+This script runs :  analysis/studies/lb2lambda_gamma_reco.py 
+
+What we can run as well is on a chunk of events 
+```bash
+scripts/run_reco_preselection.sh zbb outputs/analysis/studies/Zbb_winter2023_chunks_600/file_list_chunk0.txt outputs/analysis/studies/zbb_chunk0_reco.root all config/lb_reco_preselection_15mev_45_65.json 32 &
+```
+the chunk split of any sample can be prepare via : 
+```bash
+
+```

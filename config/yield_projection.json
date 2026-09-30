@@ -1,0 +1,36 @@
+{
+  "description": "Illustrative FCC-ee Z-pole yield projection; edit these physics assumptions before toys.",
+  "n_z": 5000000000000.0,
+  "br_z_to_bb": 0.1512,
+  "f_b_baryon_per_b_at_z": 0.084,
+  "lambda_b_share_of_b_baryons": 1.0,
+  "br_lb_to_lambda_gamma": 0.00001,
+  "br_lb_to_lambda_eta": 0.0000093,
+  "br_lambda_to_p_pi": 0.641,
+  "br_eta_to_gamma_gamma": 0.3936,
+  "input_events": {
+    "signal_gamma": 10000,
+    "specific_eta": 10000,
+    "generic_zbb": 100000
+  },
+  "lambda_mass_pdg_gev": 1.115683,
+  "offline_cuts": {
+    "lambda_mass_half_width_gev": 0.01,
+    "iso_R03_noLambda_max": 0.211,
+    "E_same_max_gev": 19.35
+  },
+  "sources": {
+    "n_z": "https://cds.cern.ch/record/2679488/files/1906.02693.pdf",
+    "br_z_to_bb": "https://pdgprod.lbl.gov/pdgprod/pdgLive/Particle.action?node=S044",
+    "f_b_baryon_per_b_at_z": "https://pdg.lbl.gov/2025/listings/rpp2025-list-B-plus-minus-B0-Bs0-admixture.pdf",
+    "br_lb_to_lambda_gamma": "User benchmark 1e-5; PDG central value about 7.1e-6: https://pdg.lbl.gov/2025/listings/rpp2025-list-lambdab-zero.pdf",
+    "br_lb_to_lambda_eta": "https://arxiv.org/abs/1505.03295",
+    "br_lambda_to_p_pi": "https://pdgprod.lbl.gov/pdgprod/pdgLive/Particle.action?node=S018",
+    "br_eta_to_gamma_gamma": "https://pdglive.lbl.gov/Particle.action?node=S014"
+  },
+  "notes": [
+    "The 0.084 Z-pole production fraction is for all weakly decaying b baryons, not Lambda_b alone. The share=1 assumption is an upper-envelope proxy; replace it with a measured or simulated Lambda_b-specific fraction for a sensitivity claim.",
+    "Both forced EvtGen samples use phase-space decays and forced daughter branching ratios. Physical daughter branching fractions are applied here.",
+    "Offline thresholds are exploratory and are not applied in the stage-1 reconstruction."
+  ]
+}

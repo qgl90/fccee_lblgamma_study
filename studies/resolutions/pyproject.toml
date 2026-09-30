@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lblgamma-resolution-studies"
+version = "0.1.0"
+description = "Standalone uproot/awkward detector-response plots"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "awkward>=2", "uproot>=5", "matplotlib>=3.7", "mplhep>=0.4", "scipy>=1.10"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["resolution_tools*"]

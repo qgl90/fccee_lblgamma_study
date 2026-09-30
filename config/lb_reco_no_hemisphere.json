@@ -1,0 +1,14 @@
+{
+  "lambda_mass_gev": 1.115683,
+  "lambda_mass_min_gev": 0.7,
+  "lambda_mass_max_gev": 1.3,
+  "choose_closest_mass_hypothesis": true,
+  "vertex_max_chi2": 9.0,
+  "min_flight_rxy_mm": 0.3,
+  "min_track_d0sig": 3.0,
+  "min_vertex_flight_sig": 2.0,
+  "require_good_vertex": true,
+  "lb_mass_min_gev": 4.9,
+  "lb_mass_max_gev": 6.3,
+  "require_same_hemisphere": false
+}
