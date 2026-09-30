@@ -1,0 +1,17 @@
+# Template for a 600-shard Winter2023 Zbb preselection campaign.
+# Edit REPO_DIR, FILE_LIST, and OUTPUT_DIR for paths visible on execute nodes.
+REPO_DIR = /localdisk2/rquaglia/fccee/fccee_lblgamma_study
+FILE_LIST = /localdisk2/rquaglia/fccee/fccee_lblgamma_study/outputs/analysis/studies/Zbb_winter2023_all_files.txt
+OUTPUT_DIR = /localdisk2/rquaglia/fccee/fccee_lblgamma_study/outputs/analysis/studies/zbb_preselection15_all
+
+universe = vanilla
+executable = $(REPO_DIR)/scripts/run_zbb_preselection_shard.sh
+arguments = $(Process) $(FILE_LIST) 600 4 $(OUTPUT_DIR)
+initialdir = $(REPO_DIR)
+request_cpus = 4
+should_transfer_files = NO
+getenv = True
+output = $(OUTPUT_DIR)/condor_logs/shard.$(Process).out
+error = $(OUTPUT_DIR)/condor_logs/shard.$(Process).err
+log = $(OUTPUT_DIR)/condor_logs/condor.log
+queue 600
