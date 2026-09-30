@@ -1,6 +1,8 @@
 .snakemake/
 .cache/
 .venv/
+/myenv/
+/external/
 outputs/
 work/
 cards/
@@ -13,5 +15,8 @@ __pycache__/
 *.root
 *.log
 *.json
+!config/lb_reco.json
+!config/lb_reco_eta.json
+!config/lb_reco_preselection_15mev_45_65.json
 *.yaml.bak
 *.cmd.bak

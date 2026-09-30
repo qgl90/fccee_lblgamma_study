@@ -1,263 +1,274 @@
-import os
-from pathlib import Path
+"""Local chunked EvtGen + Delphes production of EDM4hep samples.
+
+The generator stack stays separate from the pinned FCCAnalyses build.
+Reconstruction and physics studies consume these final files later.
+"""
 
 configfile: "config/config.yaml"
 
+SAMPLES = config["samples"]
+NEVENTS = int(config["production"]["nevents"])
+NCHUNKS = int(config["production"]["chunks"])
+OUT_DIR = config["paths"]["delphes_out_dir"]
+GEN_SETUP = config["env"]["key4hep_generation"]
 
-def cfg(path, default=None):
-    cur = config
-    for part in path.split("."):
-        if part not in cur:
-            return default
-        cur = cur[part]
-    return cur
+if NEVENTS <= 0 or NCHUNKS <= 0 or NEVENTS % NCHUNKS:
+    raise ValueError("production.nevents must divide evenly by production.chunks")
+if not SAMPLES:
+    raise ValueError("At least one production sample is required")
+CHUNK_EVENTS = NEVENTS // NCHUNKS
+PRESELECT = config["preselection"]
+PRESELECT_EVENTS = int(PRESELECT["events"])
+PRESELECT_DIR = PRESELECT["output_dir"]
+PRESELECT_CONFIG = PRESELECT["reconstruction_config"]
+PRESELECT_INPUTS = PRESELECT["inputs"]
+PRESELECT_SOURCE_IDS = PRESELECT["source_ids"]
+PRESELECT_SAMPLES = tuple(PRESELECT_INPUTS)
+PRESELECT_GEN = config["preselection_generation"]
+PRESELECT_GEN_EVENTS = int(PRESELECT_GEN["events"])
+PRESELECT_GEN_CHUNKS = int(PRESELECT_GEN["chunks"])
+PRESELECT_GEN_SAMPLES = PRESELECT_GEN["samples"]
+PRESELECT_GEN_CHUNK_EVENTS = PRESELECT_GEN_EVENTS // PRESELECT_GEN_CHUNKS
+PRESELECT_FULL_DIR = "outputs/analysis/studies/nominal_preselection_100k"
+PRESELECT_FULL_INPUTS = {
+    "signal_phsp": f"{OUT_DIR}/Lb2LambdaGamma_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+    "signal_physics": f"{OUT_DIR}/Lb2LambdaGammaPhysics_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+    "lbgamma_eta": f"{OUT_DIR}/Lb2LambdaEta_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+}
+PRESELECT_FULL_SOURCE_IDS = {"signal_phsp": 100, "signal_physics": 101, "lbgamma_eta": 102}
 
-SIGNAL = cfg("signal.name")
-NEVENTS = int(cfg("production.nevents"))
-SEED = int(cfg("production.seed"))
-ANALYSIS_MODE = cfg("analysis.mode", "truth")
+if PRESELECT_EVENTS <= 0 or PRESELECT_EVENTS > 1000:
+    raise ValueError("preselection.events must be between 1 and 1,000 for validation")
+if set(PRESELECT_SAMPLES) != {"signal_phsp", "signal_physics", "lbgamma_eta", "zbb"}:
+    raise ValueError("preselection.inputs must define signal_phsp, signal_physics, lbgamma_eta, and zbb")
+if (PRESELECT_GEN_EVENTS <= 0 or PRESELECT_GEN_CHUNKS <= 0 or
+        PRESELECT_GEN_EVENTS % PRESELECT_GEN_CHUNKS):
+    raise ValueError("preselection_generation.events must divide evenly by chunks")
 
-KEY4HEP_SETUP_GENERATION = cfg("env.key4hep_setup_generation", "") or ""
-KEY4HEP_SETUP_EDM4HEP = cfg("env.key4hep_setup_edm4hep", "") or ""
-KEY4HEP_SETUP_ANALYSIS = cfg("env.key4hep_setup_analysis", "") or ""
-
-import os
-os.makedirs(cfg("paths.delphes_out_dir"), mode=0o777, exist_ok=True)
-print(f"Using Key4hep(generation) setup script: {KEY4HEP_SETUP_GENERATION}")
-print(f"Using Key4hep(edm4hep) setup script: {KEY4HEP_SETUP_EDM4HEP}")
-print(f"Using Key4hep(analysis) setup script: {KEY4HEP_SETUP_ANALYSIS}")
-print(f"NEVENTS: {NEVENTS}, SEED: {SEED}")
-print(f"SIGNAL: {SIGNAL}")
-
-
-def setup_cmd(fcc_analysis: bool, edm4hep: bool) -> str:
-    parts = []
-    if fcc_analysis:
-        parts.append(f"source {KEY4HEP_SETUP_ANALYSIS}")
-    elif edm4hep:
-        parts.append(f"source {KEY4HEP_SETUP_EDM4HEP}")
-    else: 
-        parts.append(f"source {KEY4HEP_SETUP_GENERATION}")
-    if not parts:
-        return ""
-    return " && ".join(parts) + " && "
-
-URL_PYTHIA = cfg("urls.pythia_cmd")
-URL_DELPHES = cfg("urls.delphes_card")
-URL_EDM4HEP = cfg("urls.edm4hep_tcl")
-URL_DECAY = cfg("urls.decay_dec")
-URL_PDL = cfg("urls.evt_pdl")
+wildcard_constraints:
+    sample="|".join([*SAMPLES, *PRESELECT_SAMPLES, *PRESELECT_GEN_SAMPLES]),
+    chunk="|".join(str(i) for i in range(NCHUNKS))
 
 
-DELPHES_OUT_DIR = cfg("paths.delphes_out_dir")
-DELPHES_OUT = cfg("paths.delphes_out")
-ANALYSIS_DIR = cfg("paths.analysis_dir", "outputs/analysis")
-PLOTS_DIR = cfg("paths.plots_dir", "outputs/plots")
-
-_bgs_raw = cfg("backgrounds", []) or []
-BACKGROUNDS = [b for b in _bgs_raw if b.get("enabled", True) and b.get("name")]
-SAMPLES = ["signal"] + [b["name"] for b in BACKGROUNDS]
+def output_root(sample):
+    return f"{OUT_DIR}/{sample}_nev{NEVENTS}_IDEA_edm4hep.root"
 
 
-def analysis_script():
-    if ANALYSIS_MODE == "reco":
-        return "analysis/analysis_lb2lgamma_reco.py"
-    return "analysis/analysis_lb2lgamma.py"
-
-
-def filelist_out(sample: str) -> str:
-    return f"work/filelists/{sample}.txt"
-
-
-def background_by_name(name: str):
-    for b in BACKGROUNDS:
-        if b.get("name") == name:
-            return b
-    raise ValueError(f"Unknown background sample: {name}")
+def chunk_roots(sample):
+    return [
+        f"{OUT_DIR}/chunks/{sample}_nev{NEVENTS}_chunk{i}_IDEA_edm4hep.root"
+        for i in range(NCHUNKS)
+    ]
 
 
 rule all:
     input:
-        expand(f"{ANALYSIS_DIR}/{{sample}}_tree.root", sample=SAMPLES),
-        f"{PLOTS_DIR}/lb_reco_m.png"
+        [output_root(sample) for sample in SAMPLES]
 
 
-rule fetch_cards:
+def preselection_root(wc):
+    return f"{PRESELECT_DIR}/{wc.sample}_reco.root"
+
+
+def preselection_parquet(wc):
+    return f"{PRESELECT_DIR}/{wc.sample}_candidates.parquet"
+
+
+rule preselection_reconstruct:
+    input:
+        edm4hep=lambda wc: PRESELECT_INPUTS[wc.sample],
+        config=PRESELECT_CONFIG,
+        runner="scripts/run_reco_preselection.sh",
+        analysis="analysis/studies/lb2lambda_gamma_reco.py",
     output:
-        pythia="cards/p8_ee_Zbb_ecm91_EVTGEN.cmd",
-        delphes="cards/card_IDEA.tcl",
-        edm4hep="cards/edm4hep_IDEA.tcl",
-        decay="evtgen/DECAY.DEC",
-        pdl="evtgen/evt.pdl",
+        f"{PRESELECT_DIR}/{{sample}}_reco.root",
+    log:
+        f"{PRESELECT_DIR}/logs/{{sample}}_reco.log",
     params:
-        pythia_url=URL_PYTHIA,
-        delphes_url=URL_DELPHES,
-        edm4hep_url=URL_EDM4HEP,
-        decay_url=URL_DECAY,
-        pdl_url=URL_PDL,
+        events=PRESELECT_EVENTS,
+    threads: 1
     shell:
-        r"""
-        set -euo pipefail
-        mkdir -p cards evtgen
-        curl -L -o {output.pythia} {params.pythia_url}
-        curl -L -o {output.delphes} {params.delphes_url}
-        curl -L -o {output.edm4hep} {params.edm4hep_url}
-        curl -L -o {output.decay} {params.decay_url}
-        curl -L -o {output.pdl} {params.pdl_url}
-        """
-rule pythia_card:
+        "bash {input.runner} {wildcards.sample} {input.edm4hep} {output} "
+        "{params.events} {input.config} > {log} 2>&1"
+
+
+rule preselection_flatten:
+    input:
+        root=preselection_root,
+        script="studies/reconstruction/flatten_candidates.py",
+    output:
+        parquet=f"{PRESELECT_DIR}/{{sample}}_candidates.parquet",
+        summary=f"{PRESELECT_DIR}/{{sample}}_candidates.summary.json",
+    log:
+        f"{PRESELECT_DIR}/logs/{{sample}}_flatten.log",
+    params:
+        source_id=lambda wc: PRESELECT_SOURCE_IDS[wc.sample],
+    shell:
+        "env -u PYTHONPATH -u PYTHONHOME myenv/bin/python {input.script} "
+        "--mode gamma --input {input.root} --output {output.parquet} "
+        "--source-id {params.source_id} --chunk-events 500 > {log} 2>&1"
+
+
+rule preselection_filter:
+    input:
+        parquet=preselection_parquet,
+        script="studies/reconstruction/preselect_candidates.py",
+    output:
+        selected=f"{PRESELECT_DIR}/{{sample}}_selected.parquet",
+        rejected=f"{PRESELECT_DIR}/{{sample}}_rejected.parquet",
+        summary=f"{PRESELECT_DIR}/{{sample}}_summary.json",
+    log:
+        f"{PRESELECT_DIR}/logs/{{sample}}_preselection.log",
+    shell:
+        "env -u PYTHONPATH -u PYTHONHOME myenv/bin/python {input.script} "
+        "--input {input.parquet} --output-prefix {PRESELECT_DIR}/{wildcards.sample} "
+        "> {log} 2>&1"
+
+
+def full_preselection_root(wc):
+    return f"{PRESELECT_FULL_DIR}/{wc.sample}_reco.root"
+
+
+def full_preselection_parquet(wc):
+    return f"{PRESELECT_FULL_DIR}/{wc.sample}_candidates.parquet"
+
+
+rule preselection_100k_reconstruct:
+    input:
+        edm4hep=lambda wc: PRESELECT_FULL_INPUTS[wc.sample],
+        config=PRESELECT_CONFIG,
+        runner="scripts/run_reco_preselection.sh",
+    output:
+        f"{PRESELECT_FULL_DIR}/{{sample}}_reco.root",
+    log:
+        f"{PRESELECT_FULL_DIR}/logs/{{sample}}_reco.log",
+    threads: 4
+    shell:
+        "bash {input.runner} {wildcards.sample} {input.edm4hep} {output} "
+        "all {input.config} {threads} > {log} 2>&1"
+
+
+rule preselection_100k_flatten:
+    input:
+        root=full_preselection_root,
+        script="studies/reconstruction/flatten_candidates.py",
+    output:
+        parquet=f"{PRESELECT_FULL_DIR}/{{sample}}_candidates.parquet",
+        root=f"{PRESELECT_FULL_DIR}/{{sample}}_candidates.root",
+        summary=f"{PRESELECT_FULL_DIR}/{{sample}}_candidates.summary.json",
+    log:
+        f"{PRESELECT_FULL_DIR}/logs/{{sample}}_flatten.log",
+    params:
+        source_id=lambda wc: PRESELECT_FULL_SOURCE_IDS[wc.sample],
+    shell:
+        "env -u PYTHONPATH -u PYTHONHOME myenv/bin/python {input.script} "
+        "--mode gamma --input {input.root} --output {output.parquet} "
+        "--root-output {output.root} --source-id {params.source_id} "
+        "--chunk-events 500 > {log} 2>&1"
+
+
+rule preselection_100k_filter:
+    input:
+        parquet=full_preselection_parquet,
+        script="studies/reconstruction/preselect_candidates.py",
+    output:
+        selected=f"{PRESELECT_FULL_DIR}/{{sample}}_selected.parquet",
+        rejected=f"{PRESELECT_FULL_DIR}/{{sample}}_rejected.parquet",
+        summary=f"{PRESELECT_FULL_DIR}/{{sample}}_summary.json",
+    log:
+        f"{PRESELECT_FULL_DIR}/logs/{{sample}}_preselection.log",
+    shell:
+        "env -u PYTHONPATH -u PYTHONHOME myenv/bin/python {input.script} "
+        "--input {input.parquet} --output-prefix {PRESELECT_FULL_DIR}/{wildcards.sample} "
+        "> {log} 2>&1"
+
+
+rule preselection_generate_chunk:
     input:
         base="cards/p8_ee_Zbb_ecm91_EVTGEN.cmd",
-        prep="scripts/prepare_pythia_card.py",
+        delphes="cards/card_IDEA.tcl",
+        edm4hep="cards/edm4hep_IDEA.tcl",
+        decay_table="evtgen/DECAY.DEC",
+        pdl="evtgen/evt.pdl",
+        decay=lambda wc: PRESELECT_GEN_SAMPLES[wc.sample]["decay_file"],
+        command="scripts/produce_chunk.sh",
     output:
-        card=f"cards/p8_ee_Zbb_ecm91_EVTGEN_nev{NEVENTS}_seed{SEED}.cmd",
+        f"{OUT_DIR}/chunks/{{sample}}_nev{PRESELECT_GEN_EVENTS}_chunk{{chunk}}_IDEA_edm4hep.root",
     params:
-        nevents=NEVENTS,
-        seed=SEED,
+        setup=GEN_SETUP,
+        seed=lambda wc: int(PRESELECT_GEN_SAMPLES[wc.sample]["seed"]) + int(wc.chunk),
+        chunk_events=PRESELECT_GEN_CHUNK_EVENTS,
+        total_events=PRESELECT_GEN_EVENTS,
+    threads: 1
+    wildcard_constraints:
+        sample="|".join(PRESELECT_GEN_SAMPLES),
+        chunk="|".join(str(i) for i in range(PRESELECT_GEN_CHUNKS))
     shell:
-        r"""
-        set -euo pipefail
-        python3 {input.prep} --input {input.base} --output {output.card} --nevents {params.nevents} --seed {params.seed}
-        """
+        "GEN_SETUP={params.setup} bash {input.command} {wildcards.sample} "
+        "{wildcards.chunk} {params.seed} {params.chunk_events} {params.total_events}"
 
 
-rule delphes_edm4hep:
+def preselection_generation_chunks(wc):
+    return [
+        f"{OUT_DIR}/chunks/{wc.sample}_nev{PRESELECT_GEN_EVENTS}_chunk{i}_IDEA_edm4hep.root"
+        for i in range(PRESELECT_GEN_CHUNKS)
+    ]
+
+
+rule preselection_merge_generation:
     input:
+        chunks=preselection_generation_chunks,
+        command="scripts/merge_chunks.sh",
+    output:
+        f"{OUT_DIR}/{{sample}}_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+    params:
+        setup=GEN_SETUP,
+        total_events=PRESELECT_GEN_EVENTS,
+        nchunks=PRESELECT_GEN_CHUNKS,
+    threads: 1
+    wildcard_constraints:
+        sample="|".join(PRESELECT_GEN_SAMPLES)
+    shell:
+        "GEN_SETUP={params.setup} bash {input.command} {wildcards.sample} "
+        "{params.total_events} {params.nchunks}"
+
+
+rule delphes_chunk:
+    input:
+        base="cards/p8_ee_Zbb_ecm91_EVTGEN.cmd",
         delphes="cards/card_IDEA.tcl",
         edm4hep="cards/edm4hep_IDEA.tcl",
         decay="evtgen/DECAY.DEC",
         pdl="evtgen/evt.pdl",
-        pythia=rules.pythia_card.output.card,
-        user_dec="evtgen/Lb2LambdaGamma.dec",
+        user_dec=lambda wc: SAMPLES[wc.sample]["decay_file"],
+        prep="scripts/prepare_pythia_card.py",
+        check="scripts/check_root_entries.py",
+        command="scripts/produce_chunk.sh",
     output:
-        root=DELPHES_OUT,
+        f"{OUT_DIR}/chunks/{{sample}}_nev{NEVENTS}_chunk{{chunk}}_IDEA_edm4hep.root",
     params:
-        pdg_mother=cfg("signal.pdg_mother"),
-        label=cfg("signal.signal_label_decfile"),
-        force=1,
-        setup=setup_cmd(fcc_analysis=False ,edm4hep=False),
+        setup=GEN_SETUP,
+        seed=lambda wc: int(SAMPLES[wc.sample]["seed"]) + int(wc.chunk),
+        chunk_events=CHUNK_EVENTS,
+        total_events=NEVENTS,
+    threads: 1
     shell:
-        r"""
-        set -euo pipefail
-        exec env -i bash --norc --noprofile -c '
-        # Now do your normal work
-        mkdir -p $(dirname {output.root})
-        {params.setup} DelphesPythia8EvtGen_EDM4HEP_k4Interface \
-            {input.delphes} {input.edm4hep} \
-            {input.pythia} {output.root} \
-            {input.decay} {input.pdl} \
-            {input.user_dec} \
-            {params.pdg_mother} {params.label} {params.force}
-        '
-        """
+        "GEN_SETUP={params.setup} bash {input.command} {wildcards.sample} {wildcards.chunk} "
+        "{params.seed} {params.chunk_events} {params.total_events}"
 
 
-# def _filelist_inputs(wc):
-#     if wc.sample == "signal":
-#         return [DELPHES_OUT]
-#     bg = background_by_name(wc.sample)
-#     if bg.get("input_file_list"):
-#         return [bg["input_file_list"]]
-#     return []
-
-
-# rule make_input_filelist:
-#     output:
-#         flist="work/filelists/{sample}.txt",
-#     input:
-#         _filelist_inputs,
-#     run:
-#         Path(output.flist).parent.mkdir(parents=True, exist_ok=True)
-#         if wildcards.sample == "signal":
-#             Path(output.flist).write_text(str(Path(DELPHES_OUT).resolve()) + "\n")
-#             return
-
-#         bg = background_by_name(wildcards.sample)
-#         if bg.get("input_file_list"):
-#             src = Path(bg["input_file_list"])
-#             if not src.exists():
-#                 raise FileNotFoundError(
-#                     f"Background file list not found: {src} (edit config/config.yaml)"
-#                 )
-#             lines = []
-#             for line in src.read_text().splitlines():
-#                 line = line.strip()
-#                 if not line or line.startswith("#"):
-#                     continue
-#                 lines.append(line)
-#             if not lines:
-#                 raise ValueError(f"Background file list is empty: {src}")
-#             Path(output.flist).write_text("\n".join(lines) + "\n")
-#             return
-
-#         files = bg.get("input_files") or []
-#         if not files:
-#             raise ValueError(
-#                 f"Background '{wildcards.sample}' has no input_file_list or input_files (edit config/config.yaml)"
-#             )
-#         Path(output.flist).write_text("\n".join(files) + "\n")
-
-
-# rule fccanalyses_tree:
-#     input:
-#         flist="work/filelists/{sample}.txt",
-#         script=lambda wc: analysis_script(),
-#     output:
-#         root=f"{ANALYSIS_DIR}/{{sample}}_tree.root",
-#     threads:
-#         int(cfg("resources.analysis_cores", 1)),
-#     params:
-#         outdir= str(cfg("paths.delphes_out_dir")),
-#         pdg_mother=str(cfg("signal.pdg_mother")),
-#         pdg_daughters=",".join(str(x) for x in cfg("signal.pdg_daughters")),
-#         setup=setup_cmd(fcc_analysis=True, edm4hep=False),
-#     shell:
-#         r"""
-#         exec env -i bash --norc --noprofile -c '
-#         # Now do your normal work
-#         mkdir -p {params.outdir}\
-#         {params.setup}FCC_SIG_PDG_MOTHER="{params.pdg_mother}" \
-#         FCC_SIG_PDG_DAUGHTERS="{params.pdg_daughters}" \
-#         fccanalysis run {input.script} --input-file-list {input.flist} --output {output.root}
-#         '                
-#         """
-
-
-# def _bg_plot_args():
-#     args = []
-#     for b in BACKGROUNDS:
-#         name = b.get("name")
-#         if not name:
-#             continue
-#         scale = float(b.get("scale", 1.0))
-#         args.append(f"{name}|{ANALYSIS_DIR}/{name}_tree.root|{scale}")
-#     return ";".join(args)
-
-
-# rule plot_mass_overlay:
-#     input:
-#         trees=expand(f"{ANALYSIS_DIR}/{{sample}}_tree.root", sample=SAMPLES),
-#         script="plots/plot_mass_overlay.py",
-#     output:
-#         png=f"{PLOTS_DIR}/lb_reco_m.png",
-#     params:
-#         branch=cfg("plot.branch", "lb_reco_m"),
-#         nbins=int(cfg("plot.nbins", 120)),
-#         xmin=float(cfg("plot.xmin", 4.8)),
-#         xmax=float(cfg("plot.xmax", 6.4)),
-#         normalize=str(cfg("plot.normalize", "none")),
-#         signal_scale=float(cfg("plot.signal_scale", 1.0)),
-#         backgrounds=_bg_plot_args(),
-#         setup=setup_cmd(needs_fccanalyses=False),
-#     shell:
-#         r"""
-#         set -euo pipefail
-#         mkdir -p $(dirname {output.png})
-#         {params.setup}python3 {input.script} \
-#           --out {output.png} \
-#           --branch {params.branch} \
-#           --nbins {params.nbins} --xmin {params.xmin} --xmax {params.xmax} \
-#           --normalize {params.normalize} \
-#           --signal {ANALYSIS_DIR}/signal_tree.root|{params.signal_scale} \
-#           --backgrounds {params.backgrounds}
-#         """
+rule merge_edm4hep:
+    input:
+        chunks=lambda wc: chunk_roots(wc.sample),
+        command="scripts/merge_chunks.sh",
+        check="scripts/check_root_entries.py",
+    output:
+        f"{OUT_DIR}/{{sample}}_nev{NEVENTS}_IDEA_edm4hep.root",
+    params:
+        setup=GEN_SETUP,
+        total_events=NEVENTS,
+        nchunks=NCHUNKS,
+    threads: 1
+    shell:
+        "GEN_SETUP={params.setup} bash {input.command} {wildcards.sample} "
+        "{params.total_events} {params.nchunks}"

@@ -1,59 +1,55 @@
+# Generation uses the stack that supplies the legacy Delphes/EvtGen interface.
 env:
-  key4hep_setup_generation : "/cvmfs/sw.hsf.org/spackages7/key4hep-stack/2023-04-08/x86_64-centos7-gcc11.2.0-opt/urwcv/setup.sh"
-  key4hep_setup_edm4hep  : "/cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10"
-  key4hep_setup_analysis : "/cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10"
-signal:
-  name: "Lb2LambdaGamma"
-  pdg_mother: 5122
-  pdg_daughters: [2212, -211, 22]
-  signal_label_decfile : "Lambdab0_SIGNAL"
-production:
-  ecm_gev: 91.0
-  nevents: 10000
-  seed: 12345
-urls:
-  pythia_cmd: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/Pythia8/p8_ee_Zbb_ecm91_EVTGEN.cmd"
-  delphes_card: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/card_IDEA.tcl"
-  edm4hep_tcl: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Delphes/edm4hep_IDEA.tcl"
-  decay_dec: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/DECAY.DEC"
-  evt_pdl: "https://raw.githubusercontent.com/HEP-FCC/FCC-config/winter2023/FCCee/Generator/EvtGen/evt.pdl"
+  key4hep_generation: /cvmfs/sw.hsf.org/spackages7/key4hep-stack/2023-04-08/x86_64-centos7-gcc11.2.0-opt/urwcv/setup.sh
 
+production:
+  nevents: 500000
+  chunks: 10
 
 paths:
-  delphes_out_dir: "outputs/delphes"
-  delphes_out: "outputs/delphes/Lb2LambdaGamma_IDEA_edm4hep.root"
-  analysis_dir: "outputs/analysis"
-  plots_dir: "outputs/plots"
+  delphes_out_dir: outputs/delphes
 
-resources:
-  analysis_cores: 4
-  generation_cores: 4
+samples:
+  Lb2LambdaGamma:
+    seed: 22345
+    pdg_mother: 5122
+    signal_label: Lambdab0_SIGNAL
+    decay_file: evtgen/Lb2LambdaGamma.dec
+  Lb2LambdaEta:
+    seed: 22355
+    pdg_mother: 5122
+    signal_label: Lambdab0_SIGNAL
+    decay_file: evtgen/Lb2LambdaEta.dec
 
+# Independent 1,000-event reconstruction/preselection target. These inputs
+# reuse the local forced signal and one local Winter2023 Zbb file; they do not
+# alter the 500k generation target above.
+preselection:
+  events: 1000
+  output_dir: outputs/analysis/studies/nominal_preselection_1000
+  reconstruction_config: config/lb_reco_preselection_15mev_45_65.json
+  inputs:
+    signal_phsp: outputs/delphes/Lb2LambdaGamma_nev500000_IDEA_edm4hep.root
+    signal_physics: outputs/delphes/chunks/Lb2LambdaGammaPhysics_nev10000_chunk0_IDEA_edm4hep.root
+    lbgamma_eta: outputs/delphes/Lb2LambdaEta_nev500000_IDEA_edm4hep.root
+    zbb: work/cache/winter2023_zbb/events_000083138.root
+  source_ids:
+    signal_phsp: 100
+    signal_physics: 101
+    lbgamma_eta: 102
+    zbb: 0
 
-
-
-plot:
-  branch: "lb_reco_m"
-  nbins: 120
-  xmin: 4.8
-  xmax: 6.4
-  normalize: "none"   # "none" | "area"
-  signal_scale: 1.0   # multiply signal histogram by this factor for visibility
-
-
-analysis:
-  # "truth" (current default): truth-seeded matching (fast sanity check, NOT a realistic background estimate)
-  # "reco": simple combinatorial reco (gives a background shape, still very simplified)
-  mode: "truth"
-
-# Background samples (edit to point to your centrally produced samples).
-# Provide either:
-#  - input_file_list: a text file with one ROOT path per line (recommended for large samples)
-#  - input_files: a short YAML list of ROOT paths
-backgrounds:
-  - name: "Zbb"
-    enabled: false
-    input_file_list: "data/background_Zbb_files.txt"
-    scale: 1.0
-
-
+# Production target for 100k-event forced samples used after the local pilot.
+preselection_generation:
+  events: 100000
+  chunks: 10
+  samples:
+    Lb2LambdaGamma:
+      seed: 71501
+      decay_file: evtgen/Lb2LambdaGamma.dec
+    Lb2LambdaGammaPhysics:
+      seed: 71601
+      decay_file: evtgen/Lb2LambdaGamma_trpol.dec
+    Lb2LambdaEta:
+      seed: 71701
+      decay_file: evtgen/Lb2LambdaEta.dec
