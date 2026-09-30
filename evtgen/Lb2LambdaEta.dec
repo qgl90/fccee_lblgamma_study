@@ -1,0 +1,31 @@
+# Forced Lambda_b0 -> Lambda0(p+ pi-) eta(gamma gamma), and charge conjugate.
+# Signal daughter aliases preserve inclusive Lambda0 and eta decays elsewhere.
+# PHSP is a kinematic baseline without a polarization/amplitude model.
+# Unit fractions force this chain; they are not physical branching fractions.
+
+Alias Lambdab0_SIGNAL Lambda_b0
+Alias aLambdab0_SIGNAL anti-Lambda_b0
+ChargeConj Lambdab0_SIGNAL aLambdab0_SIGNAL
+
+Alias Lambda0_SIGNAL Lambda0
+Alias aLambda0_SIGNAL anti-Lambda0
+ChargeConj Lambda0_SIGNAL aLambda0_SIGNAL
+
+Alias eta_SIGNAL eta
+ChargeConj eta_SIGNAL eta_SIGNAL
+
+Decay Lambdab0_SIGNAL
+  1.0 Lambda0_SIGNAL eta_SIGNAL PHSP;
+Enddecay
+CDecay aLambdab0_SIGNAL
+
+Decay Lambda0_SIGNAL
+  1.0 p+ pi- PHSP;
+Enddecay
+CDecay aLambda0_SIGNAL
+
+Decay eta_SIGNAL
+  1.0 gamma gamma PHSP;
+Enddecay
+
+End
