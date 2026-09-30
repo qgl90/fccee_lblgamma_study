@@ -55,6 +55,12 @@ python3 scripts/check_root_entries.py outputs/delphes/Lb2LambdaGamma_nev100000_I
 python3 scripts/check_root_entries.py outputs/delphes/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root 100000
 python3 scripts/check_root_entries.py outputs/delphes/Lb2LambdaEta_nev100000_IDEA_edm4hep.root 100000
 ls -lh outputs/delphes/*nev100000_IDEA_edm4hep.root
+
+# or 
+
+python3 scripts/check_root_entries.py /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaEta_nev100000_IDEA_edm4hep.root 100000
+python3 scripts/check_root_entries.py /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root 100000 
+python3 scripts/check_root_entries.py /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGamma_nev100000_IDEA_edm4hep.root 100000
 ```
 
 Use a fresh shell for the reconstruction section below; it sources the local FCCAnalyses setup itself.
@@ -181,6 +187,7 @@ and 438,738,637 events according to its campaign metadata. This is below
 440,140,845 events, so process all readable files and report the actual input
 denominator. Catalog their ROOT headers and write the complete file list:
 
+## Prepare full catalog list of files of Z->bb inclusive sample
 ```bash
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/catalog_zbb_winter2023.py \
