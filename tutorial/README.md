@@ -203,12 +203,17 @@ Use this tracked file for reproducible splitting. The catalog command above
 can still be used to refresh a campaign snapshot; compare the new paths and
 counts before replacing the tracked manifest.
 
-The generator writes plain ROOT file lists and separate job cards with all
-runner settings. A job card is the sole runner argument, both locally and in
-Condor. Generate the one-file, 1,000-event pilot and inspect its inputs and
-settings:
+### Run one Condor-style job locally
+
+This executes the same worker script and job-card settings that Condor will
+use, but in the current shell. Start from the repository root on a host where
+the Winter2023 EOS input is mounted and the repository's `myenv` and
+`external/FCCAnalyses` setup are available. First check the input and generate
+one batch from one file, capped at 1,000 events:
 
 ```bash
+cd /localdisk2/rquaglia/fccee/fccee_lblgamma_study
+test -r /eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_000083138.root
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/split_input_file_list.py \
   --input-list config/zbb_condor_pilot_1file.txt \
@@ -223,12 +228,33 @@ cat outputs/analysis/studies/zbb_condor_pilot/jobs/job_000.txt
 cat outputs/analysis/studies/zbb_condor_pilot/batches/file_list_chunk0.txt
 ```
 
-The same pilot can be tested locally by running the generated card:
+The job card holds the exact runner settings: input batch, full manifest,
+output directory, CPU count, event limit, and reconstruction config. Now run
+that card locally. This performs reconstruction, candidate flattening, and
+the mass-window selected/rejected split for the first 1,000 source events:
 
 ```bash
 bash scripts/run_zbb_preselection_shard.sh \
   outputs/analysis/studies/zbb_condor_pilot/jobs/job_000.txt
+cat outputs/analysis/studies/zbb_condor_pilot_local/shard_000/SHARD_COMPLETE.txt
+cat outputs/analysis/studies/zbb_condor_pilot_local/shard_000/zbb_file_0000_summary.json
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python - <<'PY'
+import pyarrow.parquet as pq
+import uproot
+
+base = "outputs/analysis/studies/zbb_condor_pilot_local/shard_000/zbb_file_0000"
+print("reco tree entries:", uproot.open(base + "_reco.root")["events"].num_entries)
+for kind in ("candidates", "selected", "rejected"):
+    table = pq.read_table(base + f"_{kind}.parquet")
+    n_events = len(set(table["event_entry"].to_pylist())) if table.num_rows else 0
+    print(f"{kind}: {table.num_rows} candidate rows in {n_events} events")
+PY
 ```
+
+The reconstructed ROOT tree keeps only candidate-bearing events. Use the
+original input limit (1,000) as the processed-event denominator, not the ROOT
+tree entry count. A zero-candidate event is absent from the flattened
+candidate table. The card writes only to the local `outputs/` area.
 
 For a separate Condor smoke-test card with EOS output, generate a second card
 with identical input and reconstruction settings:
