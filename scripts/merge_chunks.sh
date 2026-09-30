@@ -5,8 +5,22 @@ set -euo pipefail
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
 
+usage() {
+    cat <<'EOF'
+Merge and validate ordered EDM4hep chunks for one generated sample.
+
+Usage:
+  bash scripts/merge_chunks.sh SAMPLE TOTAL_EVENTS NCHUNKS
+
+SAMPLE is Lb2LambdaGamma, Lb2LambdaGammaPhysics, or Lb2LambdaEta.
+TOTAL_EVENTS must divide evenly by NCHUNKS. Inputs are read from
+outputs/delphes/chunks/ and the merged file is written under outputs/delphes/.
+Set GEN_SETUP to choose the Key4hep generation setup script.
+EOF
+}
+if [[ ${1:-} == "--help" || ${1:-} == "-h" ]]; then usage; exit 0; fi
 if (( $# != 3 )); then
-    echo "Usage: bash $0 SAMPLE TOTAL_EVENTS NCHUNKS" >&2
+    usage >&2
     exit 2
 fi
 sample=$1
@@ -38,7 +52,15 @@ if [[ -e "$output" ]]; then
     echo "Existing verified merged sample: $output"
     exit 0
 fi
-[[ ! -e "$partial" ]] || { echo "Incomplete merge exists: $partial" >&2; exit 1; }
+if [[ -e "$partial" ]]; then
+    if python3 scripts/check_root_entries.py "$partial" "$total_events"; then
+        mv "$partial" "$output"
+        echo "Recovered verified merged sample: $output"
+        exit 0
+    fi
+    echo "Partial merge is not complete; inspect or remove it before retrying: $partial" >&2
+    exit 1
+fi
 {
     hadd "$partial" "${inputs[@]}"
     python3 scripts/check_root_entries.py "$partial" "$total_events"

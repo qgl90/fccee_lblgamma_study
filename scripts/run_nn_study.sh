@@ -4,6 +4,18 @@
 set -euo pipefail
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
+usage() {
+  cat <<'EOF'
+Run one stage of the post-Lambda neural-network comparison.
+
+Usage:
+  bash scripts/run_nn_study.sh STAGE
+
+Stages: provenance, train, statistics, angular, projection, slides, all
+See docs/NN_REVIEW_2026-09-29.md for the comparison and current limits.
+EOF
+}
+if [[ ${1:-} == "--help" || ${1:-} == "-h" ]]; then usage; exit 0; fi
 stage=${1:-help}
 study_tag=${STUDY_TAG:-bdt_winter2023_v1}
 base="outputs/analysis/studies/$study_tag"

@@ -2,6 +2,10 @@
 
 Run these commands from the repository root in a shell where Key4hep has **not** already been sourced. There is one `Snakefile`; its default target produces both samples as ten independently seeded 50,000-event chunks per sample, then merges each set into a 500,000-event EDM4hep file. Seeds and decay files are in `config/config.yaml`.
 
+For a concise map of the full analysis stages, including Condor reconstruction
+and the separate detector-response studies, see
+[`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md).
+
 ## Option A: Snakemake
 
 First check the setup and build the pinned local FCCAnalyses source:
@@ -81,3 +85,24 @@ tail -f outputs/logs/Lb2LambdaGamma_nev500000_chunk0.production.log
 ```
 
 Both methods use the same local cards, seed ranges (22345–22354 for Λγ and 22355–22364 for Λη), decays, stack, and output naming. These seeds differ from the earlier 50,000-event seeds so the new samples are statistically distinct. Snakemake tracks dependencies and schedules missing targets; the Bash scripts expose each step for inspection and verify existing outputs before reusing them.
+
+## The three 100,000-event preselection samples
+
+The development/preselection samples are a separate named configuration and
+do not change the default 500,000-event target. They are PHSP Λγ, the
+HELAMP/polarization Λγ model, and Λη→γγ; each is divided into ten 10,000-event
+chunks. Run locally using the targets in the repository guide, or prepare and
+submit the same 30 chunks to Condor:
+
+```bash
+scripts/submit_forced_samples_100k_condor.sh --help
+scripts/submit_forced_samples_100k_condor.sh --dry-run
+scripts/submit_forced_samples_100k_condor.sh
+```
+
+Edit `REPO_DIR` in `scripts/condor_forced_samples_100k.sub` for the shared
+worker-visible checkout before submitting. The queue is generated from
+`config/config.yaml`. After jobs finish, merge with
+`bash scripts/merge_chunks.sh SAMPLE 100000 10` for each sample. The same
+chunk helper is used by Condor and Snakemake; a rerun promotes a partial ROOT
+file only after its logged provenance and exact event count validate.

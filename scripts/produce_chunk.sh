@@ -5,8 +5,21 @@ set -euo pipefail
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
 
+usage() {
+    cat <<'EOF'
+Produce and validate one independent Pythia8/EvtGen/Delphes chunk.
+
+Usage:
+  bash scripts/produce_chunk.sh SAMPLE CHUNK SEED CHUNK_EVENTS TOTAL_EVENTS
+
+Samples: Lb2LambdaGamma, Lb2LambdaGammaPhysics, Lb2LambdaEta
+Outputs: outputs/delphes/chunks/ and outputs/logs/.
+Set GEN_SETUP to choose the Key4hep generation setup script.
+EOF
+}
+if [[ ${1:-} == "--help" || ${1:-} == "-h" ]]; then usage; exit 0; fi
 if (( $# != 5 )); then
-    echo "Usage: bash $0 SAMPLE CHUNK SEED CHUNK_EVENTS TOTAL_EVENTS" >&2
+    usage >&2
     exit 2
 fi
 sample=$1
@@ -46,7 +59,23 @@ if [[ -e "$output" ]]; then
     echo "Existing verified chunk: $output"
     exit 0
 fi
-[[ ! -e "$partial" ]] || { echo "Incomplete chunk exists: $partial" >&2; exit 1; }
+if [[ -e "$partial" ]]; then
+    [[ -f "$log" && $(head -n 1 "$log") == \
+        "sample=$sample chunk=$chunk total_events=$total_events chunk_events=$chunk_events seed=$seed" ]] || {
+        echo "Partial chunk has missing or mismatched provenance: $partial" >&2
+        exit 1
+    }
+    set +u
+    source "$stack" >/dev/null 2>&1
+    set -u
+    if python3 scripts/check_root_entries.py "$partial" "$chunk_events"; then
+        mv "$partial" "$output"
+        echo "Recovered verified chunk: $output"
+        exit 0
+    fi
+    echo "Partial chunk is not complete; inspect or remove it before retrying: $partial" >&2
+    exit 1
+fi
 
 python3 scripts/prepare_pythia_card.py \
     --input cards/p8_ee_Zbb_ecm91_EVTGEN.cmd \

@@ -6,6 +6,19 @@
 set -euo pipefail
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
+usage() {
+  cat <<'EOF'
+Run one stage of the post-preselection BDT study.
+
+Usage:
+  bash scripts/run_bdt_study.sh STAGE
+
+Stages: provenance, catalog, cache, generate, reco_forced, reco_zbb,
+        flatten, dataset, statistics, train, angular, projection, slides, all
+See docs/BDT_WORKFLOW.md for stage order, inputs, splits, and interpretation.
+EOF
+}
+if [[ ${1:-} == "--help" || ${1:-} == "-h" ]]; then usage; exit 0; fi
 stage=${1:-help}
 tag=${STUDY_TAG:-bdt_winter2023_v1}
 lambda_half_window=${LAMBDA_HALF_WINDOW_GEV:-.010}
