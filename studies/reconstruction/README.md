@@ -384,12 +384,17 @@ unrelated-photon combination. The scan and filtered candidate tables are in
 uses the measured EDM4hep photon four-vectors, including measured energy, and
 stores the complete list of candidate-photon pair masses and companion photon
 indices per candidate, plus nearest diphoton-mass distances from the π0 and η
-masses. `diphoton_pair_mass_spectra.png` shows the full pair-mass spectra
-before any veto, with truth labels used only to split diagnostic categories.
-The histograms count pair combinations; the accompanying summary reports
-candidate counts separately. A candidate is vetoed when *any* such pair falls
-in the specified mass interval. This does not use MC ancestry in the
+masses. `diphoton_pair_mass_spectra.png` shows 0–1.2 GeV and
+`diphoton_pair_mass_spectra_full.png` shows 0–20 GeV before any veto, with
+truth labels used only to split diagnostic categories. The histograms count
+pair combinations; the accompanying summary reports candidate counts
+separately. A candidate is vetoed if **at least one** listed pair falls inside
+either specified mass window. If there is no eligible partner, the candidate
+passes. This does not use MC ancestry in the
 decision. Photon truth labels are used only to report category retention.
+The study also reports the alternative `m(γγ) < 200 MeV` rule, controlled by
+`--low-pair-mass-threshold-mev` (default 200); it tests whether any eligible
+pair is below the threshold, rather than centering a window on the π⁰ mass.
 The veto is evaluated after the ±10 MeV Lambda window and the existing
 4.9–6.3 GeV Lambda_b fit interval, displacement, vertex-quality, and
 same-hemisphere Lambda–photon cuts.
@@ -440,6 +445,14 @@ feature table has the list columns `same_hemisphere_diphoton_masses_gev` and
 `--lambda-half-window-mev 15` to match the current nominal reconstruction.
 Rerun window summaries without decoding the original ROOT files using the
 same command with `--reuse-features`.
+
+The first complete 100k offline scan using the nominal ±15 MeV Lambda window
+is recorded in [`DIPHOTON_STUDY_100K.md`](DIPHOTON_STUDY_100K.md). It compares
+the PHSP signal sample, Eta feed-down reconstructed as one-photon Gamma, and
+one 100k-event Z→bb input file. The generated files retain every pair mass
+and partner index; the accompanying note reports pair and candidate counts
+separately. Treat these as diagnostic results for choosing later offline
+features, not as an approved veto or as physical yields.
 
 Using the same fitted-momentum reconstruction with the hemisphere cut disabled,
 there are 913 candidates in the 4.9–6.3 GeV interval: 544 true signal and 369

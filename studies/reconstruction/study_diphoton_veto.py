@@ -154,7 +154,7 @@ def add_distances(table, edm_path, max_events, match_by_photon=False):
                  .append_column("original_event_entry", pa.array(original_entry)))
 
 
-def category_counts(table, category):
+def category_counts(table, category, low_mass_threshold_mev):
     cols = table.to_pydict()
     pi0 = np.asarray(cols["nearest_pi0_mass_distance_gev"])
     eta = np.asarray(cols["nearest_eta_mass_distance_gev"])
@@ -174,10 +174,26 @@ def category_counts(table, category):
         (np.abs(np.asarray(cols["proton_mc_grandparent_pdg"])) == 5122))
     entries = np.asarray(cols["original_event_entry"])
     selection = signal if category == "signal" else eta_chain if category == "eta" else np.ones(len(pi0), bool)
+    pair_lists = table["same_hemisphere_diphoton_masses_gev"].to_pylist()
+    below_threshold = np.asarray([
+        any(float(mass) * 1000 < low_mass_threshold_mev for mass in masses)
+        for masses in pair_lists
+    ], dtype=bool)
     out = {"candidates": int(selection.sum()),
            "events": int(np.unique(entries[selection]).size),
            "with_other_same_hemisphere_photon": int(np.count_nonzero(selection & (np.asarray(cols["n_other_same_hemisphere_photons"]) > 0))),
            "scan": []}
+    retained = selection & ~below_threshold
+    out["any_pair_mass_below_threshold_veto"] = {
+        "threshold_mev": low_mass_threshold_mev,
+        "rejected_candidates": int(np.count_nonzero(selection & below_threshold)),
+        "retained_candidates": int(retained.sum()),
+        "retained_events": int(np.unique(entries[retained]).size),
+        "candidate_retention": float(retained.sum() / selection.sum()) if selection.any() else None,
+    }
+    # nearest_* is min(|m_pair - m_peak|) over the complete partner list.
+    # Thus a candidate is vetoed iff at least one eligible pair is inside
+    # either mass window; candidates with no partner have NaN distances and pass.
     for p_mev, e_mev in WINDOWS:
         veto = ((pi0 < p_mev / 1000) | (eta < e_mev / 1000))
         kept = selection & ~veto
@@ -199,6 +215,10 @@ def main():
     parser.add_argument("--zbb", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--lambda-half-window-mev", type=float, default=10)
+    parser.add_argument("--signal-label", default="Signal",
+                        help="Label for the one-photon signal panel, e.g. 'Lb to Lambda gamma physics'")
+    parser.add_argument("--low-pair-mass-threshold-mev", type=float, default=200,
+                        help="Veto candidate if any eligible diphoton mass is below this value")
     parser.add_argument("--signal-events", type=int, default=1000,
                         help="Number of original signal EDM4hep entries to process")
     parser.add_argument("--eta-events", type=int, default=1000,
@@ -213,6 +233,7 @@ def main():
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     summary = {"lambda_half_window_mev": args.lambda_half_window_mev,
+               "low_pair_mass_threshold_mev": args.low_pair_mass_threshold_mev,
                "diphoton_masses_gev": MASSES, "samples": {}}
     for name, edm, parquet, limit, category in (
         ("signal", args.signal_edm, args.signal, args.signal_events, "signal"),
@@ -230,12 +251,13 @@ def main():
             table = add_distances(table, edm, limit,
                                   match_by_photon=args.match_by_photon)
             pq.write_table(table, feature_path, compression="zstd")
-        summary["samples"][name] = category_counts(table, category)
+        summary["samples"][name] = category_counts(
+            table, category, args.low_pair_mass_threshold_mev)
         summary["samples"][name]["all_mass_selected_candidates"] = table.num_rows
     path = args.output_dir / "veto_scan.json"
     path.write_text(json.dumps(summary, indent=2) + "\n")
     plot_scan(summary, args.output_dir)
-    plot_pair_masses(args.output_dir)
+    plot_pair_masses(args.output_dir, args.signal_label)
     print(json.dumps(summary, indent=2))
 
 
@@ -265,15 +287,15 @@ def plot_scan(summary, output_dir):
     ax.set_xticks(x, labels, rotation=38, ha="right")
     ax.set(xlabel="Same-hemisphere diphoton veto half-windows [MeV]",
            ylabel="Fraction of candidates retained", ylim=(0, 1.05),
-           title="Veto after ±10 MeV fitted Λ mass cut")
+           title=f"Veto after ±{summary['lambda_half_window_mev']:g} MeV fitted Λ mass cut")
     ax.legend(frameon=False, loc="lower left")
     fig.tight_layout()
     fig.savefig(output_dir / "veto_retention.png", dpi=160)
     plt.close(fig)
 
 
-def plot_pair_masses(output_dir):
-    """Plot all same-hemisphere pairs; truth labels only split diagnostic samples."""
+def plot_pair_masses(output_dir, signal_label):
+    """Plot low-mass and full-range spectra; labels only split diagnostics."""
     os.environ.setdefault("MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "lblgamma-mplconfig"))
     os.environ.setdefault("XDG_CACHE_HOME", str(Path(tempfile.gettempdir()) / "lblgamma-cache"))
     import matplotlib
@@ -285,9 +307,8 @@ def plot_pair_masses(output_dir):
     samples = (("signal", "signal_veto_features.parquet"),
                ("eta_as_gamma", "eta_as_gamma_veto_features.parquet"),
                ("zbb", "zbb_veto_features.parquet"))
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.8), sharey=True)
-    bins = np.linspace(0, 1.2, 121)
-    for ax, (name, filename) in zip(axes, samples):
+    sample_data = []
+    for name, filename in samples:
         table = pq.read_table(output_dir / filename)
         cols = table.to_pydict()
         masses = table["same_hemisphere_diphoton_masses_gev"].to_pylist()
@@ -307,20 +328,33 @@ def plot_pair_masses(output_dir):
                       (~eta_chain, "Other candidates", "C1"))
         else:
             groups = ((np.ones(len(masses), dtype=bool), "All candidates", "C0"),)
+        plotted_groups = []
         for mask, label, color in groups:
             vals = [float(mass) for keep, row in zip(mask, masses) if keep for mass in row]
             if vals:
+                plotted_groups.append((label, color, vals))
+        panel_title = signal_label if name == "signal" else name.replace("_", " ")
+        sample_data.append((panel_title, plotted_groups))
+
+    for full_range, filename in ((False, "diphoton_pair_mass_spectra.png"),
+                                 (True, "diphoton_pair_mass_spectra_full.png")):
+        fig, axes = plt.subplots(1, 3, figsize=(15, 4.8), sharey=False)
+        upper = 20.0 if full_range else 1.2
+        bins = np.linspace(0, upper, 201 if full_range else 121)
+        for ax, (title, groups) in zip(axes, sample_data):
+            for label, color, vals in groups:
                 counts, edges = np.histogram(vals, bins=bins)
                 ax.stairs(counts, edges, label=f"{label} (pairs={len(vals):,})", color=color)
-        ax.axvline(MASSES["pi0"], color="black", linestyle="--", linewidth=1)
-        ax.axvline(MASSES["eta"], color="black", linestyle=":", linewidth=1)
-        ax.set(title=name.replace("_", " "), xlabel=r"$m(\gamma_{cand}\gamma_{other})$ [GeV]")
-        ax.legend(frameon=False, fontsize=8)
-    axes[0].set_ylabel("Candidate–photon pair combinations")
-    fig.suptitle("All same-thrust-hemisphere photon pairs (no veto applied)")
-    fig.tight_layout()
-    fig.savefig(output_dir / "diphoton_pair_mass_spectra.png", dpi=160)
-    plt.close(fig)
+            ax.axvline(MASSES["pi0"], color="black", linestyle="--", linewidth=1)
+            ax.axvline(MASSES["eta"], color="black", linestyle=":", linewidth=1)
+            ax.set(title=title, xlabel=r"$m(\gamma_{cand}\gamma_{other})$ [GeV]")
+            ax.legend(frameon=False, fontsize=8)
+        axes[0].set_ylabel("Candidate–photon pair combinations")
+        plot_range = "0–20 GeV wide range" if full_range else "0–1.2 GeV low-mass region"
+        fig.suptitle(f"Same-thrust-hemisphere photon pairs, {plot_range} (no veto applied)")
+        fig.tight_layout()
+        fig.savefig(output_dir / filename, dpi=160)
+        plt.close(fig)
 
 
 if __name__ == "__main__":
