@@ -7,7 +7,6 @@
   "min_flight_rxy_mm": 0.3,
   "min_track_d0sig": 3.0,
   "min_vertex_flight_sig": 2.0,
-  "lz_delta_mass_pdg_mev": 10,
   "require_good_vertex": true,
   "lb_mass_min_gev": 4.7,
   "lb_mass_max_gev": 6.5,
