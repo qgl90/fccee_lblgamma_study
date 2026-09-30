@@ -32,6 +32,15 @@ scripts/run_preselection_pilot.sh --help
 scripts/run_zbb_preselection_shard.sh --help
 ```
 
+The reconstruction wrapper selects the Python executable recorded in
+`external/FCCAnalyses/build/CMakeCache.txt` for FCCAnalyses. Flattening and
+plotting use the separate LbConda `myenv` environment. The log prints
+`fccanalysis_python=...` so the selected interpreter is visible. If your site
+uses a different build layout, set `FCCANALYSES_PYTHON` to the Python used to
+build FCCAnalyses. A warning that optional ONNX Runtime analyzers are
+unavailable is not fatal; a NumPy `_multiarray_umath` error means the wrong
+Python was selected for FCCAnalyses.
+
 The exact local Snakemake commands are shown in the root README and are
 reproduced in the [preselection review note](../../docs/PRESELECTION15_REVIEW_2026-09-30.md).
 Outputs include ROOT reconstruction files, one-row-per-candidate Parquet
