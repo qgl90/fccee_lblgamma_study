@@ -1,0 +1,8 @@
+# Zbb batch job card; run locally with scripts/run_zbb_preselection_shard.sh <this-file>
+batch_index=585
+batch_list=/localdisk2/rquaglia/fccee/fccee_lblgamma_study/condor/zbb_winter2023_full/batches/file_list_chunk585.txt
+source_manifest=/localdisk2/rquaglia/fccee/fccee_lblgamma_study/config/zbb_winter2023_full_file_list.txt
+output_dir=/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/shard_585
+ncpus=4
+event_limit=all
+reco_config=config/lb_reco_preselection_15mev_45_65.json
