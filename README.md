@@ -13,7 +13,7 @@ contracts and review gates. The local working rules are in [`AGENTS.md`](AGENTS.
 | Generate forced Λb samples | `Snakefile`, `scripts/produce_chunk.sh` | [`README_GEN.md`](README_GEN.md) |
 | End-to-end generation, reconstruction, and offline analysis tutorial | [`tutorial/README.md`](tutorial/README.md) | Shell commands and output inspection |
 | Reconstruct and preselect Λb candidates | `scripts/run_reco_preselection.sh`, `analysis/studies/lb2lambda_gamma_reco.py` | [`studies/reconstruction/README.md`](studies/reconstruction/README.md) |
-| Reconstruct the Winter2023 Z→bb inputs in Condor batches | `scripts/run_zbb_preselection_shard.sh` | [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md#3-reconstruction-and-preselection) |
+| Prepare, validate, and submit all Winter2023 Z→bb Condor batches | `studies/reconstruction/split_input_file_list.py`, `scripts/submit_zbb_full_condor.sh` | [`tutorial/README.md`](tutorial/README.md) |
 | Make analysis tables, plots, and BDT/NN studies | `studies/reconstruction/`, `scripts/run_bdt_study.sh`, `scripts/run_nn_study.sh` | [`docs/BDT_WORKFLOW.md`](docs/BDT_WORKFLOW.md) |
 | Study detector resolution and acceptance | `analysis/studies/resolutions.py`, `analysis/studies/displaced_daughters.py` | [`studies/resolutions/README.md`](studies/resolutions/README.md) |
 
