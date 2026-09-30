@@ -298,7 +298,7 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/split_input_file_list.py \
   --input-list config/zbb_winter2023_full_file_list.txt \
   --output-dir condor/zbb_winter2023_full/batches \
-  --n-shards 600 \
+  --n-shards 1200 \
   --job-spec-dir condor/zbb_winter2023_full/job_cards \
   --queue-list condor/zbb_winter2023_full/jobs.txt \
   --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \

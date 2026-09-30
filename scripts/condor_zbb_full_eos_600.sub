@@ -1,6 +1,6 @@
 # Full Winter2023 central Z->bb campaign. Generate and inspect the 600 job cards
 # before submitting; each card contains its input chunk and runner settings.
-REPO_DIR = /localdisk2/rquaglia/fccee/fccee_lblgamma_study
+REPO_DIR = /afs/cern.ch/user/r/rquaglia/work/fcc_ee/fccee_lblgamma_study
 JOB_SPECS = $(REPO_DIR)/condor/zbb_winter2023_full/jobs.txt
 
 universe = vanilla
