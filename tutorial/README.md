@@ -197,28 +197,111 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
 wc -l outputs/analysis/studies/Zbb_winter2023_all_files.txt
 ```
 
-The Condor submit file uses the complete ordered list and expects the shared
-repository and EOS inputs to be mounted on workers. Confirm its `REPO_DIR`,
-`FILE_LIST`, and `OUTPUT_DIR`, then submit the 600 shards:
+The generator writes plain ROOT file lists and separate job cards with all
+runner settings. A job card is the sole runner argument, both locally and in
+Condor. Generate the one-file, 1,000-event pilot and inspect its inputs and
+settings:
 
 ```bash
-sed -n '1,12p' scripts/condor_zbb_preselection_600.sub
-mkdir -p outputs/analysis/studies/zbb_preselection15_all/condor_logs
-condor_submit scripts/condor_zbb_preselection_600.sub
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/split_input_file_list.py \
+  --input-list config/zbb_condor_pilot_1file.txt \
+  --output-dir outputs/analysis/studies/zbb_condor_pilot/batches \
+  --n-shards 1 \
+  --job-spec-dir outputs/analysis/studies/zbb_condor_pilot/jobs \
+  --queue-list outputs/analysis/studies/zbb_condor_pilot/jobs.txt \
+  --output-root outputs/analysis/studies/zbb_condor_pilot_local \
+  --ncpus 1 --event-limit 1000 \
+  --reco-config config/lb_reco_preselection_15mev_45_65.json
+cat outputs/analysis/studies/zbb_condor_pilot/jobs/job_000.txt
+cat outputs/analysis/studies/zbb_condor_pilot/batches/file_list_chunk0.txt
 ```
 
-Each shard writes per-source ROOT, Parquet, selected/rejected Parquet, and JSON
-summaries under `outputs/analysis/studies/zbb_preselection15_all/shard_NNN/`.
-After all 600 `SHARD_COMPLETE.txt` markers exist, merge the mass-selected
-candidate tables and inspect the summary:
+The same pilot can be tested locally by running the generated card:
 
 ```bash
-find outputs/analysis/studies/zbb_preselection15_all -name SHARD_COMPLETE.txt | wc -l
+bash scripts/run_zbb_preselection_shard.sh \
+  outputs/analysis/studies/zbb_condor_pilot/jobs/job_000.txt
+```
+
+For a separate Condor smoke-test card with EOS output, generate a second card
+with identical input and reconstruction settings:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/split_input_file_list.py \
+  --input-list config/zbb_condor_pilot_1file.txt \
+  --output-dir outputs/analysis/studies/zbb_condor_pilot/batches \
+  --n-shards 1 \
+  --job-spec-dir outputs/analysis/studies/zbb_condor_pilot_condor/jobs \
+  --queue-list outputs/analysis/studies/zbb_condor_pilot_condor/jobs.txt \
+  --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000 \
+  --ncpus 1 --event-limit 1000 \
+  --reco-config config/lb_reco_preselection_15mev_45_65.json
+```
+
+Submit that card with Condor. First check that this pool exposes the shared
+repository, reads the input EOS file, and supports writes to the requested EOS
+output directory. Create the scheduler log directory before submission:
+
+```bash
+mkdir -p /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs
+condor_submit scripts/condor_zbb_full_eos_test.sub
+condor_q -nobatch
+cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs/pilot.0.out
+cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/shard_000/SHARD_COMPLETE.txt
+```
+
+`should_transfer_files = NO` assumes shared mounts on execute nodes. If the
+Condor pool does not provide them, adapt to its supported staging method before
+submission. The pilot's `event_limit=1000` caps this file's reconstruction.
+
+After checking the pilot, generate the full 600 input batches and job cards.
+The complete source list currently has 4,398 files; the generated chunks have
+7 or 8 files each. Inspect any exact card and batch before submission:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/split_input_file_list.py \
+  --input-list outputs/analysis/studies/Zbb_winter2023_all_files.txt \
+  --output-dir outputs/analysis/studies/Zbb_winter2023_chunks_600 \
+  --n-shards 600 \
+  --job-spec-dir outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs \
+  --queue-list outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs.txt \
+  --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \
+  --ncpus 4 --event-limit all \
+  --reco-config config/lb_reco_preselection_15mev_45_65.json
+cat outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs/job_000.txt
+cat outputs/analysis/studies/Zbb_winter2023_chunks_600/file_list_chunk0.txt
+```
+
+Any batch is runnable locally with the same one-argument interface; choose a
+pilot card for a bounded local run, since the full cards process all listed
+files:
+
+```bash
+bash scripts/run_zbb_preselection_shard.sh \
+  outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs/job_000.txt
+```
+
+The production submit file queues the 600 paths in `jobs.txt`; each Condor
+process gets one card and writes under its card's EOS `shard_NNN/` directory:
+
+```bash
+mkdir -p /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/condor_logs
+condor_submit scripts/condor_zbb_full_eos_600.sub
+```
+
+After all 600 `SHARD_COMPLETE.txt` markers exist, merge the candidate tables
+from the EOS output directory and inspect the summary:
+
+```bash
+find /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor -name SHARD_COMPLETE.txt | wc -l
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/merge_preselection_parquets.py \
-  --input-dir outputs/analysis/studies/zbb_preselection15_all \
-  --output-dir outputs/analysis/studies/zbb_preselection15_all/merged
-cat outputs/analysis/studies/zbb_preselection15_all/merged/merge_summary.json
+  --input-dir /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \
+  --output-dir /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/merged
+cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/merged/merge_summary.json
 ```
 
 ## 5. Offline mass selection and plots
