@@ -61,6 +61,8 @@ def add_distances(table, edm_path, max_events, match_by_photon=False):
     nearest_eta = np.full(n, np.nan)
     n_other_photons = np.zeros(n, dtype=np.int32)
     original_entry = np.full(n, -1, dtype=np.int64)
+    pair_masses = [[] for _ in range(n)]
+    pair_indices = [[] for _ in range(n)]
     print(f"Opening {edm_path} for {n} candidate rows", flush=True)
     # MultithreadedFileSource avoids a stalled mmap read observed for these
     # large local EDM4hep files in the managed workspace.
@@ -98,7 +100,22 @@ def add_distances(table, edm_path, max_events, match_by_photon=False):
                 for row in candidate_rows:
                     selected = int(rows["photon_reco_index"][row])
                     if selected not in photon_indices:
-                        raise ValueError(f"Candidate photon {selected} missing in event {entry}")
+                        continue
+                    # A photon index/energy pair can recur in another event.
+                    # Require both Lambda daughters to match too before
+                    # assigning this filtered candidate row to the source event.
+                    legs_match = True
+                    for index_column, energy_column in (
+                        ("proton_reco_index", "proton_reco_energy"),
+                        ("pion_reco_index", "pion_reco_energy"),
+                    ):
+                        leg_index = int(rows[index_column][row])
+                        if (leg_index < 0 or leg_index >= len(es) or
+                                np.float32(es[leg_index]) != np.float32(rows[energy_column][row])):
+                            legs_match = False
+                            break
+                    if not legs_match:
+                        continue
                     if original_entry[row] != -1:
                         raise ValueError(f"Photon key matched multiple original events for row {row}")
                     original_entry[row] = entry
@@ -120,12 +137,18 @@ def add_distances(table, edm_path, max_events, match_by_photon=False):
                                           ys[partner], zs[partner])
                         if np.isfinite(m):
                             pairs.append(m)
+                            pair_masses[row].append(float(m))
+                            pair_indices[row].append(int(partner))
                     if pairs:
                         nearest_pi0[row] = min(abs(m - MASSES["pi0"]) for m in pairs)
                         nearest_eta[row] = min(abs(m - MASSES["eta"]) for m in pairs)
     if np.any(original_entry < 0):
         raise ValueError(f"No original event found for {np.count_nonzero(original_entry < 0)} candidate rows")
-    return (table.append_column("nearest_pi0_mass_distance_gev", pa.array(nearest_pi0))
+    return (table.append_column("same_hemisphere_diphoton_masses_gev",
+                                pa.array(pair_masses, type=pa.list_(pa.float32())))
+                 .append_column("same_hemisphere_diphoton_partner_indices",
+                                pa.array(pair_indices, type=pa.list_(pa.int32())))
+                 .append_column("nearest_pi0_mass_distance_gev", pa.array(nearest_pi0))
                  .append_column("nearest_eta_mass_distance_gev", pa.array(nearest_eta))
                  .append_column("n_other_same_hemisphere_photons", pa.array(n_other_photons))
                  .append_column("original_event_entry", pa.array(original_entry)))
@@ -176,10 +199,15 @@ def main():
     parser.add_argument("--zbb", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--lambda-half-window-mev", type=float, default=10)
+    parser.add_argument("--signal-events", type=int, default=1000,
+                        help="Number of original signal EDM4hep entries to process")
+    parser.add_argument("--eta-events", type=int, default=1000,
+                        help="Number of original eta EDM4hep entries to process")
     parser.add_argument("--zbb-events", type=int, default=1000,
                         help="Number of original Zbb entries processed; use a single-thread candidate snapshot")
-    parser.add_argument("--zbb-match-by-photon", action="store_true",
-                        help="Recover event identity from photon index and energy for an MT snapshot")
+    parser.add_argument("--match-by-photon", "--zbb-match-by-photon",
+                        dest="match_by_photon", action="store_true",
+                        help="Recover original event identity from the candidate photon index and persisted energy; required for filtered or MT snapshots")
     parser.add_argument("--reuse-features", action="store_true",
                         help="Read previously written *_veto_features.parquet tables")
     args = parser.parse_args()
@@ -187,8 +215,8 @@ def main():
     summary = {"lambda_half_window_mev": args.lambda_half_window_mev,
                "diphoton_masses_gev": MASSES, "samples": {}}
     for name, edm, parquet, limit, category in (
-        ("signal", args.signal_edm, args.signal, 1000, "signal"),
-        ("eta_as_gamma", args.eta_edm, args.eta, 1000, "eta"),
+        ("signal", args.signal_edm, args.signal, args.signal_events, "signal"),
+        ("eta_as_gamma", args.eta_edm, args.eta, args.eta_events, "eta"),
         ("zbb", args.zbb_edm, args.zbb, args.zbb_events, "zbb"),
     ):
         feature_path = args.output_dir / f"{name}_veto_features.parquet"
@@ -200,13 +228,14 @@ def main():
             table = table.filter(pa.array(dm <= args.lambda_half_window_mev))
             print(f"{name}: {table.num_rows} mass-selected candidate rows", flush=True)
             table = add_distances(table, edm, limit,
-                                  match_by_photon=name == "zbb" and args.zbb_match_by_photon)
+                                  match_by_photon=args.match_by_photon)
             pq.write_table(table, feature_path, compression="zstd")
         summary["samples"][name] = category_counts(table, category)
         summary["samples"][name]["all_mass_selected_candidates"] = table.num_rows
     path = args.output_dir / "veto_scan.json"
     path.write_text(json.dumps(summary, indent=2) + "\n")
     plot_scan(summary, args.output_dir)
+    plot_pair_masses(args.output_dir)
     print(json.dumps(summary, indent=2))
 
 
@@ -240,6 +269,57 @@ def plot_scan(summary, output_dir):
     ax.legend(frameon=False, loc="lower left")
     fig.tight_layout()
     fig.savefig(output_dir / "veto_retention.png", dpi=160)
+    plt.close(fig)
+
+
+def plot_pair_masses(output_dir):
+    """Plot all same-hemisphere pairs; truth labels only split diagnostic samples."""
+    os.environ.setdefault("MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "lblgamma-mplconfig"))
+    os.environ.setdefault("XDG_CACHE_HOME", str(Path(tempfile.gettempdir()) / "lblgamma-cache"))
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import mplhep as hep
+
+    plt.style.use(hep.style.LHCb2)
+    samples = (("signal", "signal_veto_features.parquet"),
+               ("eta_as_gamma", "eta_as_gamma_veto_features.parquet"),
+               ("zbb", "zbb_veto_features.parquet"))
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.8), sharey=True)
+    bins = np.linspace(0, 1.2, 121)
+    for ax, (name, filename) in zip(axes, samples):
+        table = pq.read_table(output_dir / filename)
+        cols = table.to_pydict()
+        masses = ak.to_list(table["same_hemisphere_diphoton_masses_gev"])
+        p_parent = np.asarray(cols["proton_mc_parent_index"])
+        p_grand = np.asarray(cols["proton_mc_grandparent_index"])
+        eta_chain = ((p_parent >= 0) & (p_parent == np.asarray(cols["pion_mc_parent_index"])) &
+                     (np.abs(np.asarray(cols["proton_mc_parent_pdg"])) == 3122) &
+                     (np.asarray(cols["mass_hypothesis_correct"]) == 1) &
+                     (np.abs(np.asarray(cols["photon_mc_parent_pdg"])) == 221) &
+                     (p_grand >= 0) & (p_grand == np.asarray(cols["photon_mc_grandparent_index"])) &
+                     (np.abs(np.asarray(cols["proton_mc_grandparent_pdg"])) == 5122))
+        if name == "signal":
+            groups = ((np.asarray(cols["truth_matched"]) == 1, "Truth matched", "C0"),
+                      (np.asarray(cols["truth_matched"]) != 1, "Other candidates", "C1"))
+        elif name == "eta_as_gamma":
+            groups = ((eta_chain, "True η feed-down", "C2"),
+                      (~eta_chain, "Other candidates", "C1"))
+        else:
+            groups = ((np.ones(len(masses), dtype=bool), "All candidates", "C0"),)
+        for mask, label, color in groups:
+            vals = [mass for keep, row in zip(mask, masses) if keep for mass in row]
+            if vals:
+                counts, edges = np.histogram(vals, bins=bins)
+                ax.stairs(counts, edges, label=f"{label} (pairs={len(vals):,})", color=color)
+        ax.axvline(MASSES["pi0"], color="black", linestyle="--", linewidth=1)
+        ax.axvline(MASSES["eta"], color="black", linestyle=":", linewidth=1)
+        ax.set(title=name.replace("_", " "), xlabel=r"$m(\gamma_{cand}\gamma_{other})$ [GeV]")
+        ax.legend(frameon=False, fontsize=8)
+    axes[0].set_ylabel("Candidate–photon pair combinations")
+    fig.suptitle("All same-thrust-hemisphere photon pairs (no veto applied)")
+    fig.tight_layout()
+    fig.savefig(output_dir / "diphoton_pair_mass_spectra.png", dpi=160)
     plt.close(fig)
 
 

@@ -382,9 +382,13 @@ unrelated-photon combination. The scan and filtered candidate tables are in
 `study_diphoton_veto.py` then pairs each selected candidate photon with every
 **other selected photon in the same reconstructed thrust hemisphere**. It
 uses the measured EDM4hep photon four-vectors, including measured energy, and
-saves the nearest diphoton-mass distances from the π0 and η masses as
-candidate-level Parquet columns. A candidate is vetoed when *any* such pair
-falls in the specified mass interval. This does not use MC ancestry in the
+stores the complete list of candidate-photon pair masses and companion photon
+indices per candidate, plus nearest diphoton-mass distances from the π0 and η
+masses. `diphoton_pair_mass_spectra.png` shows the full pair-mass spectra
+before any veto, with truth labels used only to split diagnostic categories.
+The histograms count pair combinations; the accompanying summary reports
+candidate counts separately. A candidate is vetoed when *any* such pair falls
+in the specified mass interval. This does not use MC ancestry in the
 decision. Photon truth labels are used only to report category retention.
 The veto is evaluated after the ±10 MeV Lambda window and the existing
 4.9–6.3 GeV Lambda_b fit interval, displacement, vertex-quality, and
@@ -407,14 +411,13 @@ feed-down candidates have another selected photon in the same hemisphere,
 so missing/inefficient companion photons limit this veto. Its absolute
 signal yield is 522/1,000 generated events in this pilot.
 
-The 40-thread Zbb snapshot has `event_entry` values that do not identify the
-original EDM4hep entry reliably. The veto audit therefore recovers the source
-entry with the candidate photon's original reconstructed-particle index and
-exact persisted float32 energy; it fails if the match is absent or ambiguous.
-The resulting `original_event_entry` is stored with the veto features. The
-1000-event single-thread smoke was independently checked to have consistent
-entry numbers. Future large reconstruction snapshots should write these
-diphoton features in the same FCCAnalysis event to avoid this join.
+Filtered candidate snapshots have event row numbers that do not reliably
+identify the original EDM4hep entry. The veto audit therefore recovers the
+source entry with the candidate photon's original reconstructed-particle
+index and persisted float32 energy; it fails if the match is absent or
+ambiguous. The resulting `original_event_entry` is stored with the veto
+features. Future large reconstruction snapshots could write these diphoton
+features in the same FCCAnalysis event to avoid this join.
 
 ```bash
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
@@ -425,13 +428,18 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   --eta outputs/analysis/studies/Lb2LambdaEta_as_gamma_angle_1000events.parquet \
   --zbb-edm /eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_000083138.root \
   --zbb outputs/analysis/studies/Zbb_winter2023_IDEA_firstfile_100k_mt48.parquet \
-  --zbb-events 100000 --zbb-match-by-photon \
+  --zbb-events 100000 --match-by-photon --lambda-half-window-mev 15 \
   --output-dir outputs/plots/reconstruction/diphoton_veto_100k
 ```
 
-The output directory contains `veto_scan.json`, `veto_retention.png`, and
-three candidate feature tables. Rerun window summaries without decoding the
-original ROOT files using the same command with `--reuse-features`.
+The output directory contains `veto_scan.json`, `veto_retention.png`,
+`diphoton_pair_mass_spectra.png`, and three candidate feature tables. Each
+feature table has the list columns `same_hemisphere_diphoton_masses_gev` and
+`same_hemisphere_diphoton_partner_indices`. Use `--signal-events` and
+`--eta-events` to control those input scans (defaults are 1,000); use
+`--lambda-half-window-mev 15` to match the current nominal reconstruction.
+Rerun window summaries without decoding the original ROOT files using the
+same command with `--reuse-features`.
 
 Using the same fitted-momentum reconstruction with the hemisphere cut disabled,
 there are 913 candidates in the 4.9–6.3 GeV interval: 544 true signal and 369
