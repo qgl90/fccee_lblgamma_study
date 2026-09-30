@@ -11,6 +11,7 @@ contracts and review gates. The local working rules are in [`AGENTS.md`](AGENTS.
 | Task | Entry point | Guide |
 |---|---|---|
 | Generate forced Λb samples | `Snakefile`, `scripts/produce_chunk.sh` | [`README_GEN.md`](README_GEN.md) |
+| End-to-end generation, reconstruction, and offline analysis tutorial | [`tutorial/README.md`](tutorial/README.md) | Shell commands and output inspection |
 | Reconstruct and preselect Λb candidates | `scripts/run_reco_preselection.sh`, `analysis/studies/lb2lambda_gamma_reco.py` | [`studies/reconstruction/README.md`](studies/reconstruction/README.md) |
 | Reconstruct the Winter2023 Z→bb inputs in Condor batches | `scripts/run_zbb_preselection_shard.sh` | [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md#3-reconstruction-and-preselection) |
 | Make analysis tables, plots, and BDT/NN studies | `studies/reconstruction/`, `scripts/run_bdt_study.sh`, `scripts/run_nn_study.sh` | [`docs/BDT_WORKFLOW.md`](docs/BDT_WORKFLOW.md) |
