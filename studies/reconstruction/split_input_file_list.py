@@ -10,15 +10,15 @@ Full Winter2023 Zbb production example (from the repository root)::
   env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \\
     studies/reconstruction/split_input_file_list.py \\
     --input-list config/zbb_winter2023_full_file_list.txt \\
-    --output-dir outputs/analysis/studies/Zbb_winter2023_chunks_600 \\
+    --output-dir condor/zbb_winter2023_full/batches \\
     --n-shards 600 \\
-    --job-spec-dir outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs \\
-    --queue-list outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs.txt \\
+    --job-spec-dir condor/zbb_winter2023_full/job_cards \\
+    --queue-list condor/zbb_winter2023_full/jobs.txt \\
     --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \\
     --ncpus 4 --event-limit all \\
     --reco-config config/lb_reco_preselection_15mev_45_65.json
 
-Inspect ``jobs/job_000.txt`` and ``file_list_chunk0.txt``. Run one generated
+Inspect ``job_cards/job_000.txt`` and ``batches/file_list_chunk0.txt``. Run one generated
 job card locally with ``bash scripts/run_zbb_preselection_shard.sh JOB.txt``;
 submit the full Condor queue with ``condor_submit scripts/condor_zbb_full_eos_600.sub``.
 For a bounded Condor smoke test, use ``config/zbb_condor_pilot_1file.txt``,

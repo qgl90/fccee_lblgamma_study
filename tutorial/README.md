@@ -255,23 +255,24 @@ cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_
 Condor pool does not provide them, adapt to its supported staging method before
 submission. The pilot's `event_limit=1000` caps this file's reconstruction.
 
-After checking the pilot, generate the full 600 input batches and job cards.
-The complete source list currently has 4,398 files; the generated chunks have
-7 or 8 files each. Inspect any exact card and batch before submission:
+After checking the pilot, generate the full 600 input batches and job cards in
+the repository under `condor/zbb_winter2023_full/`. The complete source list
+has 4,398 files; generated chunks have 7 or 8 files each. Inspect any exact
+card and batch before submission:
 
 ```bash
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/split_input_file_list.py \
   --input-list config/zbb_winter2023_full_file_list.txt \
-  --output-dir outputs/analysis/studies/Zbb_winter2023_chunks_600 \
+  --output-dir condor/zbb_winter2023_full/batches \
   --n-shards 600 \
-  --job-spec-dir outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs \
-  --queue-list outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs.txt \
+  --job-spec-dir condor/zbb_winter2023_full/job_cards \
+  --queue-list condor/zbb_winter2023_full/jobs.txt \
   --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \
   --ncpus 4 --event-limit all \
   --reco-config config/lb_reco_preselection_15mev_45_65.json
-cat outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs/job_000.txt
-cat outputs/analysis/studies/Zbb_winter2023_chunks_600/file_list_chunk0.txt
+cat condor/zbb_winter2023_full/job_cards/job_000.txt
+cat condor/zbb_winter2023_full/batches/file_list_chunk0.txt
 ```
 
 Any batch is runnable locally with the same one-argument interface; choose a
@@ -280,16 +281,22 @@ files:
 
 ```bash
 bash scripts/run_zbb_preselection_shard.sh \
-  outputs/analysis/studies/Zbb_winter2023_chunks_600/jobs/job_000.txt
+  condor/zbb_winter2023_full/job_cards/job_000.txt
 ```
 
-The production submit file queues the 600 paths in `jobs.txt`; each Condor
-process gets one card and writes under its card's EOS `shard_NNN/` directory:
+The submitter verifies that the 600 job cards still match the tracked 4,398
+file manifest, then queues every card through the Condor submit file. Review
+the dry-run validation, then submit all 600 jobs:
 
 ```bash
-mkdir -p /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/condor_logs
-condor_submit scripts/condor_zbb_full_eos_600.sub
+scripts/submit_zbb_full_condor.sh --dry-run
+scripts/submit_zbb_full_condor.sh
+condor_q -nobatch
 ```
+
+Each Condor process receives one `job_NNN.txt` card and writes under its
+configured EOS `shard_NNN/` directory. The submitter creates the EOS scheduler
+log directory before invoking `condor_submit`.
 
 After all 600 `SHARD_COMPLETE.txt` markers exist, merge the candidate tables
 from the EOS output directory and inspect the summary:
