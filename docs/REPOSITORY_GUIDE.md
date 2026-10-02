@@ -65,7 +65,7 @@ source the generation stack in the shell that launches Snakemake;
 ## 1. Event generation
 
 The default `Snakefile` target makes the 500k PHSP Λγ and Λη files. For the
-three explicitly named 100k samples used in the present preselection, the
+six explicitly named 100k forced samples available for preselection, the
 configuration is `preselection_generation` in `config/config.yaml`:
 
 | Label | Decay file | Base seed | Output stem |
@@ -73,16 +73,19 @@ configuration is `preselection_generation` in `config/config.yaml`:
 | `signal_phsp` / `Lb2LambdaGamma` | `evtgen/Lb2LambdaGamma.dec` | 71501 | `Lb2LambdaGamma_nev100000` |
 | `signal_physics` / `Lb2LambdaGammaPhysics` | `evtgen/Lb2LambdaGamma_trpol.dec` | 71601 | `Lb2LambdaGammaPhysics_nev100000` |
 | `lbgamma_eta` / `Lb2LambdaEta` | `evtgen/Lb2LambdaEta.dec` | 71701 | `Lb2LambdaEta_nev100000` |
+| `lbgamma_pi0` / `Lb2LambdaPi0Physics` | `evtgen/Lb2LambdaPi0.dec` | 71801 | `Lb2LambdaPi0Physics_nev100000` |
+| `lbgamma_eta_physics` / `Lb2LambdaEtaPhysics` | `evtgen/Lb2LambdaEtaPhysics.dec` | 71901 | `Lb2LambdaEtaPhysics_nev100000` |
+| `lbgamma_pi0_phsp` / `Lb2LambdaPi0` | `evtgen/Lb2LambdaPi0PHSP.dec` | 72001 | `Lb2LambdaPi0_nev100000` |
 
 Each uses ten independent chunks of 10,000 events; chunk seed is base seed plus
 the zero-based chunk number. These are forced-decay samples, not physical-rate
-predictions. The HELAMP file is an angular-model scenario; it does not by
+predictions. Each HELAMP file is an angular-model scenario; none of them by
 itself specify the Λb production polarization at the Z pole.
 
 ### Local Snakemake generation
 
 From a shell where the Key4hep generation stack is not already sourced, inspect
-and then run the three merge targets:
+and then run the six merge targets:
 
 ```bash
 env -u PYTHONPATH -u PYTHONHOME XDG_CACHE_HOME="$PWD/.snakemake/cache" \
@@ -90,17 +93,23 @@ env -u PYTHONPATH -u PYTHONHOME XDG_CACHE_HOME="$PWD/.snakemake/cache" \
   --printshellcmds --dry-run \
   outputs/delphes/Lb2LambdaGamma_nev100000_IDEA_edm4hep.root \
   outputs/delphes/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root \
-  outputs/delphes/Lb2LambdaEta_nev100000_IDEA_edm4hep.root
+  outputs/delphes/Lb2LambdaEta_nev100000_IDEA_edm4hep.root \
+  outputs/delphes/Lb2LambdaPi0Physics_nev100000_IDEA_edm4hep.root \
+  outputs/delphes/Lb2LambdaEtaPhysics_nev100000_IDEA_edm4hep.root \
+  outputs/delphes/Lb2LambdaPi0_nev100000_IDEA_edm4hep.root
 
 env -u PYTHONPATH -u PYTHONHOME XDG_CACHE_HOME="$PWD/.snakemake/cache" \
   myenv/bin/python -m snakemake --snakefile Snakefile --cores 12 \
   --printshellcmds \
   outputs/delphes/Lb2LambdaGamma_nev100000_IDEA_edm4hep.root \
   outputs/delphes/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root \
-  outputs/delphes/Lb2LambdaEta_nev100000_IDEA_edm4hep.root
+  outputs/delphes/Lb2LambdaEta_nev100000_IDEA_edm4hep.root \
+  outputs/delphes/Lb2LambdaPi0Physics_nev100000_IDEA_edm4hep.root \
+  outputs/delphes/Lb2LambdaEtaPhysics_nev100000_IDEA_edm4hep.root \
+  outputs/delphes/Lb2LambdaPi0_nev100000_IDEA_edm4hep.root
 ```
 
-Snakemake runs all 30 chunk jobs, validates each ROOT `events` count, then
+Snakemake runs all 60 chunk jobs, validates each ROOT `events` count, then
 merges the ten chunks per sample. Logs are in `outputs/logs/`.
 
 ### Condor generation
@@ -113,7 +122,7 @@ submitting:
 scripts/submit_forced_samples_100k_condor.sh --dry-run
 ```
 
-When the printed 30 rows and paths are correct, submit:
+When the printed 60 rows and paths are correct, submit:
 
 ```bash
 scripts/submit_forced_samples_100k_condor.sh
@@ -129,6 +138,9 @@ complete, merge and validate:
 bash scripts/merge_chunks.sh Lb2LambdaGamma 100000 10
 bash scripts/merge_chunks.sh Lb2LambdaGammaPhysics 100000 10
 bash scripts/merge_chunks.sh Lb2LambdaEta 100000 10
+bash scripts/merge_chunks.sh Lb2LambdaEtaPhysics 100000 10
+bash scripts/merge_chunks.sh Lb2LambdaPi0 100000 10
+bash scripts/merge_chunks.sh Lb2LambdaPi0Physics 100000 10
 ```
 
 Use `--help` on the shell helpers for argument descriptions. If a job is

@@ -1,0 +1,38 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
+# Forced Lambda_b0 -> Lambda0(p+ pi-) eta(gamma gamma), charge conjugate.
+# PQCD S1 eta-mixing benchmark from Table II, arXiv:2302.13785:
+#   M_S = -1.9 - 11.2i, M_P = -8.9 + 32.1i (common units 1e-10).
+# With r=m(Lambda0)/m(Lambda_b0), H+ proportional to
+# (1+r) M_S - (1-r) M_P and H- to (1+r) M_S + (1-r) M_P.
+# Unit-normalized magnitudes and relative phase below reproduce alpha=+0.733.
+# EvtGen HELAMP phases are in radians; the common phase is set to zero.
+# This is a named theoretical scenario, not a measured amplitude model.
+# Lambda0 HELAMP matches Lb2LambdaGamma_trpol.dec and Lb2LambdaPi0.dec.
+# Forced fractions are not physical branching fractions.
+
+Alias Lambdab0_SIGNAL Lambda_b0
+Alias aLambdab0_SIGNAL anti-Lambda_b0
+ChargeConj Lambdab0_SIGNAL aLambdab0_SIGNAL
+
+Alias Lambda0_SIGNAL Lambda0
+Alias aLambda0_SIGNAL anti-Lambda0
+ChargeConj Lambda0_SIGNAL aLambda0_SIGNAL
+
+Alias eta_SIGNAL eta
+ChargeConj eta_SIGNAL eta_SIGNAL
+
+Decay Lambdab0_SIGNAL
+  1.0 Lambda0_SIGNAL eta_SIGNAL HELAMP 0.93082244 0.0 0.36547173 -2.61205672;
+Enddecay
+CDecay aLambdab0_SIGNAL
+
+Decay Lambda0_SIGNAL
+  1.0 p+ pi- HELAMP .906 0. .423 0.;
+Enddecay
+CDecay aLambda0_SIGNAL
+
+Decay eta_SIGNAL
+  1.0 gamma gamma PHSP;
+Enddecay
+
+End

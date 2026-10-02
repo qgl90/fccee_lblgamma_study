@@ -10,7 +10,8 @@ Usage:
   scripts/run_reco_preselection.sh SAMPLE INPUT_ROOT|FILE_LIST OUTPUT_ROOT EVENT_LIMIT RECO_CONFIG [NCPUS]
 
 Arguments:
-  SAMPLE       Trace label: signal_phsp, signal_physics, lbgamma_eta, or zbb
+  SAMPLE       Trace label: signal_phsp, signal_physics, lbgamma_eta,
+               lbgamma_eta_physics, lbgamma_pi0_phsp, lbgamma_pi0, or zbb
   INPUT_ROOT   Input EDM4hep ROOT file, or .txt/.list containing ROOT paths
   OUTPUT_ROOT  Destination ROOT file path
   EVENT_LIMIT  Total entries (1..1000), or 'all' for all listed files
@@ -42,7 +43,7 @@ ncpus=${6:-4}
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
 case "$sample" in
-  signal_phsp|signal_physics|lbgamma_eta|zbb) ;;
+  signal_phsp|signal_physics|lbgamma_eta|lbgamma_eta_physics|lbgamma_pi0_phsp|lbgamma_pi0|zbb) ;;
   *) echo "Unknown sample label: $sample" >&2; exit 2 ;;
 esac
 inputs=()

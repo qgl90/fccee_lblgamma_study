@@ -136,7 +136,9 @@ class Analysis:
         self.output_dir = f"outputs/{sample_name}_native_batch_3d_activity_v2_work"
         self.run_batch = True
         self.batch_queue = self.options.queue
+        self.batchQueue = self.options.queue        
         self.comp_group = self.options.comp_group
+        self.compGroup = self.options.comp_group        
         self.n_threads = self.ncpus
         self.nCPUS = self.ncpus
         self.output_dir_eos = self.options.output_eos

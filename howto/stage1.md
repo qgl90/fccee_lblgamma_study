@@ -2,9 +2,18 @@
 
 Run these commands from the repository root. Stage 1 reads **Delphes EDM4hep**
 files and writes a ROOT `events` tree containing events with at least one
-Λb candidate. Physics, PHSP, and Λb→Λη are each processed directly; the
-inclusive Z-flavour samples are split into Condor chunks. The η sample is
-deliberately reconstructed under the **one-photon Λb→Λγ hypothesis**.
+Λb candidate. Physics, PHSP, Λb→Λη, and Λb→Λπ⁰ are processed directly; the
+inclusive Z-flavour samples are split into Condor chunks. The η and π⁰
+samples are deliberately reconstructed under the **one-photon Λb→Λγ
+hypothesis**.
+The generation commands for these inputs and the new Λb→Λπ⁰(γγ) forced
+mode are in [delphes_production.md](delphes_production.md). The π⁰ mode uses
+the same one-photon Stage 1 reconstruction for a partial-background study.
+The 100k generation config now offers PHSP and HELAMP variants of both
+Λη and Λπ⁰. In the full Snakemake chain, `lbgamma_eta` and
+`lbgamma_pi0_phsp` are PHSP; `lbgamma_eta_physics` and `lbgamma_pi0`
+are HELAMP. These variants share the candidate builder and differ only in
+the named generator decay scenario.
 
 ## The reconstruction shared by both execution modes
 
@@ -81,7 +90,7 @@ completed direct v2 campaign and its hashes are in
 Use a fresh output directory for a new run; the examples below do not
 overwrite the existing `_v2.root` files.
 
-## Direct runs: Physics, PHSP, and Λb→Λη
+## Direct runs: Physics, PHSP, Λb→Λη, and Λb→Λπ⁰
 
 Set an output directory with enough space. The following names are examples;
 choose a new `RUN_TAG` for each campaign:
