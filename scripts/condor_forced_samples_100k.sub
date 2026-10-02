@@ -1,0 +1,15 @@
+# Submit one job per 10k-event chunk for each configured 100k forced sample.
+# Edit REPO_DIR for the shared path visible on execute nodes.
+REPO_DIR = /localdisk2/rquaglia/fccee/fccee_lblgamma_study
+
+universe = vanilla
+initialdir = $(REPO_DIR)
+executable = /usr/bin/bash
+arguments = scripts/produce_chunk.sh $(sample) $(chunk) $(seed) $(chunk_events) $(total_events)
+request_cpus = 1
+should_transfer_files = NO
+getenv = True
+output = $(REPO_DIR)/outputs/logs/condor/generation_$(sample)_chunk$(chunk).out
+error = $(REPO_DIR)/outputs/logs/condor/generation_$(sample)_chunk$(chunk).err
+log = $(REPO_DIR)/outputs/logs/condor/generation.log
+queue sample, chunk, seed, chunk_events, total_events from work/condor/forced_samples_100k.queue

@@ -1,0 +1,18 @@
+# One-shard, 1,000-event Condor smoke test. The executor's only argument is a
+# generated job_NNN.txt card, which can also be run directly from a shell.
+REPO_DIR = /localdisk2/rquaglia/fccee/fccee_lblgamma_study
+JOB_SPECS = $(REPO_DIR)/outputs/analysis/studies/zbb_condor_pilot_condor/jobs.txt
+
+universe = vanilla
+executable = $(REPO_DIR)/scripts/run_zbb_preselection_shard.sh
+arguments = "$(JOB_SPEC)"
+initialdir = $(REPO_DIR)
+request_cpus = 1
+request_memory = 8 GB
+request_disk = 5 GB
+should_transfer_files = NO
+getenv = True
+output = /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs/pilot.$(Process).out
+error = /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs/pilot.$(Process).err
+log = /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs/condor_pilot.log
+queue JOB_SPEC from $(JOB_SPECS)

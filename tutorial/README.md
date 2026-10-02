@@ -6,9 +6,12 @@ Use PHSP as the acceptance reference, `signal_physics` for the HELAMP angular mo
 
 ## 0. Check the local setup
 
-Generation uses the Key4hep setup in `config/config.yaml`; reconstruction uses the local FCCAnalyses build. Do not source both setups in the same shell.
+Analysis utilities use the repository-local LbConda `myenv`; generation and FCCAnalyses use their own Key4hep stacks. Set up `myenv` once per checkout before running Snakemake, flattening, plots, or BDT studies. Do not source the generation stack in the Snakemake parent shell.
 
 ```bash
+scripts/bootstrap_analysis_env.sh
+myenv/run python --version
+myenv/bin/python -c 'import numpy, uproot, awkward, pyarrow, pandas, matplotlib, sklearn, xgboost, snakemake; print("analysis imports OK")'
 bash scripts/fetch_local_inputs.sh
 bash scripts/check_environment.sh
 bash scripts/build_fccanalyses.sh 4
@@ -57,7 +60,7 @@ python3 scripts/check_root_entries.py outputs/delphes/Lb2LambdaEta_nev100000_IDE
 ls -lh outputs/delphes/*nev100000_IDEA_edm4hep.root
 ```
 
-Use a fresh shell for the reconstruction section below; it sources the local FCCAnalyses setup itself.
+Use a fresh shell for the reconstruction section below; it sources the local FCCAnalyses setup itself. Reconstruction uses the Python executable recorded in the FCCAnalyses build cache (Python 3.10), while the analysis tools above run in `myenv` (Python 3.11).
 
 Inspect production provenance in a chunk log:
 
@@ -190,28 +193,159 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
 wc -l outputs/analysis/studies/Zbb_winter2023_all_files.txt
 ```
 
-The Condor submit file uses the complete ordered list and expects the shared
-repository and EOS inputs to be mounted on workers. Confirm its `REPO_DIR`,
-`FILE_LIST`, and `OUTPUT_DIR`, then submit the 600 shards:
+The repository keeps the ordered 4,398-path snapshot in
+[`config/zbb_winter2023_full_file_list.txt`](../config/zbb_winter2023_full_file_list.txt).
+Use this tracked file for reproducible splitting. The catalog command above
+can still be used to refresh a campaign snapshot; compare the new paths and
+counts before replacing the tracked manifest.
+
+### Run one Condor-style job locally
+
+This executes the same worker script and job-card settings that Condor will
+use, but in the current shell. Start from the repository root on a host where
+the Winter2023 EOS input is mounted and the repository's `myenv` and
+`external/FCCAnalyses` setup are available. First check the input and generate
+one batch from one file, capped at 1,000 events:
 
 ```bash
-sed -n '1,12p' scripts/condor_zbb_preselection_600.sub
-mkdir -p outputs/analysis/studies/zbb_preselection15_all/condor_logs
-condor_submit scripts/condor_zbb_preselection_600.sub
+cd /localdisk2/rquaglia/fccee/fccee_lblgamma_study
+test -r /eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_000083138.root
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/split_input_file_list.py \
+  --input-list config/zbb_condor_pilot_1file.txt \
+  --output-dir outputs/analysis/studies/zbb_condor_pilot/batches \
+  --n-shards 1 \
+  --job-spec-dir outputs/analysis/studies/zbb_condor_pilot/jobs \
+  --queue-list outputs/analysis/studies/zbb_condor_pilot/jobs.txt \
+  --output-root outputs/analysis/studies/zbb_condor_pilot_local \
+  --ncpus 1 --event-limit 1000 \
+  --reco-config config/lb_reco_preselection_15mev_45_65.json
+cat outputs/analysis/studies/zbb_condor_pilot/jobs/job_000.txt
+cat outputs/analysis/studies/zbb_condor_pilot/batches/file_list_chunk0.txt
 ```
 
-Each shard writes per-source ROOT, Parquet, selected/rejected Parquet, and JSON
-summaries under `outputs/analysis/studies/zbb_preselection15_all/shard_NNN/`.
-After all 600 `SHARD_COMPLETE.txt` markers exist, merge the mass-selected
-candidate tables and inspect the summary:
+The job card holds the exact runner settings: input batch, full manifest,
+output directory, CPU count, event limit, and reconstruction config. Now run
+that card locally. This performs reconstruction, candidate flattening, and
+the mass-window selected/rejected split for the first 1,000 source events:
 
 ```bash
-find outputs/analysis/studies/zbb_preselection15_all -name SHARD_COMPLETE.txt | wc -l
+bash scripts/run_zbb_preselection_shard.sh \
+  outputs/analysis/studies/zbb_condor_pilot/jobs/job_000.txt
+cat outputs/analysis/studies/zbb_condor_pilot_local/shard_000/SHARD_COMPLETE.txt
+cat outputs/analysis/studies/zbb_condor_pilot_local/shard_000/zbb_file_0000_summary.json
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python - <<'PY'
+import pyarrow.parquet as pq
+import uproot
+
+base = "outputs/analysis/studies/zbb_condor_pilot_local/shard_000/zbb_file_0000"
+print("reco tree entries:", uproot.open(base + "_reco.root")["events"].num_entries)
+for kind in ("candidates", "selected", "rejected"):
+    table = pq.read_table(base + f"_{kind}.parquet")
+    n_events = len(set(table["event_entry"].to_pylist())) if table.num_rows else 0
+    print(f"{kind}: {table.num_rows} candidate rows in {n_events} events")
+PY
+```
+
+The reconstructed ROOT tree keeps only candidate-bearing events. Use the
+original input limit (1,000) as the processed-event denominator, not the ROOT
+tree entry count. A zero-candidate event is absent from the flattened
+candidate table. The card writes only to the local `outputs/` area.
+
+For a separate Condor smoke-test card with EOS output, generate a second card
+with identical input and reconstruction settings:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/split_input_file_list.py \
+  --input-list config/zbb_condor_pilot_1file.txt \
+  --output-dir outputs/analysis/studies/zbb_condor_pilot/batches \
+  --n-shards 1 \
+  --job-spec-dir outputs/analysis/studies/zbb_condor_pilot_condor/jobs \
+  --queue-list outputs/analysis/studies/zbb_condor_pilot_condor/jobs.txt \
+  --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000 \
+  --ncpus 1 --event-limit 1000 \
+  --reco-config config/lb_reco_preselection_15mev_45_65.json
+```
+
+Submit that card with Condor. First check that this pool exposes the shared
+repository, reads the input EOS file, and supports writes to the requested EOS
+output directory. The shared repository checkout must already contain the
+FCCAnalyses build and its repository-local `myenv`; bootstrap that environment
+in this checkout before submitting:
+
+```bash
+scripts/bootstrap_analysis_env.sh
+bash scripts/check_environment.sh
+```
+
+Create the scheduler log directory before submission:
+
+```bash
+mkdir -p /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs
+condor_submit scripts/condor_zbb_full_eos_test.sub
+condor_q -nobatch
+cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/condor_logs/pilot.0.out
+cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/pilot_1000/shard_000/SHARD_COMPLETE.txt
+```
+
+`should_transfer_files = NO` assumes shared mounts on execute nodes. If the
+Condor pool does not provide them, adapt to its supported staging method before
+submission. The pilot's `event_limit=1000` caps this file's reconstruction.
+
+After checking the pilot, generate the full 600 input batches and job cards in
+the repository under `condor/zbb_winter2023_full/`. The complete source list
+has 4,398 files; generated chunks have 7 or 8 files each. Inspect any exact
+card and batch before submission:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/split_input_file_list.py \
+  --input-list config/zbb_winter2023_full_file_list.txt \
+  --output-dir condor/zbb_winter2023_full/batches \
+  --n-shards 600 \
+  --job-spec-dir condor/zbb_winter2023_full/job_cards \
+  --queue-list condor/zbb_winter2023_full/jobs.txt \
+  --output-root /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \
+  --ncpus 4 --event-limit all \
+  --reco-config config/lb_reco_preselection_15mev_45_65.json
+cat condor/zbb_winter2023_full/job_cards/job_000.txt
+cat condor/zbb_winter2023_full/batches/file_list_chunk0.txt
+```
+
+Any batch is runnable locally with the same one-argument interface; choose a
+pilot card for a bounded local run, since the full cards process all listed
+files:
+
+```bash
+bash scripts/run_zbb_preselection_shard.sh \
+  condor/zbb_winter2023_full/job_cards/job_000.txt
+```
+
+The submitter verifies that the 600 job cards still match the tracked 4,398
+file manifest, then queues every card through the Condor submit file. Review
+the dry-run validation, then submit all 600 jobs:
+
+```bash
+scripts/submit_zbb_full_condor.sh --dry-run
+scripts/submit_zbb_full_condor.sh
+condor_q -nobatch
+```
+
+Each Condor process receives one `job_NNN.txt` card and writes under its
+configured EOS `shard_NNN/` directory. The submitter creates the EOS scheduler
+log directory before invoking `condor_submit`.
+
+After all 600 `SHARD_COMPLETE.txt` markers exist, merge the candidate tables
+from the EOS output directory and inspect the summary:
+
+```bash
+find /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor -name SHARD_COMPLETE.txt | wc -l
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/merge_preselection_parquets.py \
-  --input-dir outputs/analysis/studies/zbb_preselection15_all \
-  --output-dir outputs/analysis/studies/zbb_preselection15_all/merged
-cat outputs/analysis/studies/zbb_preselection15_all/merged/merge_summary.json
+  --input-dir /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor \
+  --output-dir /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/merged
+cat /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/merged/merge_summary.json
 ```
 
 ## 5. Offline mass selection and plots
