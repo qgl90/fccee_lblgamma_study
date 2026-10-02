@@ -28,7 +28,7 @@ struct Config {
   double lambda_mass_gev = 1.115683;
   double pi0_mass_gev = 0.1349768;
   double cone_r02 = 0.2, cone_r03 = 0.3, cone_r05 = 0.5;
-  double cone_r07 = 0.7, cone_r10 = 1.0, cone_r70 = 7.0;
+  double cone_r07 = 0.7, cone_r10 = 1.0, cone_r20 = 2.0;
 };
 
 struct Result {
@@ -66,7 +66,8 @@ struct Result {
   std::vector<float> lambda_pv_cos, lambda_pv_dca;
   std::vector<float> roe_thrust_x, roe_thrust_y, roe_thrust_z;
   std::vector<int> roe_n_other, roe_n_same;
-  // [cone R02/R03/R05/R07/R10/R70][all/charged/neutral], candidate removed.
+  // [cone R02/R03/R05/R07/R10/R20][all/charged/neutral]. The iso_* fields
+  // are photon-centered; lambda_iso_* fields are fitted-Lambda-centered.
   std::array<std::array<std::vector<float>,3>,6> iso_activity_px;
   std::array<std::array<std::vector<float>,3>,6> iso_activity_py;
   std::array<std::array<std::vector<float>,3>,6> iso_activity_pz;
@@ -77,6 +78,15 @@ struct Result {
   std::array<std::vector<float>,6> iso_charged_d0_min, iso_charged_d0_max;
   std::array<std::vector<float>,6> iso_charged_absd0_min, iso_charged_absd0_max;
   std::array<std::vector<int>,6> iso_charged_n_d0;
+  std::array<std::array<std::vector<float>,3>,6> lambda_iso_activity_px;
+  std::array<std::array<std::vector<float>,3>,6> lambda_iso_activity_py;
+  std::array<std::array<std::vector<float>,3>,6> lambda_iso_activity_pz;
+  std::array<std::array<std::vector<float>,3>,6> lambda_iso_activity_p;
+  std::array<std::array<std::vector<float>,3>,6> lambda_iso_activity_energy;
+  std::array<std::array<std::vector<int>,3>,6> lambda_iso_activity_n;
+  std::array<std::vector<float>,6> lambda_iso_charged_d0_min, lambda_iso_charged_d0_max;
+  std::array<std::vector<float>,6> lambda_iso_charged_absd0_min, lambda_iso_charged_absd0_max;
+  std::array<std::vector<int>,6> lambda_iso_charged_n_d0;
   std::vector<float> arm_alpha, arm_qt;
 };
 
@@ -207,7 +217,9 @@ inline Result compute(const LbCandidateBuilder::Result& candidates,
     std::vector<int> other_gamma_indices;
     std::vector<float> same_hemi_all_masses,same_hemi_selected_masses;
     std::vector<int> same_hemi_all_indices,same_hemi_selected_indices;
-    std::array<std::array<Activity,3>,6> activity{};
+    std::array<std::array<Activity,3>,6> activity{},lambda_activity{};
+    const std::array<double,6> radii={config.cone_r02,config.cone_r03,
+        config.cone_r05,config.cone_r07,config.cone_r10,config.cone_r20};
     const double lambda_event_side=candidates.thrust_x*lambda.px+
         candidates.thrust_y*lambda.py+candidates.thrust_z*lambda.pz;
     double best_dm=std::numeric_limits<double>::infinity();
@@ -250,38 +262,47 @@ inline Result compute(const LbCandidateBuilder::Result& candidates,
       const double dr=delta_r(gamma,q);
       const double partner_side=candidates.thrust_x*q.px+
           candidates.thrust_y*q.py+candidates.thrust_z*q.pz;
-      // New isolation sums use only the fitted Lambda hemisphere and exclude
-      // all three candidate daughters. The legacy ratio branches below keep
-      // their original definition for backward compatibility.
-      if (static_cast<int>(j)!=ip && static_cast<int>(j)!=ii &&
-          lambda_event_side*partner_side>0. && std::isfinite(q.px) &&
+      // Both isolation centers use the fitted Lambda hemisphere. Charged
+      // activity excludes the Lambda daughters, neutral activity excludes
+      // the candidate photon, and all activity excludes all three daughters.
+      // Legacy ratio branches below retain their old definition.
+      if (lambda_event_side*partner_side>0. && std::isfinite(q.px) &&
           std::isfinite(q.py) && std::isfinite(q.pz) &&
           std::isfinite(q.energy)) {
         const bool charged_object=particles[j].charge!=0.f;
-        const int kind=charged_object ? 1 : 2;
-        const std::array<double,6> radii={config.cone_r02,config.cone_r03,
-            config.cone_r05,config.cone_r07,config.cone_r10,config.cone_r70};
-        for (size_t cone=0;cone<radii.size();++cone) {
-          if (!(dr<radii[cone])) continue;
-          for (int cls : {0,kind}) {
-            auto& item=activity[cone][cls];
-            item.px+=q.px;item.py+=q.py;item.pz+=q.pz;
-            item.energy+=q.energy;++item.n;
-          }
-          if (charged_object && candidates.pv_valid &&
-              particles[j].tracks_end>particles[j].tracks_begin &&
-              particles[j].tracks_begin<tracks.size()) {
-            const auto& track=tracks[particles[j].tracks_begin];
-            const double d0=track.D0+candidates.pv_x*std::sin(track.phi)-
-                candidates.pv_y*std::cos(track.phi);
-            if (std::isfinite(d0)) {
-              auto& charged_activity=activity[cone][1];
-              const double absolute=std::abs(d0);
-              charged_activity.min_d0=std::min(charged_activity.min_d0,d0);
-              charged_activity.max_d0=std::max(charged_activity.max_d0,d0);
-              charged_activity.min_absd0=std::min(charged_activity.min_absd0,absolute);
-              charged_activity.max_absd0=std::max(charged_activity.max_absd0,absolute);
-              ++charged_activity.n_d0;
+        const bool include_charged=charged_object &&
+            static_cast<int>(j)!=ip && static_cast<int>(j)!=ii;
+        const bool include_neutral=!charged_object && static_cast<int>(j)!=ig;
+        const bool include_all=static_cast<int>(j)!=ip &&
+            static_cast<int>(j)!=ii && static_cast<int>(j)!=ig;
+        const std::array<double,2> center_dr={dr,delta_r(lambda,q)};
+        for (size_t center=0;center<center_dr.size();++center) {
+          auto& center_activity=center==0 ? activity : lambda_activity;
+          for (size_t cone=0;cone<radii.size();++cone) {
+            if (!(center_dr[center]<radii[cone])) continue;
+            for (int cls=0;cls<3;++cls) {
+              if ((cls==0 && !include_all) ||
+                  (cls==1 && !include_charged) ||
+                  (cls==2 && !include_neutral)) continue;
+              auto& item=center_activity[cone][cls];
+              item.px+=q.px;item.py+=q.py;item.pz+=q.pz;
+              item.energy+=q.energy;++item.n;
+            }
+            if (include_charged && candidates.pv_valid &&
+                particles[j].tracks_end>particles[j].tracks_begin &&
+                particles[j].tracks_begin<tracks.size()) {
+              const auto& track=tracks[particles[j].tracks_begin];
+              const double d0=track.D0+candidates.pv_x*std::sin(track.phi)-
+                  candidates.pv_y*std::cos(track.phi);
+              if (std::isfinite(d0)) {
+                auto& charged_activity=center_activity[cone][1];
+                const double absolute=std::abs(d0);
+                charged_activity.min_d0=std::min(charged_activity.min_d0,d0);
+                charged_activity.max_d0=std::max(charged_activity.max_d0,d0);
+                charged_activity.min_absd0=std::min(charged_activity.min_absd0,absolute);
+                charged_activity.max_absd0=std::max(charged_activity.max_absd0,absolute);
+                ++charged_activity.n_d0;
+              }
             }
           }
         }
@@ -349,27 +370,41 @@ inline Result compute(const LbCandidateBuilder::Result& candidates,
     out.gamma_combo_same_hemi_selected_mass.push_back(std::move(same_hemi_selected_masses));
     out.gamma_combo_same_hemi_selected_index.push_back(std::move(same_hemi_selected_indices));
 
-    for (size_t cone=0;cone<activity.size();++cone) {
-      for (size_t cls=0;cls<3;++cls) {
-        const auto& item=activity[cone][cls];
-        out.iso_activity_px[cone][cls].push_back(static_cast<float>(item.px));
-        out.iso_activity_py[cone][cls].push_back(static_cast<float>(item.py));
-        out.iso_activity_pz[cone][cls].push_back(static_cast<float>(item.pz));
-        out.iso_activity_p[cone][cls].push_back(static_cast<float>(
-            std::sqrt(item.px*item.px+item.py*item.py+item.pz*item.pz)));
-        out.iso_activity_energy[cone][cls].push_back(static_cast<float>(item.energy));
-        out.iso_activity_n[cone][cls].push_back(item.n);
+    for (size_t center=0;center<2;++center) {
+      const auto& center_activity=center==0 ? activity : lambda_activity;
+      auto& px=center==0 ? out.iso_activity_px : out.lambda_iso_activity_px;
+      auto& py=center==0 ? out.iso_activity_py : out.lambda_iso_activity_py;
+      auto& pz=center==0 ? out.iso_activity_pz : out.lambda_iso_activity_pz;
+      auto& p=center==0 ? out.iso_activity_p : out.lambda_iso_activity_p;
+      auto& energy=center==0 ? out.iso_activity_energy : out.lambda_iso_activity_energy;
+      auto& count=center==0 ? out.iso_activity_n : out.lambda_iso_activity_n;
+      auto& d0_min=center==0 ? out.iso_charged_d0_min : out.lambda_iso_charged_d0_min;
+      auto& d0_max=center==0 ? out.iso_charged_d0_max : out.lambda_iso_charged_d0_max;
+      auto& absd0_min=center==0 ? out.iso_charged_absd0_min : out.lambda_iso_charged_absd0_min;
+      auto& absd0_max=center==0 ? out.iso_charged_absd0_max : out.lambda_iso_charged_absd0_max;
+      auto& n_d0=center==0 ? out.iso_charged_n_d0 : out.lambda_iso_charged_n_d0;
+      for (size_t cone=0;cone<center_activity.size();++cone) {
+        for (size_t cls=0;cls<3;++cls) {
+          const auto& item=center_activity[cone][cls];
+          px[cone][cls].push_back(static_cast<float>(item.px));
+          py[cone][cls].push_back(static_cast<float>(item.py));
+          pz[cone][cls].push_back(static_cast<float>(item.pz));
+          p[cone][cls].push_back(static_cast<float>(
+              std::sqrt(item.px*item.px+item.py*item.py+item.pz*item.pz)));
+          energy[cone][cls].push_back(static_cast<float>(item.energy));
+          count[cone][cls].push_back(item.n);
+        }
+        const auto& charged_activity=center_activity[cone][1];
+        d0_min[cone].push_back(charged_activity.n_d0 ?
+            static_cast<float>(charged_activity.min_d0) : kMissing);
+        d0_max[cone].push_back(charged_activity.n_d0 ?
+            static_cast<float>(charged_activity.max_d0) : kMissing);
+        absd0_min[cone].push_back(charged_activity.n_d0 ?
+            static_cast<float>(charged_activity.min_absd0) : kMissing);
+        absd0_max[cone].push_back(charged_activity.n_d0 ?
+            static_cast<float>(charged_activity.max_absd0) : kMissing);
+        n_d0[cone].push_back(charged_activity.n_d0);
       }
-      const auto& charged_activity=activity[cone][1];
-      out.iso_charged_d0_min[cone].push_back(charged_activity.n_d0 ?
-          static_cast<float>(charged_activity.min_d0) : kMissing);
-      out.iso_charged_d0_max[cone].push_back(charged_activity.n_d0 ?
-          static_cast<float>(charged_activity.max_d0) : kMissing);
-      out.iso_charged_absd0_min[cone].push_back(charged_activity.n_d0 ?
-          static_cast<float>(charged_activity.min_absd0) : kMissing);
-      out.iso_charged_absd0_max[cone].push_back(charged_activity.n_d0 ?
-          static_cast<float>(charged_activity.max_absd0) : kMissing);
-      out.iso_charged_n_d0[cone].push_back(charged_activity.n_d0);
     }
 
     const FourMomentum proton{candidates.lb_proton_px[slot],

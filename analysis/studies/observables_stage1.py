@@ -13,12 +13,12 @@ CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "lb_observables.j
 CONFIG = json.loads(CONFIG_PATH.read_text())
 KEYS = ("ecm_gev", "lb_mass_gev", "lambda_mass_gev", "pi0_mass_gev",
         "cone_r02", "cone_r03", "cone_r05", "cone_r07", "cone_r10",
-        "cone_r70")
+        "cone_r20")
 if not all(math.isfinite(float(CONFIG[key])) and float(CONFIG[key]) > 0
            for key in KEYS):
     raise ValueError(f"Invalid candidate-observable config: {CONFIG_PATH}")
 if not (CONFIG["cone_r02"] < CONFIG["cone_r03"] < CONFIG["cone_r05"] <
-        CONFIG["cone_r07"] < CONFIG["cone_r10"] < CONFIG["cone_r70"]):
+        CONFIG["cone_r07"] < CONFIG["cone_r10"] < CONFIG["cone_r20"]):
     raise ValueError("Isolation cone sizes must increase")
 
 BASE_BRANCHES = (
@@ -46,15 +46,16 @@ BASE_BRANCHES = (
 )
 
 ACTIVITY_BRANCHES = {}
-for cone_index, cone_name in enumerate(("R02", "R03", "R05", "R07", "R10", "R70")):
-    for class_index, class_name in enumerate(("all", "charged", "neutral")):
-        for metric in ("px", "py", "pz", "p", "energy", "n"):
-            ACTIVITY_BRANCHES[f"iso_{cone_name}_{class_name}_{metric}"] = (
-                f"candidate_observables.iso_activity_{metric}"
-                f"[{cone_index}][{class_index}]")
-    for metric in ("d0_min", "d0_max", "absd0_min", "absd0_max", "n_d0"):
-        ACTIVITY_BRANCHES[f"iso_{cone_name}_charged_{metric}"] = (
-            f"candidate_observables.iso_charged_{metric}[{cone_index}]")
+for cone_index, cone_name in enumerate(("R02", "R03", "R05", "R07", "R10", "R20")):
+    for prefix, member_prefix in (("iso", "iso"), ("lambda0_iso", "lambda_iso")):
+        for class_index, class_name in enumerate(("all", "charged", "neutral")):
+            for metric in ("px", "py", "pz", "p", "energy", "n"):
+                ACTIVITY_BRANCHES[f"{prefix}_{cone_name}_{class_name}_{metric}"] = (
+                    f"candidate_observables.{member_prefix}_activity_{metric}"
+                    f"[{cone_index}][{class_index}]")
+        for metric in ("d0_min", "d0_max", "absd0_min", "absd0_max", "n_d0"):
+            ACTIVITY_BRANCHES[f"{prefix}_{cone_name}_charged_{metric}"] = (
+                f"candidate_observables.{member_prefix}_charged_{metric}[{cone_index}]")
 
 BRANCHES = BASE_BRANCHES + tuple(ACTIVITY_BRANCHES)
 

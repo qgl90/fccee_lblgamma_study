@@ -35,6 +35,33 @@ reconstructed m(Λγ). Candidate construction does not use MC truth. Truth is
 attached afterward as an output label. The later ±5 MeV Λ⁰ window, photon
 vetoes, K⁰S veto, and BDT belong to **offline selection**, not Stage 1.
 
+The truth labeler saves `reco_mc_index`/`reco_mc_pdg` and four successive
+ancestors for every reconstructed particle: `reco_mc_parent_*`,
+`reco_mc_grandparent_*`, `reco_mc_greatgrandparent_*`, and
+`reco_mc_greatgreatgrandparent_*`, where `*` is `index` or `pdg`. Candidate
+proton, pion, and photon indices select the corresponding entries. The chain
+follows the **first** valid parent at each generation in `Particle#0.index`.
+It requires the existing unique stable MC association for the starting
+reconstructed particle; otherwise ancestry indices are `-1` and PDGs are
+`0`. A missing later ancestor uses the same sentinels from that generation
+onward. Multiple-parent ambiguity is not resolved by this single-path
+diagnostic; `reco_mc_n_parents` records the starting particle's parent count.
+The candidate flattener exports these as `proton_mc_*`, `pion_mc_*`, and
+`photon_mc_*` columns; Stage 2 copies the chain into prepared and scored
+candidate rows as diagnostic labels. Existing Stage 1 ROOT files must be
+reprocessed to contain the two newly added generations.
+
+Current Stage 1 isolation has photon-centered `iso_RXX_*` and fitted
+Λ⁰-centered `lambda0_iso_RXX_*` activity at ΔR = 0.2, 0.3, 0.5, 0.7, 1.0,
+and 2.0 (`R20`). Both use the fitted Λ⁰ thrust hemisphere. Charged activity
+removes the candidate p and π, neutral activity removes the candidate γ,
+and all activity removes all three. The older `R70` branch belongs to the
+previous observable config and is absent from newly processed tuples.
+See [`understand_isolation.md`](understand_isolation.md) for exact definitions.
+Use a new campaign name when reprocessing with this changed observable
+config; the recorded `_v2` outputs are historical inputs, not equivalent
+versions of these fields.
+
 ## Environment and provenance
 
 On the machine with the FCCAnalyses build and EOS access:
@@ -60,7 +87,7 @@ Set an output directory with enough space. The following names are examples;
 choose a new `RUN_TAG` for each campaign:
 
 ```bash
-RUN_TAG=stage1_v2_my_run
+RUN_TAG=stage1_v3_my_run
 OUT_DIR="$PWD/outputs/analysis/studies/$RUN_TAG"
 mkdir -p "$OUT_DIR"
 RECO_CONFIG="$PWD/config/lb_reco_preselection_15mev_45_65_3d.json"
@@ -100,7 +127,7 @@ unset LB_RECO_CONFIG
 SAMPLE=Zbb                         # or Zcc or Zss
 SAMPLE_LOWER="${SAMPLE,,}"
 INPUT_GLOB="/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_${SAMPLE}_ecm91/events_*.root"
-OUTPUT_EOS="/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/${SAMPLE_LOWER}_full_condor/native_batch_3d_activity_v2"
+OUTPUT_EOS="/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/${SAMPLE_LOWER}_full_condor/native_batch_3d_activity_v3"
 
 fccanalysis run analysis/studies/analysis_preselection_zbb.py \
   --input-glob "$INPUT_GLOB" --chunks 1200 \

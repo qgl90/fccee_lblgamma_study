@@ -21,6 +21,11 @@ tables, BDT training, score scan, and expected-yield plots, is documented in
 
 Candidate-level isolation, π⁰ pairing, Z-recoil and pointing diagnostics are
 documented in [STAGE1_OBSERVABLES.md](STAGE1_OBSERVABLES.md).
+The later dual-center isolation extension, with photon and fitted-Λ⁰ cones
+through R20, is defined in
+[howto/understand_isolation.md](../../howto/understand_isolation.md) and its
+bounded trial is recorded in
+[STAGE1_DUAL_ISOLATION_REVIEW_2026-10-02.md](../../docs/STAGE1_DUAL_ISOLATION_REVIEW_2026-10-02.md).
 The flattened Parquet schema and every candidate/alias column are described in
 [`readme_columns.md`](readme_columns.md).
 

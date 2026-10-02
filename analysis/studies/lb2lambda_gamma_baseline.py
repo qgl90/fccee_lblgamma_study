@@ -60,6 +60,8 @@ _TRUTH = [
     "reco_mc_index", "reco_mc_pdg", "reco_mc_n_parents",
     "reco_mc_parent_index", "reco_mc_parent_pdg",
     "reco_mc_grandparent_index", "reco_mc_grandparent_pdg",
+    "reco_mc_greatgrandparent_index", "reco_mc_greatgrandparent_pdg",
+    "reco_mc_greatgreatgrandparent_index", "reco_mc_greatgreatgrandparent_pdg",
     "reco_p", "reco_energy", "reco_mc_p", "reco_mc_energy",
     "reco_mc_pt", "reco_mc_eta", "reco_mc_vertex_rxy",
     "reco_mc_cos_opening",

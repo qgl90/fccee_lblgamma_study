@@ -106,9 +106,19 @@ columns are provided:
 | `_mc_pdg` | Matched MC PDG ID; zero if no unique match. |
 | `_mc_n_parents`, `_mc_parent_index`, `_mc_parent_pdg` | Number of MC parents and the first parent index/PDG ID when uniquely matched. |
 | `_mc_grandparent_index`, `_mc_grandparent_pdg` | First grandparent index/PDG ID, if available. |
+| `_mc_greatgrandparent_index`, `_mc_greatgrandparent_pdg` | First ancestor at generation three index/PDG ID, if available. |
+| `_mc_greatgreatgrandparent_index`, `_mc_greatgreatgrandparent_pdg` | First ancestor at generation four index/PDG ID, if available. |
 | `_reco_p`, `_reco_energy` | Reconstructed object's momentum magnitude and energy. |
 | `_mc_p`, `_mc_energy`, `_mc_pt`, `_mc_eta`, `_mc_vertex_rxy` | Matched MC momentum, energy, transverse momentum, pseudorapidity, and production radius in mm. Missing values are `-999`. |
 | `_mc_cos_opening` | Cosine between reconstructed and matched MC momentum directions. |
+
+The ancestry fields follow the first valid MC parent at each step, starting
+from a uniquely associated stable MC particle. At each missing generation,
+the index is `-1` and the PDG ID is `0`; later generations are also missing.
+`_mc_n_parents` reports the matched particle's number of valid parents, so a
+first-parent chain should not be interpreted as an exhaustive ancestry graph
+when this count exceeds one. Older ROOT tuples lack the two deepest levels;
+reconstruct Stage 1 to obtain them.
 
 Additional candidate truth labels:
 
@@ -176,17 +186,24 @@ remain available for comparisons. `arm_alpha` is
 `arm_qt` is the momentum of either fitted charged daughter transverse to
 the fitted pπ-pair direction, in GeV. Both are reconstructed-only.
 
-For each `R02`, `R03`, `R05`, `R07`, `R10`, and `R70`, the `iso_R{radius}_{all,charged,neutral}_*`
-families hold `px`, `py`, `pz`, `p`, `energy`, and `n`. `p` is the magnitude of
-the **vector sum** of momenta, not the sum of individual magnitudes. The cone
-is ΔR about the candidate photon. Only objects on the **fitted Λ side of
-the original event thrust axis** are included; the candidate p, π, and γ
-are excluded. Classes use reconstructed charge (`0` means neutral). Empty
-cones have zero sums and count. The charged family also has `d0_min`,
+For each `R02`, `R03`, `R05`, `R07`, `R10`, and `R20`, the
+`iso_RXX_{all,charged,neutral}_*` and
+`lambda0_iso_RXX_{all,charged,neutral}_*` families hold `px`, `py`, `pz`,
+`p`, `energy`, and `n`. `p` is the magnitude of the **vector sum** of momenta,
+not the sum of individual magnitudes. The first family is centered on the
+candidate photon and the second on the fitted Λ⁰ direction. Only objects
+on the **fitted Λ side of the original event thrust axis** are included.
+The charged class excludes the candidate p and π; neutral excludes the
+candidate γ; all excludes p, π, and γ. Classes use reconstructed charge
+(`0` means neutral). Empty cones have zero sums and count. The charged
+family for either center also has `d0_min`,
 `d0_max`, `absd0_min`, `absd0_max` in mm and `n_d0` for linked tracks with a
 finite PV-corrected d0. The four extrema are `-999` when `n_d0=0`.
 These scalar branches are copied by both the general flattener and the
 offline preparation script when present; older ROOT files remain readable.
+Historical tuples have photon-centered `R70` (ΔR=7.0) instead of `R20` and
+do not have Λ⁰-centered isolation. See
+[`howto/understand_isolation.md`](../../howto/understand_isolation.md).
 
 Ratios and angular quantities may be `-999` when the denominator or geometry
 is undefined. The cone sizes and nominal masses come from

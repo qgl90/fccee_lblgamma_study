@@ -23,7 +23,7 @@ DEFAULT_GLOB = (
     "p8_ee_Zbb_ecm91/events_*.root")
 DEFAULT_OUTPUT_EOS = (
     "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/"
-    "zbb_full_condor/native_batch_3d_activity_v2")
+    "zbb_full_condor/native_batch_3d_activity_v3")
 DEFAULT_COMP_GROUP = "group_u_LHCBT3.e_lhcb_lbd"
 DEFAULT_SAMPLE_NAME = "p8_ee_Zbb_ecm91"
 SAMPLE_RE = re.compile(r"p8_ee_Z[a-z]+_ecm91")
