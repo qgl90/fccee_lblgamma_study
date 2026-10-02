@@ -1,3 +1,4 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """Attach candidate isolation, pi0 pairing, and Z-recoil diagnostics.
 
 Selections and candidate construction stay in lb2lambda_gamma_reco.py and

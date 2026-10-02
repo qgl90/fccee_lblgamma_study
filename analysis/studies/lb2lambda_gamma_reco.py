@@ -1,5 +1,5 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """
-Author: Renato Quagliani (rquaglia@cern.ch), main stage-1 analysis for 
 Lambda_b -> Lambda0(p pi) gamma reconstruction chain.
 
 Configured Lambda_b -> Lambda0(p pi) gamma reconstruction.

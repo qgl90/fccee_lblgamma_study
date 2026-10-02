@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """FCCAnalyses native HTCondor entry point for inclusive Z-flavour samples.
 
 Run with ``fccanalysis run``. Custom options follow the analysis path, e.g.:

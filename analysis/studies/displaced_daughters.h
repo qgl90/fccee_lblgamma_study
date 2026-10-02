@@ -1,3 +1,4 @@
+// Author: Renato Quagliani (rquaglia@cern.ch)
 #ifndef LBLGAMMA_STUDIES_DISPLACED_DAUGHTERS_H
 #define LBLGAMMA_STUDIES_DISPLACED_DAUGHTERS_H
 

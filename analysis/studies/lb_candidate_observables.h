@@ -1,3 +1,4 @@
+// Author: Renato Quagliani (rquaglia@cern.ch)
 #ifndef LBLGAMMA_STUDIES_LB_CANDIDATE_OBSERVABLES_H
 #define LBLGAMMA_STUDIES_LB_CANDIDATE_OBSERVABLES_H
 

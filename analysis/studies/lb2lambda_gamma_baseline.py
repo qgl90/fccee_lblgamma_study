@@ -1,6 +1,5 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """
-Author: Renato Quagliani (rquaglia@cern.ch), main stage-1 analysis for 
-
 Shared Lambda_b candidate dataframe and uncut Gamma baseline builder
 
 The baseline writes every event and uses all type-22 reconstructed photons.

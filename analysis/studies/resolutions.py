@@ -1,3 +1,4 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """Event-wide charged-particle and photon truth/reco response ntuple.
 
 Run with fccanalysis run and --files-list; no Lambda_b decay selection is made.
