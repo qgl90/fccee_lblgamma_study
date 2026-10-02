@@ -34,6 +34,7 @@ _LAMBDA = [
     "lambda_vertex_z", "lambda_vertex_chi2", "lambda_flight_rxy",
     "lambda_flight_xyz", "lambda_proton_d0sig", "lambda_pion_d0sig",
     "lambda_flight_rxy_sigma", "lambda_flight_rxy_sig",
+    "lambda_flight_xyz_sigma", "lambda_flight_xyz_sig",
     "lambda_d0", "lambda_d0_sigma", "lambda_d0_sig",
 ]
 _INPUT = [
@@ -53,6 +54,7 @@ _LB = [
     "lb_photon_energy",
     "lb_photon2_energy", "lb_neutral_mass", "lb_neutral_energy",
     "lb_same_hemisphere", "lb_lambda_thrust_cos", "lb_neutral_thrust_cos",
+    "lb_thrust_cos",
 ]
 _TRUTH = [
     "reco_mc_index", "reco_mc_pdg", "reco_mc_n_parents",

@@ -74,6 +74,7 @@ in the following section.
 | `lb_photon_px/py/pz`, `lb_photon_energy` | Selected reconstructed photon momentum and measured energy; no photon vertex fit is performed. |
 | `lb_neutral_mass`, `lb_neutral_energy` | Neutral candidate mass and energy. Gamma mode uses the measured photon four-vector, so its reconstructed mass need not be exactly zero; eta mode uses the two-photon system. |
 | `lb_same_hemisphere` | Whether fitted Lambda and candidate neutral have the same sign of projection on event thrust. This is the Boolean result of the configured hemisphere test. |
+| `lb_thrust_cos` | Cosine of the fitted Lambda_b candidate direction relative to the original full-event thrust axis. Available in new stage-1 snapshots. |
 | `lb_lambda_thrust_cos`, `lb_neutral_thrust_cos` | Cosines of fitted Lambda and neutral momentum relative to event thrust. Useful for angular/hemisphere diagnostics. |
 | `cos_theta_p` (`lb_cos_theta_p`) | Reconstructed helicity angle: proton or antiproton relative to minus the Lambda_b direction in the Lambda rest frame. It is reconstructed from the fitted candidate and is not a truth selection. |
 | `lambda_mass`, `lambda_px/py/pz` | Selected fitted Lambda mass and momentum. The alias `Lambda0_E` is derived by the flattener from the fitted momentum and Lambda mass. |
@@ -147,10 +148,15 @@ particles around the candidate photon. The selected photon itself is excluded.
 | `m_gg_best`, `dm_gg_pi0` | Mass of the selected other photon giving the closest same-event-thrust-hemisphere pair to the π0 mass, and its absolute mass difference from π0. `-999` means no eligible partner. |
 | `E_gamma2`, `dr_gg`, `gamma2_index` | Energy, ΔR, and `ReconstructedParticles` index of that best selected-photon partner; sentinels when no partner exists. |
 | `gamma_combo_other_gamma_mass`, `gamma_combo_other_gamma_index` | Per-candidate **list columns** containing masses and reconstructed indices for pairing the candidate photon with every other raw type-22 reconstructed photon. This is broader than the selected-photon π0-partner search and can support π0/η veto studies. |
+| `gamma_combo_same_hemi_all_mass`, `gamma_combo_same_hemi_all_index` | Per-candidate pair masses and indices for every other raw type-22 photon in the reconstructed Lambda0 thrust hemisphere. Available in new stage-1 snapshots after the same-hemisphere list update. |
+| `gamma_combo_same_hemi_selected_mass`, `gamma_combo_same_hemi_selected_index` | The same hemisphere restriction using only the stage-1 selected-photon collection as partners. An empty list means no eligible partner and passes a diphoton veto. |
 | `m_LamGam` | Reconstructed Lambda+photon mass (same quantity as candidate `lb_mass`). |
 | `m_rec`, `dm_rec` | Recoil mass from the initial-state four-vector minus the ROE in the hemisphere opposite the Lambda candidate, and its difference from the nominal Lambda_b mass. |
 | `m_rec_all` | Recoil mass after subtracting all other reconstructed objects from the initial state, excluding candidate proton, pion, and photon. |
 | `deltaE`, `px_bal`, `py_bal`, `pz_bal`, `deltaP` | Energy and three-momentum balance of reconstructed signal plus opposite-hemisphere ROE against the nominal 91.2 GeV initial state; `deltaP` is the magnitude of the balance vector. |
+| `opp_hemi_px/py/pz/p`, `opp_hemi_energy`, `opp_hemi_n` | Four-momentum components, vector-sum momentum magnitude and multiplicity of reconstructed objects opposite the fitted Lambda direction using the **original full-event thrust axis**, after excluding all candidate daughters. |
+| `z_partial_deltaE`, `z_partial_px/py/pz`, `z_partial_deltaP` | Fitted Lambda_b candidate plus that original-axis opposite-hemisphere sum, minus the nominal Z-at-rest four-vector. This is a **partial** closure proxy because same-side residual objects are omitted. |
+| `z_full_deltaE`, `z_full_px/py/pz`, `z_full_deltaP` | Fitted candidate plus **all** other reconstructed objects, minus the nominal Z-at-rest four-vector. This is the complete reconstructed-event closure proxy, subject to detector acceptance and missing energy. |
 | `cos_rec_sig` | Cosine between the signal candidate momentum and the opposite-hemisphere recoil momentum. |
 | `Estar_gamma`, `Estar_gamma_rec` | Candidate photon energy in the reconstructed signal rest frame and in the recoil-system rest frame, respectively. |
 | `dEstar`, `dEstar_rec` | Those photon energies minus the expected two-body Lambda_b→Lambdaγ energy computed from configured nominal masses. |
@@ -159,6 +165,28 @@ particles around the candidate photon. The selected photon itself is excluded.
 | `lambda_pv_cos`, `lambda_pv_dca` | Cosine between fitted Lambda momentum and PV→SV flight vector; and the distance of the Lambda flight line from the PV. These describe Lambda pointing/displacement, not a separately fitted Lambda_b vertex. |
 | `dca_Lam_gamma`, `Lxyz_implied`, `cos_dir_implied` | Approximate closest approach of the Lambda line from its SV and photon line from the PV, implied 3D distance, and implied Lambda_b direction cosine. The photon origin is assumed to be PV and this is a geometric proxy, not a vertex fit. |
 | `pointing_derived_in_flattening` | `1` if `lambda_pv_cos` and `lambda_pv_dca` were derived by the Python flattener for an older ROOT snapshot; `0` if they were already present in the ROOT tree. |
+
+### New 3D and candidate-removed activity fields
+
+New snapshots add `lambda_flight_xyz_sigma` and `lambda_flight_xyz_sig`:
+the PV→SV distance uncertainty and significance projected along the full
+3D flight vector using both fitted vertex covariances. The old Rxy fields
+remain available for comparisons. `arm_alpha` is
+`(p_L(positive)-p_L(negative))/(p_L(positive)+p_L(negative))` and
+`arm_qt` is the momentum of either fitted charged daughter transverse to
+the fitted pπ-pair direction, in GeV. Both are reconstructed-only.
+
+For each `R02`, `R03`, `R05`, `R07`, `R10`, and `R70`, the `iso_R{radius}_{all,charged,neutral}_*`
+families hold `px`, `py`, `pz`, `p`, `energy`, and `n`. `p` is the magnitude of
+the **vector sum** of momenta, not the sum of individual magnitudes. The cone
+is ΔR about the candidate photon. Only objects on the **fitted Λ side of
+the original event thrust axis** are included; the candidate p, π, and γ
+are excluded. Classes use reconstructed charge (`0` means neutral). Empty
+cones have zero sums and count. The charged family also has `d0_min`,
+`d0_max`, `absd0_min`, `absd0_max` in mm and `n_d0` for linked tracks with a
+finite PV-corrected d0. The four extrema are `-999` when `n_d0=0`.
+These scalar branches are copied by both the general flattener and the
+offline preparation script when present; older ROOT files remain readable.
 
 Ratios and angular quantities may be `-999` when the denominator or geometry
 is undefined. The cone sizes and nominal masses come from
@@ -177,6 +205,7 @@ columns. `P`, `Pt`, `Eta`, and `Phi` are derived from the listed components;
 | `Lambda0_M`, `Lambda0_Px/Py/Pz/P/Pt/Eta/Phi/E` | Fitted Lambda0 pπ mass and momentum. Its alias energy is derived from fitted momentum and selected Lambda mass. |
 | `Lambda0_FlightRxy`, `Lambda0_Rxy` | Transverse PV-to-SV flight distance (same source value). |
 | `Lambda0_FlightXYZ`, `Lambda0_FlightRxySigma`, `Lambda0_FlightRxySignificance` | 3D flight, transverse uncertainty, transverse significance. |
+| `Lambda0_FlightXYZSigma`, `Lambda0_FlightXYZSignificance` | New-snapshot 3D flight uncertainty and significance; absent from older ROOT files. |
 | `Lambda0_d0`, `Lambda0_d0Sigma`, `Lambda0_d0Significance` | Lambda trajectory d0 relative to PV, uncertainty, significance. |
 | `Lambda0_PV_DCA`, `Lambda0_PV_Cos` | Lambda flight-line DCA to PV and pointing cosine. |
 | `Lambda0_SV_X/Y/Z`, `Lambda0_VertexChi2` | Fitted Lambda secondary vertex and fit quality. |

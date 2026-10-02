@@ -1,11 +1,100 @@
 # Stage-1 isolation and Z-pole observables
 
+## Candidate thrust, hemisphere closure, and enlarged cones (2026-10-01)
+
+Question: preserve reconstructed observables for a Z-at-rest momentum/energy
+check and study photon isolation at wider angular scales. The stage-1 source
+now writes `lb_thrust_cos` against the original event thrust axis;
+`opp_hemi_px/py/pz/p`, `opp_hemi_energy`, `opp_hemi_n` for the reconstructed
+objects opposite the fitted Λ direction on that axis; and two residuals
+against `(0,0,0,91.2 GeV)`. `z_partial_*` uses the candidate plus opposite
+hemisphere, while `z_full_*` uses the candidate plus every other reconstructed
+object. Only the latter is a full reconstructed-event closure test. Detector
+losses and neutrinos can prevent either residual from reaching zero.
+
+The candidate-removed `all`, `charged`, and `neutral` activity families now
+also cover ΔR=0.7, 1.0, and 7.0, with px/py/pz, vector-sum magnitude,
+energy sum, multiplicity, and charged-track d0 extrema. Both 0.7 and 7.0
+are saved because the requested final radius, written “7”, was ambiguous;
+the branches are named `R07` and `R70` respectively. The 7.0 cone is a
+very broad angular sum, still restricted to the fitted Λ hemisphere.
+No new quantity is used to select candidates or train the historical BDT.
+
+Exact validation: the same first 100 input entries from
+`/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root`
+were processed directly with `--nevents 100 --ncpus 1`, the named 3D
+reconstruction config, and the observable config. Output and checks are in
+`outputs/analysis/studies/offline_bdt_session_20261001/stage1_balance_trial_100/`.
+There were 63 candidate-bearing events and 71 candidates; their event IDs,
+multiplicities, and masses matched the older Physics ROOT output on those
+same 100 input entries. The validator checked Λb thrust cosines, both
+momentum closure magnitudes, partial energy and momentum arithmetic,
+all=charged+neutral isolation, d0 sentinels, Armenteros values, and photon
+pair-list nesting. Full Physics and Zbb production still await PI execution.
+Flattening this trial retained 71 candidate rows and the new closure,
+thrust, and R07/R10/R70 activity fields; that Parquet is saved alongside
+the ROOT trial.
+
+At validation, FCCAnalyses was `0315db1e2941e2886813cb645193e348f3863d5d`.
+SHA-256: observable config `75d849f40bd64164161b11b6652c1450a1cd173482c22cf1e3607bd12d632152`,
+reconstruction config `b872906ad0b25f94299c2ba627b0804d558c407134ca01f3e212c638e6cffa18`,
+builder header `97f148caae16adb4b9f493267cfbdc6fa5ed50a93c4b7eb8c3323f45947a5872`,
+observable header `2025114a31d7cc9a978b6fcc5a88ecc017495e18b484218442f142e319b1ec0e`,
+trial ROOT `319d6ce9931a75e0068cafe562418171a93a32d2ca9259c9a6a7985f052f1738`.
+
+## New named 3D/activity scenario for the next reprocessing
+
+The historical measurements below describe earlier ROOT files and their
+Rxy-based baseline. The next reprocessing uses
+`config/lb_reco_preselection_15mev_45_65_3d.json` as a **separate
+scenario**. It disables the old Rxy distance/significance cuts and requires
+`Lxyz ≥ 0.3 mm` and full 3D PV→SV significance ≥2.0; it retains the track
+d0-significance and vertex χ² requirements. The 3D significance projects
+the sum of fitted PV and SV covariances along the full flight direction,
+including xz and yz terms. Full Physics, PHSP, and η-as-γ direct v2 tuples
+have now been produced and compared; Zbb v2 remains for the PI's Condor
+campaign. Rates from the older ROOT files remain the old scenario's rates.
+
+The same C++ observable producer is used by direct Physics processing and
+the Zbb Condor wrapper. It now saves `arm_alpha`/`arm_qt`; complete diphoton
+mass/index lists restricted to the **fitted Λ thrust hemisphere** for both
+all raw type-22 and selected `Photon#0` partners; and candidate-removed
+R=0.2, 0.3, 0.5, 0.7, 1.0, 7.0 activity. For every cone, `all`, `charged`, and `neutral`
+contain summed px, py, pz, the magnitude of their vector sum, summed
+energy, and object count. Charged activity also records finite linked-track
+PV-corrected d0 minima/maxima (signed and absolute) and `n_d0`. A no-track
+case has `n_d0=0` and `-999` extrema. The legacy isolation ratios remain
+untouched solely so older downstream code can read the new files.
+The new snapshots also include `lb_thrust_cos`, the original-thrust-axis
+opposite-hemisphere four-momentum (`opp_hemi_*`), and both partial and
+full reconstructed Z-at-rest closure residuals (`z_partial_*`, `z_full_*`).
+The partial residual omits same-side residual objects; its energy and
+momentum are not expected to peak exactly at zero even for true signal.
+
+The new pair lists and their offline scenarios live in
+`config/lb_offline_selections.json`. Apply π⁰, η, or ≥1 GeV diphoton vetoes
+using a `same_hemi_all` or `same_hemi_selected` scenario on new snapshots;
+the older `all_raw_type22` scenarios describe the old both-hemisphere
+study and are not interchangeable. A candidate with no eligible partner
+passes these vetoes.
+
+A distinct 100-event Physics trial preserved under
+`outputs/analysis/studies/offline_bdt_session_20261001/stage1_3d_activity_trial_100/`
+produced 63
+candidate-bearing events and 71 candidates. The same event keys and
+candidate masses matched the older Physics ROOT file on those 100 input
+events. `validate_stage1_activity.py` also checked all=charged+neutral,
+vector-momentum magnitudes, d0 sentinels, Armenteros variables against
+fitted three-vectors, and pair-list nesting. The companion validation JSON
+is in the same folder. These trial files are development evidence, not a
+full-sample yield comparison.
+
 The existing `lb2lambda_gamma_reco.py` stage still builds and selects the
 same Λb→Λ⁰γ candidates. `observables_stage1.py` calls
 `lb_candidate_observables.h` after candidate construction. Its vectors align
 with `lb_mass`; no new selection or truth-dependent computation is applied.
 Constants are in `config/lb_observables.json`: ECM 91.2 GeV, the Λb/Λ/π⁰
-masses, and cone radii 0.2, 0.3, 0.5. The pinned FCCAnalyses checkout is
+masses, and cone radii 0.2, 0.3, 0.5, 0.7, 1.0, 7.0. The pinned FCCAnalyses checkout is
 `pre-edm4hep1` at `91c7d6c5a5c8ad5c3848d6d7cf8383e93c9b74e3`.
 
 ## Definitions

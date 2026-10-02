@@ -107,6 +107,10 @@ for ((local_index=0; local_index<${#batch_paths[@]}; local_index++)); do
     [[ ! -e "$output" ]] || { echo "Partial output exists; inspect or remove it: $output" >&2; exit 1; }
   done
   log_prefix="$output_dir/logs/file_$(printf '%04d' "$local_index")"
+  echo "command to run ="
+  cmd="bash scripts/run_reco_preselection.sh zbb '$input' '$root' '$event_limit' \
+    '$reco_config' '$ncpus' > '${log_prefix}_reco.log' 2>&1"
+  echo "$cmd"
   bash scripts/run_reco_preselection.sh zbb "$input" "$root" "$event_limit" \
     "$reco_config" "$ncpus" > "${log_prefix}_reco.log" 2>&1
   env -u PYTHONPATH -u PYTHONHOME "$python_bin" \

@@ -133,6 +133,7 @@ struct Result {
   std::vector<float> lambda_vertex_chi2, lambda_flight_rxy, lambda_flight_xyz;
   std::vector<float> lambda_proton_d0sig, lambda_pion_d0sig;
   std::vector<float> lambda_flight_rxy_sigma, lambda_flight_rxy_sig;
+  std::vector<float> lambda_flight_xyz_sigma, lambda_flight_xyz_sig;
   std::vector<float> lambda_d0, lambda_d0_sigma, lambda_d0_sig;
 
   // All Lambda slots crossed with type-22 reconstructed photons. Configured
@@ -158,6 +159,7 @@ struct Result {
   std::vector<float> lb_cos_theta_p;
   std::vector<int> lb_same_hemisphere;
   std::vector<float> lb_lambda_thrust_cos, lb_neutral_thrust_cos;
+  std::vector<float> lb_thrust_cos;
 };
 
 struct Config {
@@ -188,6 +190,10 @@ struct Config {
   // Optional pre-fit guard using the original reconstructed track momenta.
   // Negative disables it; positive values are half-widths around Lambda mass.
   double raw_mass_prefilter_half_window_gev = -1.;
+  // New 3D vertex criteria. Zero disables each criterion, preserving older
+  // aggregate Config initializers and old reconstruction scenarios.
+  double min_flight_xyz_mm = 0.;
+  double min_vertex_flight_xyz_sig = 0.;
 };
 
 struct Neutral {
@@ -228,6 +234,7 @@ struct PairFit {
   float plus_d0sig = -999.f, minus_d0sig = -999.f;
   float flight_rxy = -999.f, flight_xyz = -999.f;
   float flight_sigma = -999.f, flight_sig = -999.f;
+  float flight_xyz_sigma = -999.f, flight_xyz_sig = -999.f;
   float lambda_d0 = -999.f, lambda_d0_sigma = -999.f;
   float lambda_d0_sig = -999.f;
 };
@@ -319,6 +326,18 @@ inline PairFit fit_pair(
       out.flight_sig = out.flight_rxy / out.flight_sigma;
     }
   }
+  if (out.flight_xyz > 0.) {
+    const auto& sc = fit.vertex.covMatrix;
+    const auto& pc = pv.vertex.covMatrix;
+    const double ux=dx/out.flight_xyz,uy=dy/out.flight_xyz,uz=dz/out.flight_xyz;
+    const double variance=ux*ux*(sc[0]+pc[0])+uy*uy*(sc[2]+pc[2])+
+        uz*uz*(sc[5]+pc[5])+2.*ux*uy*(sc[1]+pc[1])+
+        2.*ux*uz*(sc[3]+pc[3])+2.*uy*uz*(sc[4]+pc[4]);
+    if (std::isfinite(variance) && variance>0.) {
+      out.flight_xyz_sigma=std::sqrt(variance);
+      out.flight_xyz_sig=out.flight_xyz/out.flight_xyz_sigma;
+    }
+  }
   // Linearized transverse impact parameter of the fitted Lambda flight line
   // relative to the PV. Use the fitted SV and the sum of independent PV/SV
   // xy vertex covariances; track-direction uncertainty is not propagated.
@@ -340,7 +359,11 @@ inline PairFit fit_pair(
   }
   out.good = out.primary != 1 && out.chi2 <= config.vertex_max_chi2 &&
              out.flight_rxy >= config.min_flight_rxy_mm &&
-             out.flight_sig >= config.min_vertex_flight_sig;
+             (config.min_vertex_flight_sig<=0. ||
+              out.flight_sig >= config.min_vertex_flight_sig) &&
+             out.flight_xyz >= config.min_flight_xyz_mm &&
+             (config.min_vertex_flight_xyz_sig<=0. ||
+              out.flight_xyz_sig >= config.min_vertex_flight_xyz_sig);
   return out;
 }
 
@@ -508,6 +531,8 @@ inline Result build_impl(
         out.lambda_pion_d0sig.push_back(pi_d0sig);
         out.lambda_flight_rxy_sigma.push_back(pair_fit.flight_sigma);
         out.lambda_flight_rxy_sig.push_back(pair_fit.flight_sig);
+        out.lambda_flight_xyz_sigma.push_back(pair_fit.flight_xyz_sigma);
+        out.lambda_flight_xyz_sig.push_back(pair_fit.flight_xyz_sig);
         out.lambda_d0.push_back(pair_fit.lambda_d0);
         out.lambda_d0_sigma.push_back(pair_fit.lambda_d0_sigma);
         out.lambda_d0_sig.push_back(pair_fit.lambda_d0_sig);
@@ -527,6 +552,8 @@ inline Result build_impl(
               thrust_cosine(lambda, *thrust);
           const float neutral_cos = thrust == nullptr ? -999.f :
               thrust_cosine(neutral.momentum, *thrust);
+          const float lb_cos = thrust == nullptr ? -999.f :
+              thrust_cosine(lb, *thrust);
           const bool same_hemisphere = lambda_cos != -999.f &&
               neutral_cos != -999.f && lambda_cos * neutral_cos > 0.f;
           if (config.require_same_hemisphere && !same_hemisphere) continue;
@@ -576,6 +603,7 @@ inline Result build_impl(
           out.lb_same_hemisphere.push_back(same_hemisphere);
           out.lb_lambda_thrust_cos.push_back(lambda_cos);
           out.lb_neutral_thrust_cos.push_back(neutral_cos);
+          out.lb_thrust_cos.push_back(lb_cos);
           ++out.n_lb;
         }
       }

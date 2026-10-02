@@ -18,5 +18,9 @@ __pycache__/
 !config/lb_reco.json
 !config/lb_reco_eta.json
 !config/lb_reco_preselection_15mev_45_65.json
+!config/lb_reco_preselection_15mev_45_65_3d.json
+!config/lb_offline_selections.json
+!config/lb_armenteros_study.json
+!config/lb_stage1_v2_samples.json
 *.yaml.bak
 *.cmd.bak

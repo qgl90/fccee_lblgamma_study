@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FCCAnalyses native HTCondor entry point for the Z->bb preselection.
+"""FCCAnalyses native HTCondor entry point for inclusive Z-flavour samples.
 
 Run with ``fccanalysis run``. Custom options follow the analysis path, e.g.:
 ``--input-glob '/eos/.../p8_ee_Zbb_ecm91/events_*.root'``.
@@ -9,7 +9,13 @@ from argparse import ArgumentParser
 from pathlib import Path
 import glob
 import os
+import re
 import sys
+
+
+"""
+fccanalysis run --batch --ncpus 4 analysis/studies/analysis_preselection_zbb.py
+"""
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_GLOB = (
@@ -17,9 +23,13 @@ DEFAULT_GLOB = (
     "p8_ee_Zbb_ecm91/events_*.root")
 DEFAULT_OUTPUT_EOS = (
     "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/"
-    "zbb_full_condor/native_batch")
+    "zbb_full_condor/native_batch_3d_activity_v2")
 DEFAULT_COMP_GROUP = "group_u_LHCBT3.e_lhcb_lbd"
-SAMPLE_NAME = "p8_ee_Zbb_ecm91"
+DEFAULT_SAMPLE_NAME = "p8_ee_Zbb_ecm91"
+SAMPLE_RE = re.compile(r"p8_ee_Z[a-z]+_ecm91")
+CONFIG_PATH = Path(os.environ.get(
+    "LB_RECO_CONFIG",
+    REPO_ROOT / "config/lb_reco_preselection_15mev_45_65_3d.json")).resolve()
 include_paths = [
     "lb_event_selection.h", "lb_candidate_builder.h",
     "lb_candidate_truth.h", "lb_candidate_observables.h",
@@ -27,19 +37,20 @@ include_paths = [
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 # lb2lambda_gamma_reco reads this at import time, so set it before importing.
-os.environ["LB_RECO_CONFIG"] = str(
-    REPO_ROOT / "config/lb_reco_preselection_15mev_45_65.json")
+os.environ["LB_RECO_CONFIG"] = str(CONFIG_PATH)
 from lb2lambda_gamma_reco import RDFanalysis as _RDFanalysis  # noqa: E402
 
 
-def parse_zbb_args(cmdline_args):
+def parse_sample_args(cmdline_args):
     parser = ArgumentParser(
-        description="Zbb native FCCAnalyses batching options",
+        description="Z-flavour native FCCAnalyses batching options",
         add_help=False)
-    parser.add_argument("--zbb-help", action="store_true",
-                        help="show these Zbb-specific options and exit")
+    parser.add_argument("--sample-help", "--zbb-help", action="store_true",
+                        help="show sample batching options and exit")
     parser.add_argument("--input-glob", default=DEFAULT_GLOB,
                         help="local EOS glob used to validate the complete input directory")
+    parser.add_argument("--sample-name", default=None,
+                        help="process name; defaults to the input-glob parent directory")
     parser.add_argument("--chunks", type=int, default=1200,
                         help="number of native FCCAnalyses Condor chunks (default: 1200)")
     parser.add_argument("--comp-group", default=DEFAULT_COMP_GROUP,
@@ -53,13 +64,16 @@ def parse_zbb_args(cmdline_args):
     parser.add_argument("--check-only", action="store_true",
                         help="check glob, chunk count, config, and output path; submit nothing")
     opts, unknown = parser.parse_known_args(cmdline_args.get("unknown", []))
-    if opts.zbb_help:
+    if opts.sample_help:
         parser.print_help()
         raise SystemExit(0)
     return opts, unknown
 
 
 def check_setup(opts):
+    sample_name = opts.sample_name or Path(opts.input_glob).parent.name
+    if not SAMPLE_RE.fullmatch(sample_name):
+        raise ValueError(f"Unsupported sample name: {sample_name}")
     paths = sorted(Path(p) for p in glob.glob(opts.input_glob))
     if not paths:
         raise ValueError(f"Input glob matched no files: {opts.input_glob}")
@@ -69,21 +83,23 @@ def check_setup(opts):
         raise ValueError("Input glob must match only .root files")
     parent_dirs = {p.parent.parent for p in paths}
     sample_dirs = {p.parent.name for p in paths}
-    if len(parent_dirs) != 1 or sample_dirs != {SAMPLE_NAME}:
-        raise ValueError("All inputs must be under one p8_ee_Zbb_ecm91 directory")
+    if len(parent_dirs) != 1 or sample_dirs != {sample_name}:
+        raise ValueError(f"All inputs must be under one {sample_name} directory")
+    if sample_name != DEFAULT_SAMPLE_NAME and opts.output_eos == DEFAULT_OUTPUT_EOS:
+        raise ValueError("Pass a distinct --output-eos for non-Zbb samples")
     if opts.chunks < 1 or opts.chunks > len(paths):
         raise ValueError(f"chunks must be in [1, {len(paths)}]; got {opts.chunks}")
-    config = REPO_ROOT / "config/lb_reco_preselection_15mev_45_65.json"
+    config = CONFIG_PATH
     if not config.is_file():
         raise ValueError(f"Missing reconstruction config: {config}")
-    return paths, next(iter(parent_dirs)), config
+    return paths, next(iter(parent_dirs)), config, sample_name
 
 
 class Analysis:
     """Stage-1 candidate builder and selections, dispatched by FCCAnalyses."""
 
     def __init__(self, cmdline_args):
-        self.options, self.unknown_args = parse_zbb_args(cmdline_args)
+        self.options, self.unknown_args = parse_sample_args(cmdline_args)
         self.ncpus = int(cmdline_args.get("ncpus", 4))
         if self.ncpus < 1:
             raise ValueError("ncpus must be at least 1")
@@ -91,30 +107,32 @@ class Analysis:
         # --batch --files-list. Those jobs receive explicit XRootD-ready input
         # paths and must not try to expand the submit host's mounted EOS glob.
         is_worker = bool(cmdline_args.get("batch", False))
+        sample_name = self.options.sample_name or Path(self.options.input_glob).parent.name
         if is_worker:
             paths = []
-            input_parent = Path(DEFAULT_GLOB.split("/p8_ee_Zbb_ecm91/")[0])
-            config = REPO_ROOT / "config/lb_reco_preselection_15mev_45_65.json"
+            input_parent = Path(self.options.input_glob).parent.parent
+            config = CONFIG_PATH
         else:
-            paths, input_parent, config = check_setup(self.options)
+            paths, input_parent, config, sample_name = check_setup(self.options)
         self.input_files = paths
         self.input_parent = input_parent
         self.config_path = config
+        self.sample_name = sample_name
 
         # Reconstruction reads this same config on the submit host and workers.
         os.environ["LB_RECO_CONFIG"] = str(config)
 
         self.process_list = {
-            SAMPLE_NAME: {
+            sample_name: {
                 "chunks": self.options.chunks,
                 "input_dir": str(input_parent),
             }
         }
-        self.prod_tag = None
+        self.prod_tag = "FCCee/winter2023/IDEA/"
         self.input_dir = None
         # Keep temporary outputs in the FCCAnalyses checkout; completed chunks
         # are copied by the managed worker script to the requested EOS folder.
-        self.output_dir = "outputs/zbb_native_batch_work"
+        self.output_dir = f"outputs/{sample_name}_native_batch_3d_activity_v2_work"
         self.run_batch = True
         self.batch_queue = self.options.queue
         self.comp_group = self.options.comp_group
@@ -123,13 +141,11 @@ class Analysis:
         self.output_dir_eos = self.options.output_eos
         self.eos_type = self.options.eos_type
         self.include_paths = include_paths
-        self.test_file = (
-            "root://eospublic.cern.ch//eos/experiment/fcc/ee/generation/"
-            "DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/"
-            "events_000083138.root")
+        self.test_file = ("root://eospublic.cern.ch/" + str(paths[0])
+                          if paths else "")
 
         if not is_worker:
-            print(f"Validated {len(paths)} ROOT inputs from {self.options.input_glob}")
+            print(f"Validated {len(paths)} ROOT inputs for {sample_name} from {self.options.input_glob}")
             print(f"Chunks: {self.options.chunks}; ~{len(paths) / self.options.chunks:.2f} files/job")
             print("Input mode: mounted /eos paths are rewritten by FCCAnalyses to root://eospublic.cern.ch")
             print(f"Config: {self.config_path}")
@@ -140,8 +156,8 @@ class Analysis:
             raise SystemExit(0)
 
     def analyzers(self, dframe):
-        # Reuse the exact reconstruction chain and branches from the tested
-        # single-file workflow. This wrapper changes dispatch only.
+    # Reuse the exact reconstruction chain and branches from the tested
+    # single-file workflow. This wrapper changes dispatch only.
         return _RDFanalysis.analysers(dframe)
 
     def output(self):

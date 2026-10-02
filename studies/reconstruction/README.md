@@ -1,5 +1,22 @@
 # Lambda_b to Lambda0 gamma reconstruction
 
+For copyable direct and native Condor commands using the same v2 Stage 1
+reconstruction, see [howto/stage1.md](../../howto/stage1.md).
+
+The completed direct-sample 3D/activity stage-1 v2 tuples (Physics, PHSP,
+and Λb→Λη reconstructed as one photon) are listed with hashes and exact
+commands in [lb_stage1_v2_samples.json](../../config/lb_stage1_v2_samples.json).
+Their full old/new keyed comparison and plots are documented in
+[STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md](../../docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md).
+The historical tuples remain available; the v2 Zbb Condor production is
+reserved for the PI.
+
+The current post-stage-1 Physics MC versus catalogued Zbb study, including
+the default Lambda ±5 MeV offline cut, optional photon vetoes, candidate
+tables, BDT training, score scan, and expected-yield plots, is documented in
+[OFFLINE_BDT_PIPELINE.md](OFFLINE_BDT_PIPELINE.md). Its PI review note is
+[docs/OFFLINE_BDT_REVIEW_2026-10-01.md](../../docs/OFFLINE_BDT_REVIEW_2026-10-01.md).
+
 Candidate-level isolation, π⁰ pairing, Z-recoil and pointing diagnostics are
 documented in [STAGE1_OBSERVABLES.md](STAGE1_OBSERVABLES.md).
 The flattened Parquet schema and every candidate/alias column are described in
