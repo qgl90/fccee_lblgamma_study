@@ -53,3 +53,12 @@ preselection_generation:
     Lb2LambdaEta:
       seed: 71701
       decay_file: evtgen/Lb2LambdaEta.dec
+    Lb2LambdaPi0Physics:
+      seed: 71801
+      decay_file: evtgen/Lb2LambdaPi0.dec
+    Lb2LambdaEtaPhysics:
+      seed: 71901
+      decay_file: evtgen/Lb2LambdaEtaPhysics.dec
+    Lb2LambdaPi0:
+      seed: 72001
+      decay_file: evtgen/Lb2LambdaPi0PHSP.dec

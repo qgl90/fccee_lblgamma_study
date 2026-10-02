@@ -1,3 +1,4 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """Diagnostic full Lambda_b -> Lambda0(p pi) eta(gamma gamma) reconstruction.
 
 Uses the same charged Lambda0 selection and central VertexFitterSimple path

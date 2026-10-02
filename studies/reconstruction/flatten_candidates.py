@@ -46,6 +46,7 @@ CANDIDATE_BRANCHES = {
     "same_hemisphere": "lb_same_hemisphere",
     "lambda_thrust_cos": "lb_lambda_thrust_cos",
     "neutral_thrust_cos": "lb_neutral_thrust_cos",
+    "lb_thrust_cos": "lb_thrust_cos",
     "lambda_px": "lb_lambda_px",
     "lambda_py": "lb_lambda_py",
     "lambda_pz": "lb_lambda_pz",
@@ -66,6 +67,8 @@ CANDIDATE_BRANCHES = {
 CANDIDATE_BRANCHES.update({name: name for name in OBS_BRANCHES})
 NESTED_CANDIDATE_BRANCHES = {
     "gamma_combo_other_gamma_mass", "gamma_combo_other_gamma_index",
+    "gamma_combo_same_hemi_all_mass", "gamma_combo_same_hemi_all_index",
+    "gamma_combo_same_hemi_selected_mass", "gamma_combo_same_hemi_selected_index",
 }
 LAMBDA_BRANCHES = {
     "lambda_vertex_primary": "lambda_vertex_primary",
@@ -77,6 +80,8 @@ LAMBDA_BRANCHES = {
     "lambda_flight_xyz": "lambda_flight_xyz",
     "lambda_flight_rxy_sigma": "lambda_flight_rxy_sigma",
     "lambda_flight_rxy_sig": "lambda_flight_rxy_sig",
+    "lambda_flight_xyz_sigma": "lambda_flight_xyz_sigma",
+    "lambda_flight_xyz_sig": "lambda_flight_xyz_sig",
     "lambda_d0": "lambda_d0",
     "lambda_d0_sigma": "lambda_d0_sigma",
     "lambda_d0_sig": "lambda_d0_sig",
@@ -91,6 +96,10 @@ LEG_BRANCHES = {
     "mc_parent_pdg": "reco_mc_parent_pdg",
     "mc_grandparent_index": "reco_mc_grandparent_index",
     "mc_grandparent_pdg": "reco_mc_grandparent_pdg",
+    "mc_greatgrandparent_index": "reco_mc_greatgrandparent_index",
+    "mc_greatgrandparent_pdg": "reco_mc_greatgrandparent_pdg",
+    "mc_greatgreatgrandparent_index": "reco_mc_greatgreatgrandparent_index",
+    "mc_greatgreatgrandparent_pdg": "reco_mc_greatgreatgrandparent_pdg",
     "reco_p": "reco_p",
     "reco_energy": "reco_energy",
     "mc_p": "reco_mc_p",
@@ -108,7 +117,7 @@ def flat(array):
 
 
 def candidate_columns(block, mode, source_id=None, candidate_branches=None,
-                      event_branches=None):
+                      event_branches=None, lambda_branches=None):
     """Return one row per candidate while preserving event multiplicity.
 
     `candidate_slot` is local to an event; join it with `event_entry` when
@@ -146,7 +155,7 @@ def candidate_columns(block, mode, source_id=None, candidate_branches=None,
             columns[output] = flat(block[branch])
     lambda_slots = block["lb_lambda_slot"]
     columns["lambda_slot"] = flat(lambda_slots)
-    for output, branch in LAMBDA_BRANCHES.items():
+    for output, branch in (lambda_branches or LAMBDA_BRANCHES).items():
         columns[output] = flat(block[branch][lambda_slots])
 
     # An MT snapshot made before the Lambda-to-PV pointing fields were added
@@ -263,6 +272,10 @@ def lhcb_columns(columns):
     copy("Lambda0_FlightXYZ", "lambda_flight_xyz")
     copy("Lambda0_FlightRxySigma", "lambda_flight_rxy_sigma")
     copy("Lambda0_FlightRxySignificance", "lambda_flight_rxy_sig")
+    if "lambda_flight_xyz_sigma" in columns:
+        copy("Lambda0_FlightXYZSigma", "lambda_flight_xyz_sigma")
+    if "lambda_flight_xyz_sig" in columns:
+        copy("Lambda0_FlightXYZSignificance", "lambda_flight_xyz_sig")
     copy("Lambda0_d0", "lambda_d0")
     copy("Lambda0_d0Sigma", "lambda_d0_sigma")
     copy("Lambda0_d0Significance", "lambda_d0_sig")
@@ -361,7 +374,11 @@ def main():
               "speed if memory allows, decrease to limit peak memory"))
     parser.add_argument("--source-id", type=int,
                         help="Index of the input file in a batch manifest")
+    parser.add_argument("--max-events", type=int,
+                        help="Optional cap on candidate-bearing input ROOT tree entries for a trial")
     args = parser.parse_args()
+    if args.max_events is not None and args.max_events <= 0:
+        parser.error("--max-events must be positive")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if args.root_output is not None:
         args.root_output.parent.mkdir(parents=True, exist_ok=True)
@@ -379,8 +396,10 @@ def main():
             "vector" not in tree[name].typename.lower()))
         candidate_branches = {name: branch for name, branch in
                               CANDIDATE_BRANCHES.items() if branch in available}
+        lambda_branches = {name: branch for name, branch in
+                           LAMBDA_BRANCHES.items() if branch in available}
         branches = sorted(set(event_branches) | set(candidate_branches.values()) |
-                          set(LAMBDA_BRANCHES.values()) |
+                          set(lambda_branches.values()) |
                           set(LEG_BRANCHES.values()) |
                           {"event_entry", "n_lb", "lb_lambda_slot",
                            "thrust_value", "thrust_x", "thrust_y", "thrust_z",
@@ -388,14 +407,16 @@ def main():
                           {"lb_proton_index", "lb_pion_index",
                            "lb_photon_index", "lb_photon2_index"})
         for block in tree.iterate(branches, library="ak",
-                                  step_size=args.chunk_events):
+                                  step_size=args.chunk_events,
+                                  entry_stop=args.max_events):
             events += len(block)
             n = int(ak.sum(block["n_lb"]))
             candidates += n
             if n == 0:
                 continue
             columns = candidate_columns(block, args.mode, args.source_id,
-                                        candidate_branches, event_branches)
+                                        candidate_branches, event_branches,
+                                        lambda_branches)
             matched += int(np.count_nonzero(columns["truth_matched"]))
             table = pa.table(lhcb_columns(columns))
             if writer is None:
@@ -429,6 +450,7 @@ def main():
                               title="One row per selected Lambda_b candidate")
     summary = {"input": str(args.input), "output": str(args.output),
                "mode": args.mode, "events": events,
+               "max_candidate_bearing_input_events": args.max_events,
                "source_id": args.source_id,
                "candidates": candidates, "truth_matched_candidates": matched,
                "gamma_combo_other_gamma_mass":

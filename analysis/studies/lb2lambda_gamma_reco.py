@@ -1,5 +1,5 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """
-Author: Renato Quagliani (rquaglia@cern.ch), main stage-1 analysis for 
 Lambda_b -> Lambda0(p pi) gamma reconstruction chain.
 
 Configured Lambda_b -> Lambda0(p pi) gamma reconstruction.
@@ -45,9 +45,7 @@ nCPUS = 4
 includePaths = ["lb_event_selection.h", "lb_candidate_builder.h",
                 "lb_candidate_truth.h", "lb_candidate_observables.h"]
 
-CONFIG_PATH = Path(os.environ.get(
-    "LB_RECO_CONFIG",
-    Path(__file__).resolve().parents[2] / "config" / "lb_reco.json"))
+CONFIG_PATH = Path(os.environ.get("LB_RECO_CONFIG",Path(__file__).resolve().parents[2] / "config" / "lb_reco.json"))
 CONFIG = json.loads(CONFIG_PATH.read_text())
 # Keep this positional mapping synchronized with LbCandidateBuilder::Config.
 # A changed threshold requires a new output name and a paired baseline run;
@@ -62,6 +60,8 @@ MAX_CHI2 = float(CONFIG["vertex_max_chi2"])
 MIN_RXY = float(CONFIG["min_flight_rxy_mm"])
 MIN_TRACK_SIG = float(CONFIG["min_track_d0sig"])
 MIN_VERTEX_SIG = float(CONFIG["min_vertex_flight_sig"])
+MIN_FLIGHT_XYZ = float(CONFIG.get("min_flight_xyz_mm", 0.))
+MIN_VERTEX_XYZ_SIG = float(CONFIG.get("min_vertex_flight_xyz_sig", 0.))
 REQUIRE_VERTEX = CONFIG["require_good_vertex"]
 LB_MASS_MIN = float(CONFIG["lb_mass_min_gev"])
 LB_MASS_MAX = float(CONFIG["lb_mass_max_gev"])
@@ -78,6 +78,8 @@ if not (math.isfinite(TARGET) and MASS_MIN <= TARGET <= MASS_MAX and
         math.isfinite(MIN_RXY) and MIN_RXY >= 0 and
         math.isfinite(MIN_TRACK_SIG) and MIN_TRACK_SIG >= 0 and
         math.isfinite(MIN_VERTEX_SIG) and MIN_VERTEX_SIG >= 0 and
+        math.isfinite(MIN_FLIGHT_XYZ) and MIN_FLIGHT_XYZ >= 0 and
+        math.isfinite(MIN_VERTEX_XYZ_SIG) and MIN_VERTEX_XYZ_SIG >= 0 and
         math.isfinite(RAW_MASS_PREFILTER_HALF_WINDOW) and
         math.isfinite(LB_MASS_MIN) and math.isfinite(LB_MASS_MAX) and
         0 < LB_MASS_MIN < LB_MASS_MAX and
@@ -98,7 +100,8 @@ def cpp_config(neutral_pdg=22, neutral_min=-1., neutral_max=-1.):
             f"{neutral_pdg!r}, {neutral_min!r}, {neutral_max!r}, "
             f"{LB_MASS_MIN!r}, {LB_MASS_MAX!r}, "
             f"{'true' if REQUIRE_SAME_HEMISPHERE else 'false'}, "
-            f"{RAW_MASS_PREFILTER_HALF_WINDOW!r}" + "}")
+            f"{RAW_MASS_PREFILTER_HALF_WINDOW!r}, "
+            f"{MIN_FLIGHT_XYZ!r}, {MIN_VERTEX_XYZ_SIG!r}" + "}")
 
 
 CPP_CONFIG = cpp_config()

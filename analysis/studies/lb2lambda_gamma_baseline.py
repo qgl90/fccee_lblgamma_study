@@ -1,6 +1,5 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """
-Author: Renato Quagliani (rquaglia@cern.ch), main stage-1 analysis for 
-
 Shared Lambda_b candidate dataframe and uncut Gamma baseline builder
 
 The baseline writes every event and uses all type-22 reconstructed photons.
@@ -34,6 +33,7 @@ _LAMBDA = [
     "lambda_vertex_z", "lambda_vertex_chi2", "lambda_flight_rxy",
     "lambda_flight_xyz", "lambda_proton_d0sig", "lambda_pion_d0sig",
     "lambda_flight_rxy_sigma", "lambda_flight_rxy_sig",
+    "lambda_flight_xyz_sigma", "lambda_flight_xyz_sig",
     "lambda_d0", "lambda_d0_sigma", "lambda_d0_sig",
 ]
 _INPUT = [
@@ -53,11 +53,14 @@ _LB = [
     "lb_photon_energy",
     "lb_photon2_energy", "lb_neutral_mass", "lb_neutral_energy",
     "lb_same_hemisphere", "lb_lambda_thrust_cos", "lb_neutral_thrust_cos",
+    "lb_thrust_cos",
 ]
 _TRUTH = [
     "reco_mc_index", "reco_mc_pdg", "reco_mc_n_parents",
     "reco_mc_parent_index", "reco_mc_parent_pdg",
     "reco_mc_grandparent_index", "reco_mc_grandparent_pdg",
+    "reco_mc_greatgrandparent_index", "reco_mc_greatgrandparent_pdg",
+    "reco_mc_greatgreatgrandparent_index", "reco_mc_greatgreatgrandparent_pdg",
     "reco_p", "reco_energy", "reco_mc_p", "reco_mc_energy",
     "reco_mc_pt", "reco_mc_eta", "reco_mc_vertex_rxy",
     "reco_mc_cos_opening",

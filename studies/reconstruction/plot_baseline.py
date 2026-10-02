@@ -35,10 +35,16 @@ BRANCHES = [
     "lb_mass_hypothesis_correct", "reco_mc_index", "reco_mc_pdg",
     "reco_mc_n_parents", "reco_mc_parent_index", "reco_mc_parent_pdg",
     "reco_mc_grandparent_index", "reco_mc_grandparent_pdg",
+    "reco_mc_greatgrandparent_index", "reco_mc_greatgrandparent_pdg",
+    "reco_mc_greatgreatgrandparent_index", "reco_mc_greatgreatgrandparent_pdg",
     "reco_p", "reco_energy", "reco_mc_p",
     "reco_mc_energy", "reco_mc_pt", "reco_mc_eta", "reco_mc_vertex_rxy",
     "reco_mc_cos_opening",
 ]
+OPTIONAL_ANCESTRY_BRANCHES = (
+    "reco_mc_greatgrandparent_index", "reco_mc_greatgrandparent_pdg",
+    "reco_mc_greatgreatgrandparent_index", "reco_mc_greatgreatgrandparent_pdg",
+)
 
 TRUTH_COLUMNS = [
     "event_entry", "candidate_slot", "lb_mass", "lambda_mass", "lb_sign",
@@ -54,6 +60,9 @@ for leg in ("proton", "pion", "photon", "photon2"):
         f"{leg}_mc_n_parents", f"{leg}_mc_parent_index",
         f"{leg}_mc_parent_pdg", f"{leg}_mc_grandparent_index",
         f"{leg}_mc_grandparent_pdg",
+        f"{leg}_mc_greatgrandparent_index", f"{leg}_mc_greatgrandparent_pdg",
+        f"{leg}_mc_greatgreatgrandparent_index",
+        f"{leg}_mc_greatgreatgrandparent_pdg",
         f"{leg}_reco_p", f"{leg}_reco_energy", f"{leg}_mc_p",
         f"{leg}_mc_energy", f"{leg}_mc_pt", f"{leg}_mc_eta",
         f"{leg}_mc_vertex_rxy", f"{leg}_mc_cos_opening",
@@ -92,6 +101,9 @@ def _truth_rows(block, matched, mode):
             for field in ("mc_index", "mc_pdg", "mc_n_parents",
                           "mc_parent_index", "mc_parent_pdg",
                           "mc_grandparent_index", "mc_grandparent_pdg",
+                          "mc_greatgrandparent_index", "mc_greatgrandparent_pdg",
+                          "mc_greatgreatgrandparent_index",
+                          "mc_greatgreatgrandparent_pdg",
                           "reco_p", "reco_energy", "mc_p", "mc_energy",
                           "mc_pt", "mc_eta", "mc_vertex_rxy",
                           "mc_cos_opening"):
@@ -109,6 +121,12 @@ def _truth_rows(block, matched, mode):
             ("mc_parent_pdg", "reco_mc_parent_pdg"),
             ("mc_grandparent_index", "reco_mc_grandparent_index"),
             ("mc_grandparent_pdg", "reco_mc_grandparent_pdg"),
+            ("mc_greatgrandparent_index", "reco_mc_greatgrandparent_index"),
+            ("mc_greatgrandparent_pdg", "reco_mc_greatgrandparent_pdg"),
+            ("mc_greatgreatgrandparent_index",
+             "reco_mc_greatgreatgrandparent_index"),
+            ("mc_greatgreatgrandparent_pdg",
+             "reco_mc_greatgreatgrandparent_pdg"),
             ("reco_p", "reco_p"),
             ("reco_energy", "reco_energy"),
             ("mc_p", "reco_mc_p"),
@@ -118,7 +136,10 @@ def _truth_rows(block, matched, mode):
             ("mc_vertex_rxy", "reco_mc_vertex_rxy"),
             ("mc_cos_opening", "reco_mc_cos_opening"),
         ]:
-            columns[f"{leg}_{field}"] = _flat(block[branch][reco])
+            columns[f"{leg}_{field}"] = (_flat(block[branch][reco])
+                                         if branch in block.fields else
+                                         np.full(len(columns["lb_mass"]),
+                                                 0 if field.endswith("_pdg") else -1))
     size = len(columns["lb_mass"])
     if not all(len(v) == size for v in columns.values()):
         raise ValueError("Truth-component columns have unequal lengths")
@@ -285,7 +306,10 @@ def main():
         with uproot.open(str(args.input),
                          handler=uproot.source.file.MemmapSource) as root:
             tree = root["events"]
-            for block in tree.iterate(BRANCHES, library="ak",
+            read_branches = [name for name in BRANCHES
+                             if name not in OPTIONAL_ANCESTRY_BRANCHES or
+                             name in tree.keys()]
+            for block in tree.iterate(read_branches, library="ak",
                                       step_size=args.chunk_events):
                 events += len(block)
                 candidates += int(ak.sum(block["n_lb"]))

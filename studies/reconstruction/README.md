@@ -1,7 +1,31 @@
 # Lambda_b to Lambda0 gamma reconstruction
 
+For copyable direct and native Condor commands using the same v2 Stage 1
+reconstruction, see [howto/stage1.md](../../howto/stage1.md).
+For offline cuts, veto studies, BDT training and preserved per-candidate
+outputs, see [howto/stage2.md](../../howto/stage2.md).
+
+The completed direct-sample 3D/activity stage-1 v2 tuples (Physics, PHSP,
+and Λb→Λη reconstructed as one photon) are listed with hashes and exact
+commands in [lb_stage1_v2_samples.json](../../config/lb_stage1_v2_samples.json).
+Their full old/new keyed comparison and plots are documented in
+[STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md](../../docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md).
+The historical tuples remain available; the v2 Zbb Condor production is
+reserved for the PI.
+
+The current post-stage-1 Physics MC versus catalogued Zbb study, including
+the default Lambda ±5 MeV offline cut, optional photon vetoes, candidate
+tables, BDT training, score scan, and expected-yield plots, is documented in
+[OFFLINE_BDT_PIPELINE.md](OFFLINE_BDT_PIPELINE.md). Its PI review note is
+[docs/OFFLINE_BDT_REVIEW_2026-10-01.md](../../docs/OFFLINE_BDT_REVIEW_2026-10-01.md).
+
 Candidate-level isolation, π⁰ pairing, Z-recoil and pointing diagnostics are
 documented in [STAGE1_OBSERVABLES.md](STAGE1_OBSERVABLES.md).
+The later dual-center isolation extension, with photon and fitted-Λ⁰ cones
+through R20, is defined in
+[howto/understand_isolation.md](../../howto/understand_isolation.md) and its
+bounded trial is recorded in
+[STAGE1_DUAL_ISOLATION_REVIEW_2026-10-02.md](../../docs/STAGE1_DUAL_ISOLATION_REVIEW_2026-10-02.md).
 The flattened Parquet schema and every candidate/alias column are described in
 [`readme_columns.md`](readme_columns.md).
 
@@ -32,11 +56,86 @@ scripts/run_preselection_pilot.sh --help
 scripts/run_zbb_preselection_shard.sh --help
 ```
 
+The reconstruction wrapper selects the Python executable recorded in
+`external/FCCAnalyses/build/CMakeCache.txt` for FCCAnalyses. Flattening and
+plotting use the separate LbConda `myenv` environment. The log prints
+`fccanalysis_python=...` so the selected interpreter is visible. If your site
+uses a different build layout, set `FCCANALYSES_PYTHON` to the Python used to
+build FCCAnalyses. A warning that optional ONNX Runtime analyzers are
+unavailable is not fatal; a NumPy `_multiarray_umath` error means the wrong
+Python was selected for FCCAnalyses.
+
 The exact local Snakemake commands are shown in the root README and are
 reproduced in the [preselection review note](../../docs/PRESELECTION15_REVIEW_2026-09-30.md).
 Outputs include ROOT reconstruction files, one-row-per-candidate Parquet
 tables, rejected rows, cut summaries, and Snakemake logs under
 `outputs/analysis/studies/nominal_preselection_1000/`.
+
+### FCCAnalyses native Condor batching for the full Zbb input directory
+
+[`analysis_preselection_zbb.py`](../../analysis/studies/analysis_preselection_zbb.py)
+uses the pinned FCCAnalyses `Analysis` interface and delegates chunk creation
+and Condor submission to `fccanalysis run`. Its `analyzers()` and output
+branches call the same reconstruction chain as the single-file runner, with
+the 15 MeV Lambda0 window and 4.5–6.5 GeV Lambda_b interval. The job writes
+ROOT chunks only; flattening and candidate tables remain a separate stage.
+
+On the Condor submission host, check the mounted input glob against the tracked
+4,398-file manifest and choose the FCCAnalyses Python from its build:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  scripts/validate_native_zbb_inputs.py
+
+set +u
+source external/FCCAnalyses/setup.sh
+set -u
+FCC_PYTHON=$(sed -n 's/^_Python_EXECUTABLE:INTERNAL=//p' \
+  external/FCCAnalyses/build/CMakeCache.txt | head -n 1)
+FCC="$PWD/external/FCCAnalyses/install/bin/fccanalysis"
+ANALYSIS="$PWD/analysis/studies/analysis_preselection_zbb.py"
+```
+
+The analysis options are parsed after the analysis path. To see them without
+submitting jobs:
+
+```bash
+"$FCC_PYTHON" "$FCC" run "$ANALYSIS" --zbb-help
+"$FCC_PYTHON" "$FCC" run "$ANALYSIS" \
+  --input-glob '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_*.root' \
+  --chunks 1200 --comp-group group_u_LHCBT3.e_lhcb_lbd \
+  --queue workday --ncpus 4 \
+  --output-eos /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/native_batch \
+  --eos-type eoslhcb --check-only
+```
+
+Once the check reports the expected file count, the same command without
+`--check-only` submits jobs. Keep `--test` out of the submission command:
+FCCAnalyses test mode is local and does not create a Condor campaign.
+
+```bash
+"$FCC_PYTHON" "$FCC" run "$ANALYSIS" \
+  --input-glob '/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_*.root' \
+  --chunks 1200 --comp-group group_u_LHCBT3.e_lhcb_lbd \
+  --queue workday --ncpus 4 \
+  --output-eos /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/native_batch \
+  --eos-type eoslhcb
+```
+
+The mounted `/eos/experiment/...` input paths are converted by FCCAnalyses to
+`root://eospublic.cern.ch//eos/experiment/...` before reading. Each batch job
+copies its output through `xrdcp` to
+`root://eoslhcb.cern.ch//eos/lhcb/.../native_batch/p8_ee_Zbb_ecm91/chunk_N.root`.
+Logs, generated job scripts, and the submit description are stored under
+`external/FCCAnalyses/BatchOutputs/`. Check `condor_q -nobatch` and those logs
+from the submission host. Confirm that your CERN EOS XRootD endpoint is
+`eoslhcb.cern.ch`; `--eos-type` can be changed to the endpoint available to
+your account.
+
+Native chunks combine multiple source files. They are suitable for ROOT
+preselection outputs, but they do not preserve per-input-file `source_id` and
+do not run flattening or candidate Parquet generation. Use the existing
+per-file runner when making source-separated train/test tables.
 
 The scenario stores fitted PV/SV positions, flight distance/significance,
 proton and pion d0 significances, and signed Λ d0, its projected uncertainty,
@@ -382,10 +481,19 @@ unrelated-photon combination. The scan and filtered candidate tables are in
 `study_diphoton_veto.py` then pairs each selected candidate photon with every
 **other selected photon in the same reconstructed thrust hemisphere**. It
 uses the measured EDM4hep photon four-vectors, including measured energy, and
-saves the nearest diphoton-mass distances from the π0 and η masses as
-candidate-level Parquet columns. A candidate is vetoed when *any* such pair
-falls in the specified mass interval. This does not use MC ancestry in the
+stores the complete list of candidate-photon pair masses and companion photon
+indices per candidate, plus nearest diphoton-mass distances from the π0 and η
+masses. `diphoton_pair_mass_spectra.png` shows 0–1.2 GeV and
+`diphoton_pair_mass_spectra_full.png` shows 0–20 GeV before any veto, with
+truth labels used only to split diagnostic categories. The histograms count
+pair combinations; the accompanying summary reports candidate counts
+separately. A candidate is vetoed if **at least one** listed pair falls inside
+either specified mass window. If there is no eligible partner, the candidate
+passes. This does not use MC ancestry in the
 decision. Photon truth labels are used only to report category retention.
+The study also reports the alternative `m(γγ) < 200 MeV` rule, controlled by
+`--low-pair-mass-threshold-mev` (default 200); it tests whether any eligible
+pair is below the threshold, rather than centering a window on the π⁰ mass.
 The veto is evaluated after the ±10 MeV Lambda window and the existing
 4.9–6.3 GeV Lambda_b fit interval, displacement, vertex-quality, and
 same-hemisphere Lambda–photon cuts.
@@ -407,14 +515,13 @@ feed-down candidates have another selected photon in the same hemisphere,
 so missing/inefficient companion photons limit this veto. Its absolute
 signal yield is 522/1,000 generated events in this pilot.
 
-The 40-thread Zbb snapshot has `event_entry` values that do not identify the
-original EDM4hep entry reliably. The veto audit therefore recovers the source
-entry with the candidate photon's original reconstructed-particle index and
-exact persisted float32 energy; it fails if the match is absent or ambiguous.
-The resulting `original_event_entry` is stored with the veto features. The
-1000-event single-thread smoke was independently checked to have consistent
-entry numbers. Future large reconstruction snapshots should write these
-diphoton features in the same FCCAnalysis event to avoid this join.
+Filtered candidate snapshots have event row numbers that do not reliably
+identify the original EDM4hep entry. The veto audit therefore recovers the
+source entry with the candidate photon's original reconstructed-particle
+index and persisted float32 energy; it fails if the match is absent or
+ambiguous. The resulting `original_event_entry` is stored with the veto
+features. Future large reconstruction snapshots could write these diphoton
+features in the same FCCAnalysis event to avoid this join.
 
 ```bash
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
@@ -425,13 +532,26 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   --eta outputs/analysis/studies/Lb2LambdaEta_as_gamma_angle_1000events.parquet \
   --zbb-edm /eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_000083138.root \
   --zbb outputs/analysis/studies/Zbb_winter2023_IDEA_firstfile_100k_mt48.parquet \
-  --zbb-events 100000 --zbb-match-by-photon \
+  --zbb-events 100000 --match-by-photon --lambda-half-window-mev 15 \
   --output-dir outputs/plots/reconstruction/diphoton_veto_100k
 ```
 
-The output directory contains `veto_scan.json`, `veto_retention.png`, and
-three candidate feature tables. Rerun window summaries without decoding the
-original ROOT files using the same command with `--reuse-features`.
+The output directory contains `veto_scan.json`, `veto_retention.png`,
+`diphoton_pair_mass_spectra.png`, and three candidate feature tables. Each
+feature table has the list columns `same_hemisphere_diphoton_masses_gev` and
+`same_hemisphere_diphoton_partner_indices`. Use `--signal-events` and
+`--eta-events` to control those input scans (defaults are 1,000); use
+`--lambda-half-window-mev 15` to match the current nominal reconstruction.
+Rerun window summaries without decoding the original ROOT files using the
+same command with `--reuse-features`.
+
+The first complete 100k offline scan using the nominal ±15 MeV Lambda window
+is recorded in [`DIPHOTON_STUDY_100K.md`](DIPHOTON_STUDY_100K.md). It compares
+the PHSP signal sample, Eta feed-down reconstructed as one-photon Gamma, and
+one 100k-event Z→bb input file. The generated files retain every pair mass
+and partner index; the accompanying note reports pair and candidate counts
+separately. Treat these as diagnostic results for choosing later offline
+features, not as an approved veto or as physical yields.
 
 Using the same fitted-momentum reconstruction with the hemisphere cut disabled,
 there are 913 candidates in the 4.9–6.3 GeV interval: 544 true signal and 369
