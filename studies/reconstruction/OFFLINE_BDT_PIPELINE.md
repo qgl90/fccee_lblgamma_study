@@ -1,5 +1,10 @@
 # Offline candidate and BDT study
 
+For the v2 Stage 1 tuples, same-hemisphere offline scenarios, the explicit
+`v2_3d` feature option, full candidate-column preservation, and copyable
+commands, use [howto/stage2.md](../../howto/stage2.md). The commands below
+also document historical all-raw-photon runs on the older Stage 1 tuples.
+
 ## Inputs and stage boundary
 
 `analysis/studies/lb2lambda_gamma_baseline.py` builds the reconstructed

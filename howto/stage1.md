@@ -171,3 +171,5 @@ The direct v2 comparison is reviewed in
 [`docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md`](../docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md).
 The candidate columns and downstream steps are described in
 [`studies/reconstruction/README.md`](../studies/reconstruction/README.md).
+Continue with the copyable offline-selection and BDT commands in
+[stage2.md](stage2.md).

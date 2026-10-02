@@ -2,6 +2,8 @@
 
 For copyable direct and native Condor commands using the same v2 Stage 1
 reconstruction, see [howto/stage1.md](../../howto/stage1.md).
+For offline cuts, veto studies, BDT training and preserved per-candidate
+outputs, see [howto/stage2.md](../../howto/stage2.md).
 
 The completed direct-sample 3D/activity stage-1 v2 tuples (Physics, PHSP,
 and Λb→Λη reconstructed as one photon) are listed with hashes and exact
