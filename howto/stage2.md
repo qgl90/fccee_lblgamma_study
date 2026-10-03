@@ -6,6 +6,9 @@ The latest **1,028-chunk v3 XGBoost scan** and its PI decision evidence are
 in [the Stage 2 review](../docs/STAGE2_V3_BDT_REVIEW_2026-10-03.md); the
 frozen catalog, model, summaries, scan rows and plots are copied into
 `docs/data/stage2_v3_bdt_1028/` and `docs/figures/stage2_v3_bdt_1028/`.
+The separate fixed-score K⁰S ancestry and Armenteros study is in
+[the PI review](../docs/STAGE2_V3_ARMENTEROS_REVIEW_2026-10-03.md) and
+[its v3 how-to](v3_post_bdt_armenteros.md).
 The historical v2 workflow starts below the v3 recipe.
 
 ## Current v3 recipe: Physics + inclusive Zbb → Stage 2 → scored Stage 2
@@ -575,7 +578,11 @@ the authoritative event-level source, including events with no selected
 candidate. Do not infer input-event efficiency from the number of final
 candidate rows.
 
-## Optional fixed-model checks: η, K⁰S, and Armenteros
+## Historical optional fixed-model checks: η, K⁰S, and Armenteros
+
+The commands in this section concern an older π⁰-veto scenario. For the
+current no-photon-veto v3 model, use
+[the 1,028-chunk Armenteros recipe](v3_post_bdt_armenteros.md).
 
 After training, [`evaluate_post_bdt_veto.py`](../studies/reconstruction/evaluate_post_bdt_veto.py)
 holds the model and score cut fixed and compares π⁰ only, π⁰+η, and
