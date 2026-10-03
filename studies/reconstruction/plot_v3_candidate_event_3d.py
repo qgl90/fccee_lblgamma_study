@@ -110,10 +110,49 @@ def cone_boundary(ax, center, radius, color, linestyle="-"):
             alpha=0.8)
 
 
+def plot_topology(ax, candidate, pv, sv, view):
+    flight = sv - pv
+    length = np.linalg.norm(flight)
+    arm = max(.72 * length, .2)
+    ax.plot(*np.stack((pv, sv)).T, color="#32885b", linewidth=3,
+            marker="", label="fitted PV→SV flight")
+    ax.scatter(*pv, color="#202a44", s=90, marker="o", depthshade=False)
+    ax.scatter(*sv, color="#32885b", s=90, marker="o", depthshade=False)
+    ax.text(*(pv + np.array([0, 0, .06 * length])), "PV", color="#202a44")
+    ax.text(*(sv + np.array([0, 0, .06 * length])), "Λ⁰ SV", color="#32885b")
+    rays = ((pv, "photon", "γ", "#2b7bb9"),
+            (pv, "lambda", "Λ⁰ momentum", "#32885b"),
+            (sv, "proton", "p", "#d1495b"),
+            (sv, "pion", "π", "#ed8d35"))
+    endpoints = [pv, sv]
+    for origin, name, label, color in rays:
+        end = origin + arm * unit(candidate[name])
+        endpoints.append(end)
+        ax.quiver(*origin, *(end - origin), color=color, linewidth=2.4,
+                  arrow_length_ratio=.12)
+        ax.text(*(end + np.array([0, 0, .03 * length])), label,
+                color=color, fontsize=9)
+    endpoints = np.asarray(endpoints)
+    center = (endpoints.max(axis=0) + endpoints.min(axis=0)) / 2
+    half = max((endpoints.max(axis=0) - endpoints.min(axis=0)) / 2) * 1.2
+    ax.set(xlim=(center[0] - half, center[0] + half),
+           ylim=(center[1] - half, center[1] + half),
+           zlim=(center[2] - half, center[2] + half),
+           xlabel="x [mm]", ylabel="y [mm]", zlabel="z [mm]",
+           title=f"Fitted vertex topology • PV→SV = {length:.2f} mm")
+    ax.set_box_aspect((1, 1, 1), zoom=.85)
+    ax.view_init(elev=view[0], azim=view[1])
+    ax.text2D(.02, .02, "PV/SV positions and flight line are reconstructed.\n"
+              "Arrows show momentum directions as schematic rays; lengths are scaled.",
+              transform=ax.transAxes, fontsize=8, va="bottom")
+
+
 def plot_display(output, title, candidate, thrust, objects, radii, view,
-                 show_other):
-    fig = plt.figure(figsize=(11.5, 8.5))
-    ax = fig.add_subplot(111, projection="3d", computed_zorder=False)
+                 show_other, pv, sv):
+    fig = plt.figure(figsize=(16, 8.5))
+    topology = fig.add_subplot(121, projection="3d", computed_zorder=False)
+    plot_topology(topology, candidate, pv, sv, view)
+    ax = fig.add_subplot(122, projection="3d", computed_zorder=False)
     theta = np.linspace(0, 2 * np.pi, 100)
     circle = np.stack((np.cos(theta), np.sin(theta), np.zeros_like(theta)))
     # The plane perpendicular to thrust separates the two thrust hemispheres.
@@ -156,7 +195,7 @@ def plot_display(output, title, candidate, thrust, objects, radii, view,
 
     ax.set(xlabel="unit pₓ", ylabel="unit pᵧ", zlabel="unit p_z",
            xlim=(-1.25, 1.25), ylim=(-1.25, 1.25), zlim=(-1.25, 1.25),
-           title=title)
+           title="Momentum directions and isolation")
     ax.set_box_aspect((1, 1, 1), zoom=.86)
     ax.view_init(elev=view[0], azim=view[1])
     ax.text2D(.02, .02,
@@ -166,7 +205,8 @@ def plot_display(output, title, candidate, thrust, objects, radii, view,
               "Grey/purple: other charged/neutral particles; crosses: opposite hemisphere\n"
               "Arrow lengths normalized; fitted daughter directions shown",
               transform=ax.transAxes, fontsize=8.5, va="bottom")
-    fig.tight_layout()
+    fig.suptitle(title, fontsize=13)
+    fig.tight_layout(rect=(0, 0, 1, .94))
     fig.savefig(output, dpi=180)
     plt.close(fig)
 
@@ -187,8 +227,11 @@ def main():
         ap.error("All ΔR radii must be positive")
 
     fields = ["event_entry", "thrust_x", "thrust_y", "thrust_z",
+              "pv_valid", "pv_x", "pv_y", "pv_z",
               "lb_truth_matched", "lb_same_hemisphere", "lb_mass",
-              "lb_proton_index", "lb_pion_index", "lb_photon_index"]
+              "lb_proton_index", "lb_pion_index", "lb_photon_index",
+              "lb_lambda_slot", "lambda_vertex_valid", "lambda_vertex_x",
+              "lambda_vertex_y", "lambda_vertex_z", "lambda_flight_xyz"]
     for name in VECTOR_NAMES:
         prefix = "lb_lambda" if name == "lambda" else f"lb_{name}"
         fields.extend(f"{prefix}_{dim}" for dim in ("px", "py", "pz"))
@@ -217,6 +260,17 @@ def main():
     thrust = np.array([float(row[f"thrust_{dim}"]) for dim in ("x", "y", "z")])
     indices = {name: int(row[f"lb_{name}_index"][slot])
                for name in ("proton", "pion", "photon")}
+    lambda_slot = int(row["lb_lambda_slot"][slot])
+    if int(row["pv_valid"]) != 1 or int(row["lambda_vertex_valid"][lambda_slot]) != 1:
+        raise ValueError("A valid reconstructed PV and Lambda SV are required")
+    pv = np.array([float(row[f"pv_{dim}"]) for dim in ("x", "y", "z")])
+    sv = np.array([float(row[f"lambda_vertex_{dim}"][lambda_slot])
+                   for dim in ("x", "y", "z")])
+    if not np.all(np.isfinite(np.r_[pv, sv])):
+        raise ValueError("Fitted vertex coordinates must be finite")
+    recorded_flight = float(row["lambda_flight_xyz"][lambda_slot])
+    if abs(np.linalg.norm(sv - pv) - recorded_flight) > .01:
+        raise ValueError("PV→SV distance disagrees with saved flight length")
 
     source_fields = ["ReconstructedParticles/ReconstructedParticles.momentum.x",
                      "ReconstructedParticles/ReconstructedParticles.momentum.y",
@@ -268,7 +322,7 @@ def main():
     for suffix, view in (("a", (23, -62)), ("b", (20, 32))):
         plot_display(args.output_dir / f"candidate_3d_view_{suffix}.png",
                      title, candidate, thrust, objects, args.radii, view,
-                     set(indices.values()))
+                     set(indices.values()), pv, sv)
     record = {
         "purpose": "single-event explanatory display; no efficiency or yield inference",
         "stage1": source_identity(args.stage1), "edm4hep": source_identity(args.edm4hep),
@@ -282,6 +336,9 @@ def main():
         "same_hemisphere": bool(row["lb_same_hemisphere"][slot]),
         "thrust_axis": thrust.tolist(), "candidate_momenta_gev":
         {name: vector.tolist() for name, vector in candidate.items()},
+        "primary_vertex_mm": pv.tolist(), "lambda_secondary_vertex_mm": sv.tolist(),
+        "lambda_flight_xyz_mm": recorded_flight,
+        "lambda_slot": lambda_slot,
         "candidate_reco_indices": indices, "radii_delta_r": args.radii,
         "other_objects": objects,
         "excluded_from_isolation": list(indices.values()),

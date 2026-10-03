@@ -1,7 +1,8 @@
 # One-event v3 candidate geometry display
 
 This is a single reconstructed Physics-signal event for explaining candidate
-assembly and isolation. It is **not** an efficiency, background, or cut study.
+assembly, decay topology, and isolation. It is **not** an efficiency,
+background, or cut study.
 The candidate is chosen as tuple row 0, slot 0, without using MC truth. Its
 saved truth label is 1 and is annotation only. The candidate mass is
 5.648 GeV; the original event contains 28 reconstructed particles.
@@ -11,13 +12,19 @@ saved truth label is 1 and is annotation only. The candidate mass is
 [Second camera view](../docs/figures/v3_candidate_event_display/candidate_3d_view_b.png) ·
 [exact vectors, cone counts and source identities](../docs/figures/v3_candidate_event_display/event_display.json)
 
-The red and orange arrows are the fitted proton and pion directions. The
-green arrow is their fitted Λ⁰ direction, and the blue arrow is the selected
-reconstructed photon. Grey and purple marks are other charged and neutral
-reconstructed particles. Crosses lie in the opposite thrust hemisphere. The
-grey great circle is the plane perpendicular to the **full-event** thrust
-axis. All arrow lengths are normalized to display directions; the JSON gives
-their measured momenta in GeV.
+The left panel shows the fitted primary vertex (PV) and Λ⁰ secondary vertex
+(SV) in **mm**. Their connecting line is the measured flight vector, 202.91 mm
+for this event. The red and orange arrows start at the SV and show the fitted
+proton and pion momentum directions. The green Λ⁰ momentum and blue selected
+photon start at the PV. These arrows are straight, scaled schematic rays;
+the plot does not claim to show complete charged-track trajectories or a
+measured photon origin. The PV/SV points and flight line use fitted positions.
+
+The right panel shows directions in unit-momentum space. Grey and purple
+marks are other charged and neutral reconstructed particles; crosses are in
+the opposite thrust hemisphere. The grey great circle is the plane
+perpendicular to the **full-event** thrust axis. Arrow lengths are normalized;
+the JSON gives measured momenta in GeV and fitted PV/SV coordinates in mm.
 
 The blue and green rings are exact constant-ΔR boundaries around the photon
 and fitted Λ⁰, respectively, for radii 0.3 (solid) and 0.5 (dashed). They
@@ -69,8 +76,10 @@ inspectable? **Assumption:** The uniquely matched raw photon identifies the
 same reconstructed event despite the tuple-key discrepancy. **Comparison:**
 For one tuple candidate, recompute the twelve R0.3/R0.5 charged, neutral,
 and all-object cone counts from the raw event and compare them to the saved
-Stage 1 branches. **Observed:** 12/12 counts agree; the selected photon also
-matches its raw momentum and reconstructed-particle index. **Limit:** One
+Stage 1 branches; compare the plotted PV–SV distance to the saved flight
+length. **Observed:** 12/12 counts agree, the selected photon matches its raw
+momentum and reconstructed-particle index, and the plotted flight length
+agrees with Stage 1. **Limit:** One
 event cannot validate event-key mapping or the full distribution of cone
 values. **Next:** Audit the Stage 1 event-entry mapping on a representative
 set of events before using raw-event joins in later studies. No selection or
