@@ -18,15 +18,25 @@ contracts and review gates. The local working rules are in [`AGENTS.md`](AGENTS.
 | Prepare, validate, and submit all Winter2023 Z→bb Condor batches | `studies/reconstruction/split_input_file_list.py`, `scripts/submit_zbb_full_condor.sh` | [`tutorial/README.md`](tutorial/README.md) |
 | Make analysis tables, plots, and BDT/NN studies | `studies/reconstruction/`, `scripts/run_bdt_study.sh`, `scripts/run_nn_study.sh` | [`docs/BDT_WORKFLOW.md`](docs/BDT_WORKFLOW.md) |
 | Study detector resolution and acceptance | `analysis/studies/resolutions.py`, `analysis/studies/displaced_daughters.py` | [`studies/resolutions/README.md`](studies/resolutions/README.md) |
+| Rebuild PI review slides | `presentations/` | [`howto/pi_review_slides.md`](howto/pi_review_slides.md) |
 
 Generated and derived data live under ignored `outputs/`, cached central input
 files under ignored `work/`, and build products under ignored `external/`.
-The current reference reconstruction config is
-`config/lb_reco_preselection_15mev_45_65.json`; it uses the fitted Λ⁰ ±15 MeV
-window, 4.5–6.5 GeV Λγ mass range, configured vertex/displacement cuts, and
+The current **v3** reconstruction scenario uses
+`config/lb_reco_preselection_15mev_45_65_3d.json` and
+`config/lb_observables.json`. It applies the fitted Λ⁰ ±15 MeV window,
+4.5–6.5 GeV Λγ mass range, configured 3D vertex/displacement cuts, and
 same-thrust-hemisphere requirement. Truth is attached after candidate building.
+The older `config/lb_reco_preselection_15mev_45_65.json` outputs are a
+separate historical scenario. See [the study index](docs/agents/STUDY_INDEX.md)
+for current frozen catalogs, prepared outputs, and PI review status.
 
-## Submit the full Winter2023 Z→bb reconstruction
+## Historical 600-batch Winter2023 Z→bb reconstruction
+
+The current Stage 1 **v3** native FCCAnalyses campaign uses 1,200 Condor
+chunks and is described in [howto/stage1.md](howto/stage1.md). The 600-batch
+instructions below document the older preselection scenario and its own
+output names; do not combine its ROOT files with the v3 catalog.
 
 The ordered source manifest is tracked at
 [`config/zbb_winter2023_full_file_list.txt`](config/zbb_winter2023_full_file_list.txt).

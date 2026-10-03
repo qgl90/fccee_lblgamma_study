@@ -14,6 +14,9 @@ The 100k generation config now offers PHSP and HELAMP variants of both
 `lbgamma_pi0_phsp` are PHSP; `lbgamma_eta_physics` and `lbgamma_pi0`
 are HELAMP. These variants share the candidate builder and differ only in
 the named generator decay scenario.
+For an inspectable single-event 3D view of the candidate vectors, thrust
+hemisphere, and photon/Λ⁰ isolation boundaries, see
+[the v3 candidate event display](v3_candidate_event_display.md).
 
 ## The reconstruction shared by both execution modes
 
@@ -88,7 +91,11 @@ card, the command, event limit, and output path with each production. The
 completed direct v2 campaign and its hashes are in
 [`config/lb_stage1_v2_samples.json`](../config/lb_stage1_v2_samples.json).
 Use a fresh output directory for a new run; the examples below do not
-overwrite the existing `_v2.root` files.
+overwrite the existing `_v2.root` files. For every new v3 direct run, put
+`v3` in both the run directory and ROOT basename. The existing
+`stage1_v3_my_run/signal_physics.root`, `signal_phsp.root`, and
+`lbgamma_eta_as_one_photon.root` are historical v3 paths already used by
+Stage 2; do not rename them while reusing their prepared candidate tables.
 
 ## Direct runs: Physics, PHSP, Λb→Λη, and Λb→Λπ⁰
 
@@ -96,7 +103,7 @@ Set an output directory with enough space. The following names are examples;
 choose a new `RUN_TAG` for each campaign:
 
 ```bash
-RUN_TAG=stage1_v3_my_run
+RUN_TAG=stage1_v3_new_decay_20261003
 OUT_DIR="$PWD/outputs/analysis/studies/$RUN_TAG"
 mkdir -p "$OUT_DIR"
 RECO_CONFIG="$PWD/config/lb_reco_preselection_15mev_45_65_3d.json"
@@ -104,15 +111,15 @@ INPUT_DIR=/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs
 
 LB_RECO_CONFIG="$RECO_CONFIG" fccanalysis run analysis/studies/lb2lambda_gamma_reco.py \
   --files-list "$INPUT_DIR/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root" \
-  --output "$OUT_DIR/signal_physics.root" --ncpus 4
+  --output "$OUT_DIR/signal_physics_stage1_v3.root" --ncpus 4
 
 LB_RECO_CONFIG="$RECO_CONFIG" fccanalysis run analysis/studies/lb2lambda_gamma_reco.py \
   --files-list "$INPUT_DIR/Lb2LambdaGamma_nev100000_IDEA_edm4hep.root" \
-  --output "$OUT_DIR/signal_phsp.root" --ncpus 4
+  --output "$OUT_DIR/signal_phsp_stage1_v3.root" --ncpus 4
 
 LB_RECO_CONFIG="$RECO_CONFIG" fccanalysis run analysis/studies/lb2lambda_gamma_reco.py \
   --files-list "$INPUT_DIR/Lb2LambdaEta_nev100000_IDEA_edm4hep.root" \
-  --output "$OUT_DIR/lbgamma_eta_as_one_photon.root" --ncpus 4
+  --output "$OUT_DIR/lbgamma_eta_as_one_photon_stage1_v3.root" --ncpus 4
 ```
 
 These commands have **no `--nevents` limit** and process all 100,000 input
@@ -167,41 +174,61 @@ Condor installed.
 
 ## Check outputs and event denominators
 
-For each direct output, run the v2 branch-length validator and keep its JSON
+For each direct v3 output, run the v3 branch-length validator and keep its JSON
 beside the ROOT file:
 
 ```bash
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
-  studies/reconstruction/verify_stage1_v2_outputs.py \
-  --input "$OUT_DIR/signal_physics.root" \
-  --output "$OUT_DIR/signal_physics_validation.json"
+  studies/reconstruction/verify_stage1_v3_outputs.py \
+  --input "$OUT_DIR/signal_physics_stage1_v3.root" \
+  --output "$OUT_DIR/signal_physics_stage1_v3_validation.json"
 ```
 
-Repeat for `signal_phsp.root` and `lbgamma_eta_as_one_photon.root`. The JSON
+Repeat for `signal_phsp_stage1_v3.root` and
+`lbgamma_eta_as_one_photon_stage1_v3.root`. The JSON
 reports candidate-bearing events and candidates. The input denominator is
 100,000 generated events for each of these three forced samples; do not use
 the number of output tree entries as the generated denominator.
+A bounded 100-output-event run of this validator on the existing v3 Physics
+tuple passed its required branch-length checks; its
+[saved JSON](../docs/data/stage1_v3_100_output_event_validation.json)
+explicitly marks `complete_validation: false`. Run without
+`--max-output-events` for a complete tuple check.
 
-After **all** Condor chunks finish, catalog each campaign with the actual
-job directory. The catalog verifies the source-file assignment, ROOT schema,
+Catalog each campaign with its actual job directory, including while Condor
+is still running. Use a new catalog filename for every snapshot. The catalog
+verifies the source-file assignment, ROOT branch/type schema,
 `eventsProcessed`, `eventsSelected`, missing chunks, and duplicates:
 
 ```bash
 JOB_DIR="external/FCCAnalyses/BatchOutputs/<actual_timestamp>/p8_ee_${SAMPLE}_ecm91"
 ROOT_DIR="$OUTPUT_EOS/p8_ee_${SAMPLE}_ecm91"
+SNAPSHOT=20261003_v3_newscan  # change for each later scan
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
   studies/reconstruction/catalog_condor_zbb_chunks.py \
   --job-dir "$JOB_DIR" --root-dir "$ROOT_DIR" \
-  --output "outputs/analysis/studies/${SAMPLE_LOWER}_stage1_v2_catalog.json"
+  --output "outputs/analysis/studies/${SAMPLE_LOWER}_stage1_${SNAPSHOT}_catalog.json"
 ```
 
-Require the catalog's `valid_chunks` to equal `job_scripts`, with no missing
-or invalid chunks, before treating its summed `total_processed_events_in_valid_chunks`
-as the background input-event denominator. `eventsSelected` and the ROOT
-`events` entries count candidate-bearing output events. Count candidate rows
-separately by summing `n_lb` or flattening the tuples. Native chunks mix
-several source files, so retain the catalog's exact file-to-chunk mapping
-when splitting later training and evaluation samples.
+For a partial snapshot, use only its valid chunks and its summed
+`total_processed_events_in_valid_chunks` as the denominator for analyses of
+that same frozen chunk set. Require `valid_chunks == job_scripts`, with no
+missing or invalid chunks, before calling the campaign complete.
+`eventsSelected` and ROOT `events` entries count candidate-bearing output
+events. Count candidate rows separately by summing `n_lb` or flattening the
+tuples. Native chunks mix several source files, so retain the catalog's exact
+file-to-chunk mapping when splitting later training and evaluation samples.
+Check that an enlarged catalog retains every earlier chunk with unchanged
+path, size, counters, input list, and schema before reusing prepared tables.
+
+For the current Zbb v3 campaign, the latest frozen 2026-10-03 catalog is
+[`docs/data/stage2_v3_bdt_1028/20261003_1028chunks.json`](../docs/data/stage2_v3_bdt_1028/20261003_1028chunks.json).
+It checks 1,028 valid chunks, including 108 new since the 920-chunk
+snapshot, and leaves 172 of 1,200 jobs pending. It covers 376,723,929
+processed input events and 4,710,435 candidate-bearing output events, with
+one schema and no invalid chunks. The earlier 629-chunk comparison is in
+[`docs/STAGE1_ZBB_CATALOG_REVIEW_2026-10-03.md`](../docs/STAGE1_ZBB_CATALOG_REVIEW_2026-10-03.md);
+the current processing status is in the [study index](../docs/agents/STUDY_INDEX.md).
 
 The direct v2 comparison is reviewed in
 [`docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md`](../docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md).

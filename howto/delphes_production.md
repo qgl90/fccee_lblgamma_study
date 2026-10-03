@@ -231,22 +231,22 @@ HELAMP; the additional labels name their model explicitly:
 ```bash
 scripts/run_reco_preselection.sh lbgamma_pi0 \
   outputs/delphes/Lb2LambdaPi0Physics_nev100000_IDEA_edm4hep.root \
-  outputs/analysis/studies/stage1_pi0_20261002/lbgamma_pi0.root \
+  outputs/analysis/studies/stage1_pi0_v3_20261002/lbgamma_pi0_stage1_v3.root \
   all config/lb_reco_preselection_15mev_45_65_3d.json 4
 
 scripts/run_reco_preselection.sh lbgamma_eta_physics \
   outputs/delphes/Lb2LambdaEtaPhysics_nev100000_IDEA_edm4hep.root \
-  outputs/analysis/studies/stage1_eta_physics_20261002/lbgamma_eta_physics.root \
+  outputs/analysis/studies/stage1_eta_physics_v3_20261002/lbgamma_eta_physics_stage1_v3.root \
   all config/lb_reco_preselection_15mev_45_65_3d.json 4
 
 scripts/run_reco_preselection.sh lbgamma_pi0_phsp \
   outputs/delphes/Lb2LambdaPi0_nev100000_IDEA_edm4hep.root \
-  outputs/analysis/studies/stage1_pi0_phsp_20261002/lbgamma_pi0_phsp.root \
+  outputs/analysis/studies/stage1_pi0_phsp_v3_20261002/lbgamma_pi0_phsp_stage1_v3.root \
   all config/lb_reco_preselection_15mev_45_65_3d.json 4
 
 scripts/run_reco_preselection.sh lbgamma_eta \
   outputs/delphes/Lb2LambdaEta_nev100000_IDEA_edm4hep.root \
-  outputs/analysis/studies/stage1_eta_phsp_20261002/lbgamma_eta.root \
+  outputs/analysis/studies/stage1_eta_phsp_v3_20261002/lbgamma_eta_stage1_v3.root \
   all config/lb_reco_preselection_15mev_45_65_3d.json 4
 ```
 

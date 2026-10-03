@@ -201,7 +201,11 @@ For the first 1,000 events of each cached input, use
 output. See [`studies/reconstruction/README.md`](../studies/reconstruction/README.md)
 for column names, cutflows, plots, BDT and NN commands.
 
-### Winter2023 Z→bb batches
+### Historical Winter2023 Z→bb 600-batch path
+
+The current native FCCAnalyses Stage 1 v3 1,200-chunk campaign and its frozen
+catalogs are in [howto/stage1.md](../howto/stage1.md). The file-list and
+600-batch route below belongs to the older preselection workflow.
 
 Catalog the central input and create 600 ordered file lists using
 [`catalog_zbb_winter2023.py`](../studies/reconstruction/catalog_zbb_winter2023.py)

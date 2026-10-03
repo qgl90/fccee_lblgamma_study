@@ -41,6 +41,28 @@ the PI the exact command, config/card diff, input list, number of events,
 plots/tables, signal retained, background retained, and an interpretation with
 its limits. A proposed cut becomes a reference choice only after that review.
 
+### Current inclusive Zbb Stage 1 input check
+
+The v3 native Condor campaign is a separate reconstruction scenario from the
+older `native_batch` Zbb outputs. The latest frozen 2026-10-03 catalog of
+`native_batch_3d_activity_v3` checks 1,028 of 1,200 submitted chunks: all 1,028
+pass ROOT counter and branch/type checks and share one schema. They cover
+376,723,929 processed input events and contain 4,710,435 candidate-bearing
+output events. The earlier 629-chunk snapshot is documented in
+[the Stage 1 Zbb review](STAGE1_ZBB_CATALOG_REVIEW_2026-10-03.md); 172 jobs
+still have no ROOT output in the current snapshot. Its frozen path is in
+[the study index](agents/STUDY_INDEX.md). These are input-event and
+candidate-bearing-event counts, not candidate counts or a final inclusive
+background yield. Refresh and freeze a new catalog before each downstream
+comparison; the reproducible check is in [howto/stage1.md](../howto/stage1.md).
+
+The fixed 1,028-chunk v3 BDT scan is reviewed in
+[the Stage 2 note](STAGE2_V3_BDT_REVIEW_2026-10-03.md). A separate
+[post-BDT Armenteros review](STAGE2_V3_ARMENTEROS_REVIEW_2026-10-03.md)
+uses truth ancestry to diagnose K⁰S pair contamination and evaluates a
+reconstructed-only veto after the same fixed score. Both cuts remain
+proposals for PI review.
+
 ## Current data and code contracts
 
 - Generator truth and `MCRecoAssociations` are used to evaluate acceptance,
