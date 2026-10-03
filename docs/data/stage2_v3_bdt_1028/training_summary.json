@@ -1,0 +1,112 @@
+{
+  "command": [
+    "studies/reconstruction/train_offline_bdt.py",
+    "--prepared-dir",
+    "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/prepared",
+    "--output-dir",
+    "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261003_1028chunks",
+    "--feature-config",
+    "config/lb_bdt_features.json",
+    "--feature-set",
+    "v3_offline_no_veto_proposal",
+    "--io-workers",
+    "8",
+    "--threads",
+    "16"
+  ],
+  "prepared_manifest": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/prepared/summary.json",
+  "frozen_prepared_manifest": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261003_1028chunks/prepared_manifest.json",
+  "prepared_manifest_sha256": "6b199bf1ad2f0e6be144c2e1c2cf2c2d81ec64ed7e486d9792ef48c711c100f5",
+  "training_script_sha256": "b28339fecb0b242414f132fe6f9594b4889c0a9e0eca3d158c4030f0f2a8bd39",
+  "software": {
+    "python": "3.11.14",
+    "numpy": "2.3.5",
+    "scikit_learn": "1.8.0",
+    "xgboost": "3.1.3"
+  },
+  "scenario": "lambda12p5_lbE10p5_same_hemi_all",
+  "features": [
+    "lb_E",
+    "proton_p",
+    "pion_p",
+    "gamma_E",
+    "lambda_p",
+    "proton_d0sig",
+    "pion_d0sig",
+    "lambda_flight_xyz_sig",
+    "lb_thrust_abs_cos",
+    "iso_R03_all_energy_over_gamma_E",
+    "iso_R05_charged_n",
+    "iso_R03_neutral_n",
+    "lambda0_iso_R05_charged_n_d0",
+    "lambda0_iso_R05_charged_absd0_min",
+    "lambda0_iso_R05_charged_absd0_max",
+    "z_partial_deltaE",
+    "z_partial_deltaP",
+    "d_pi0",
+    "d_eta",
+    "min_pair"
+  ],
+  "feature_labels": {
+    "lb_E": "\u039bb candidate energy [GeV]",
+    "proton_p": "Proton p [GeV]",
+    "pion_p": "Pion p [GeV]",
+    "gamma_E": "Photon E [GeV]",
+    "lambda_p": "\u039b p [GeV]",
+    "proton_d0sig": "Proton |d0| significance",
+    "pion_d0sig": "Pion |d0| significance",
+    "lambda_flight_xyz_sig": "\u039b 3D flight significance",
+    "lb_thrust_abs_cos": "|cos(\u039bb, thrust axis)|",
+    "iso_R03_all_energy_over_gamma_E": "Photon R=0.3 activity \u03a3E/E\u03b3",
+    "iso_R05_charged_n": "Photon R=0.5 charged multiplicity",
+    "iso_R03_neutral_n": "Photon R=0.3 neutral multiplicity",
+    "lambda0_iso_R05_charged_n_d0": "\u039b R=0.5 charged objects with valid d0",
+    "lambda0_iso_R05_charged_absd0_min": "\u039b R=0.5 min |d0| [mm]",
+    "lambda0_iso_R05_charged_absd0_max": "\u039b R=0.5 max |d0| [mm]",
+    "z_partial_deltaE": "Candidate and recoil energy residual [GeV]",
+    "z_partial_deltaP": "Candidate and recoil |\u03a3p| [GeV]",
+    "d_pi0": "Nearest same-hemisphere \u03c0\u2070 mass distance [GeV]",
+    "d_eta": "Nearest same-hemisphere \u03b7 mass distance [GeV]",
+    "min_pair": "Minimum same-hemisphere \u03b3\u03b3 mass [GeV]"
+  },
+  "feature_set": "v3_offline_no_veto_proposal",
+  "feature_config": "config/lb_bdt_features.json",
+  "feature_config_sha256": "6560d6cb88bf85b77eae8f2fad40c0a0a5fb95c96ee184135512d3e073c6cdfd",
+  "max_train_background": null,
+  "parallelism": {
+    "parquet_io_workers": 8,
+    "xgboost_threads": 16,
+    "cpu_affinity": 40
+  },
+  "best_iteration": 698,
+  "counts": {
+    "train": {
+      "0": 741206,
+      "1": 38319
+    },
+    "validation": {
+      "0": 103501,
+      "1": 5494
+    },
+    "test": {
+      "0": 215837,
+      "1": 11059
+    }
+  },
+  "auc": {
+    "train": 0.9987395701970583,
+    "validation": 0.998643034307377,
+    "test": 0.9985298183168665
+  },
+  "split": "signal generated event hash; whole Zbb chunk by chunk_id modulo 10",
+  "excluded_inputs": [
+    "lb_mass",
+    "lambda_mass",
+    "cos_theta_p",
+    "truth/ancestry",
+    "source_id",
+    "event_entry",
+    "candidate multiplicity"
+  ],
+  "mass_sculpting_check_required": true
+}

@@ -1,5 +1,273 @@
 # Stage 2: offline selections, veto studies, and BDT datasets
 
+For the frozen **v3** Physics versus available Zbb candidate reference and
+normalized plots, see [`v3_reference_plots.md`](v3_reference_plots.md).
+The latest **1,028-chunk v3 XGBoost scan** and its PI decision evidence are
+in [the Stage 2 review](../docs/STAGE2_V3_BDT_REVIEW_2026-10-03.md); the
+frozen catalog, model, summaries, scan rows and plots are copied into
+`docs/data/stage2_v3_bdt_1028/` and `docs/figures/stage2_v3_bdt_1028/`.
+The historical v2 workflow starts below the v3 recipe.
+
+## Current v3 recipe: Physics + inclusive Zbb → Stage 2 → scored Stage 2
+
+The default in [`lb_offline_selections.json`](../config/lb_offline_selections.json)
+is `lambda12p5_lbE10p5_same_hemi_all`. It keeps reconstructed candidates with
+`4.7 ≤ m(Λγ) ≤ 6.5 GeV`, `|m(pπ)−1.115683 GeV| ≤ 0.0125 GeV`, and
+`E(Λb) ≥ 10.5 GeV`. It applies **no π⁰, η, or minimum diphoton-mass veto**.
+The candidate photon is paired with other raw type-22 photons on the fitted
+Λ⁰ hemisphere, and the nearest π⁰/η mass distances and minimum pair mass
+become optional BDT inputs. Empty partner lists are retained; their distance
+columns are `+inf` in the candidate table and treated as missing by XGBoost.
+The [selection review](../docs/STAGE1_V3_MASS_ENERGY_NO_VETO_REVIEW_2026-10-02.md)
+records the 191-chunk comparison and event/candidate denominators.
+
+Use the exact v3 Physics Stage 1 ROOT tuple and a frozen catalog of valid v3
+Zbb Condor ROOT chunks. The 191-chunk catalog used for the presentation is a
+historical snapshot; refresh the catalog as Condor outputs arrive. Give each
+catalog and model a new snapshot label, while keeping **the same `PREP`
+directory**. `--resume` verifies and reuses complete previously prepared
+candidate pairs, processes only the new chunk IDs, and rebuilds the combined
+cutflow with the enlarged processed-event denominator. It refuses changed
+selection/configuration, preparation code, input path, source size or a catalog
+that drops/replaces a previously prepared chunk. From the repository root:
+
+```bash
+cd /afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study
+PY="$PWD/myenv/bin/python"
+SIGNAL=/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v3_my_run/signal_physics.root
+JOB_DIR="$PWD/external/FCCAnalyses/BatchOutputs/2026-10-02_07-46-37/p8_ee_Zbb_ecm91"
+ROOT_DIR=/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/native_batch_3d_activity_v3/p8_ee_Zbb_ecm91
+RUN=/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental
+SNAPSHOT=next_v3_snapshot  # use a new name for each later catalog refresh
+ZBB_CATALOG="$RUN/catalogs/$SNAPSHOT.json"
+PREP="$RUN/prepared"
+MODEL="$RUN/models/$SNAPSHOT"
+PROJECTION="$RUN/projections/$SNAPSHOT"
+FINAL="$RUN/fixed_cut_tables/$SNAPSHOT"
+
+# This existing v3 Physics tuple predates the new `_stage1_v3.root` basename
+# convention. Keep its exact path while resuming the prepared candidate set.
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/catalog_condor_zbb_chunks.py \
+  --job-dir "$JOB_DIR" --root-dir "$ROOT_DIR" --output "$ZBB_CATALOG"
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/prepare_offline_bdt.py \
+  --signal "$SIGNAL" --zbb-catalog "$ZBB_CATALOG" \
+  --config config/lb_offline_selections.json \
+  --stage1-config config/lb_reco_preselection_15mev_45_65_3d.json \
+  --scenario lambda12p5_lbE10p5_same_hemi_all \
+  --output-dir "$PREP" --resume
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/train_offline_bdt.py \
+  --prepared-dir "$PREP" --output-dir "$MODEL" \
+  --feature-config config/lb_bdt_features.json \
+  --feature-set v3_offline_no_veto_proposal \
+  --io-workers 8 --threads 16
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/inspect_v3_bdt_response.py \
+  --prepared-dir "$PREP" --model-dir "$MODEL" \
+  --output-dir "$MODEL/response_checks"
+```
+
+The first `--resume` run creates `PREP/preparation_identity.json` and prepares
+every valid chunk in that snapshot. For a later refresh, change `SNAPSHOT`,
+rerun the catalog command, and repeat the preparation and training commands
+with the **same `RUN` and `PREP`**. Keep each catalog JSON immutable once a
+training uses it. Complete old Parquets stay in `PREP`; the new `summary.json`
+lists all included chunk IDs and their counters. The trainer assigns entire
+Zbb chunks by `chunk_id % 10` and Physics candidates by generated event key,
+so appending chunks cannot move an old source between train, validation and
+test. Its default uses **all** Zbb candidates in training chunks; the optional
+`--max-train-background N` is only for a named development study. All selected
+candidate shards, including validation/test chunks, receive a score. Never
+reuse an old trained model as if it had been trained on a refreshed catalog.
+For a large incremental refresh, `make_incremental_catalog.py` isolates the
+new valid chunks; `run_v3_parallel_preparation.py --workers 8` prepares that
+subset in independent partitions, and `consolidate_prepared_shards.py` copies
+verified pairs into `PREP`. Rerun the full `--resume` preparation afterward
+to rebuild and validate its combined cutflow. The trainer uses eight Parquet
+readers and sixteen XGBoost threads on the current 40-CPU host; it records
+the settings and CPU affinity in `training_summary.json`.
+The all-candidate audit can occupy many GB; use a durable location with enough
+space for `RUN` (the command uses EOS) rather than the nearly full AFS work
+volume. A scratch run is valid for speed only after copying its complete
+`PREP`, model, catalog and manifests to durable storage before the scratch is
+cleared. Do not run two preparations against the same `PREP` concurrently.
+
+The pre-training cuts are exactly the named JSON scenario above. The `fit`
+stage applies `4.7 <= lb_mass <= 6.5` GeV, the `lambda` stage adds the
+`12.5` MeV reconstructed mass half-window, and `selected` adds
+`lb_E >= 10.5` GeV. This default has no photon veto; `d_pi0`, `d_eta`, and
+`min_pair` use other raw type-22 photons on the fitted Lambda hemisphere and
+are kept as features. The diagnostic `pass_pi0`, `pass_eta`, and
+`pass_low_mass` flags do not filter the default. Edit the JSON under a **new
+scenario name** for another selection and use a new `PREP` directory; the
+identity guard will prevent mixing it with the current candidate tables.
+
+`PREP/*_selected.parquet` is **Stage 2 before BDT**: one row per candidate
+passing the offline cuts, with all prepared candidate columns. The matching
+`*_audit.parquet` retains rejected Stage 1 candidates and pass flags.
+`MODEL/scored_selected/*_selected.parquet` is **Stage 2 with BDT response**:
+the same selected rows and columns, plus `bdt_score`, with **no score cut yet**.
+These per-source Parquets are directly usable for flexible downstream plots and
+alternative score cuts. `summary.json` and `training_summary.json` record
+inputs, configuration hashes, exact feature order, splits, counts, and model
+details. The trainer writes held-out feature distributions, feature importance,
+ROC, held-out score, and train-versus-test score plots. The model directory
+also freezes `prepared_manifest.json`, the exact preparation summary used to
+train it; the single-file scoring command can therefore use that model after
+the shared `PREP` directory receives later catalog chunks. The additional
+`response_checks/` figures compare held-out direct Physics, wrong Physics
+combinations and nonmatched Zbb scores, then show mass and helicity-angle
+shapes at fixed illustrative scores of 0.5 and 0.9. Those fixed numbers are
+diagnostics, not a working-point optimization. The proposed feature list is explained in the
+[v3 feature review](../docs/STAGE2_V3_FEATURE_PROPOSAL_2026-10-02.md).
+Train/validation/test splitting keeps Physics events together and whole Zbb
+chunks together. Truth matching labels signal and background for training;
+neither truth nor `lb_mass` or `cos_theta_p` is a model feature.
+
+To maximize central `S/sqrt(S+B)` on validation data with at least 20
+observed validation-background candidates **among points whose 95% upper
+background count is at most one million**, then evaluate that fixed score
+on the independent test split and make a compact post-cut tuple:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/project_offline_bdt.py \
+  --prepared-dir "$PREP" --model-dir "$MODEL" \
+  --max-expected-background 1000000 --min-significance 10 \
+  --output-dir "$PROJECTION"
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/assemble_stage2_output.py \
+  --prepared-dir "$PREP" --scored-dir "$MODEL/scored_selected" \
+  --projection "$PROJECTION/projection.json" \
+  --output-dir "$FINAL"
+```
+
+`projection.json` also reports the best validation point satisfying the
+95% upper-background target as `background_target_validation_choice`, plus
+the unconstrained significance optimum separately. The main
+`validation_choice` is the constrained point. The scan includes a dense
+near-one score grid and the observed validation-background order statistics.
+`working_point_scan.png`, `working_point_tail.png`, and
+`working_point_purity.png` show yield, significance, and purity, including
+the 95% background upper edge.
+For a PI-specified expected-purity requirement, add
+`--min-expected-purity FRACTION`; this uses `S/(S+B_95% upper)` in the full
+4.7–6.5 GeV mass interval. A sparse or zero-background tail is not treated
+as a measured optimum. If no point has enough MC support and satisfies the
+constraints, no cut is frozen.
+
+`FINAL/signal_offline.parquet` and `FINAL/zbb_offline.parquet` are compact
+**Stage 2** tables; `FINAL/signal_bdt.parquet` and `FINAL/zbb_bdt.parquet`
+are **Stage 2 after the validation-fixed BDT cut**. All four preserve every
+prepared per-candidate column, including charged/neutral/all activity,
+charged-cone d0 extrema, same-hemisphere photon-pair lists, truth ancestry,
+event/candidate keys, and `bdt_score`; the offline files also contain
+`pass_bdt`. The manifest records source shards, processed-event denominators,
+counts, and the score cut. The uncut scored shards remain available even if
+no reliable working point satisfies the requested background limit. In that
+case `projection.json` has `validation_choice: null` and the assembly command
+intentionally stops; inspect `working_point_scan.png`, expand the Zbb catalog,
+or define a separately named exploratory score scenario before claiming a
+post-cut dataset. No BDT retraining is needed to revisit a score cut.
+
+### Preserve every flattenable Stage 1 candidate branch
+
+The fast Stage 2 preparation retains all new v3 activity/recoil branches and
+the reconstructed variables used by the model, but its 430-column schema is
+curated. For a broad diagnostic table with **every flattened Stage 1
+candidate branch and alias**, flatten the same ROOT shards once and join the
+scored audit by `(source_id, event_entry, candidate_slot)`. Run this after a
+validation-fixed score exists:
+
+```bash
+mkdir -p "$RUN/flat"
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/flatten_candidates.py \
+  --input "$SIGNAL" --mode gamma --source-id -1 \
+  --output "$RUN/flat/signal_-1.parquet"
+
+jq -r '.chunks[] | [.chunk_id, .root] | @tsv' "$ZBB_CATALOG" |
+while IFS=$'\t' read -r CHUNK_ID ROOT_FILE; do
+  env -u PYTHONPATH -u PYTHONHOME "$PY" \
+    studies/reconstruction/flatten_candidates.py \
+    --input "$ROOT_FILE" --mode zbb --source-id "$CHUNK_ID" \
+    --output "$RUN/flat/zbb_${CHUNK_ID}.parquet"
+done
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/apply_offline_bdt.py \
+  --input-dir "$PREP" --model-dir "$MODEL" --table audit \
+  --output-dir "$RUN/scored_audit"
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/materialize_stage2_candidates.py \
+  --flat-dir "$RUN/flat" --prepared-dir "$PREP" \
+  --scored-audit-dir "$RUN/scored_audit" \
+  --projection "$PROJECTION/projection.json" \
+  --output-dir "$RUN/full_branch_stage2"
+```
+
+`full_branch_stage2/audit/` retains every candidate, including those failing
+offline cuts. `offline_selected/` is the full-branch Stage 2 dataset and
+`bdt_selected/` applies the fixed score. All three also carry Stage 2 pass
+flags, the score, the derived isolation ratios, `lb_thrust_abs_cos`, and
+reconstructed `arm_alpha` and `arm_qt_gev` from the fitted daughter momenta.
+The Armenteros columns support a later K_S⁰ misidentification comparison;
+they do not add a cut to this reference selection or enter the proposed BDT.
+The join rejects missing or repeated candidate keys. These full-branch
+Parquets cost more disk and I/O than the compact prepared/scored shards.
+
+For any later ROOT file made with the same one-photon Stage 1 v3 schema and
+reconstruction scenario, apply the frozen model without training again:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/score_stage1_v3_dataset.py \
+  --input /path/to/stage1.root --sample my_sample --source-id 0 \
+  --model-dir "$MODEL" --projection "$PROJECTION/projection.json" \
+  --output-dir "$RUN/applied/my_sample_0"
+```
+
+Omit `--projection` if no validation-fixed score cut exists yet. The command
+always writes `audit/` and `offline_selected/` with the full flattened Stage 1
+candidate fields, offline pass flags, and `bdt_score`; with a fixed projection
+it also writes `bdt_selected/`. Each row keeps `source_id`, `event_entry`,
+`candidate_slot`, and `candidates_in_event`. Use a distinct `source-id` and
+output directory per file. It records the input, model, config hash, processed
+event counter, and counts in `manifest.json`. `--max-output-events 1000` is a
+development check on candidate-bearing Stage 1 output events; its manifest
+cannot supply a complete processed-event denominator. The flattener now
+copies newly added `lb_*` candidate branches and `lambda_*` slot branches
+automatically; Lambda-slot fields that collide with candidate aliases get a
+`lambda_slot_*` name. The output also has `arm_alpha` and `arm_qt_gev` for
+later misidentification plots; no Armenteros veto is applied by this command.
+
+For a bounded schema check before a full campaign, add
+`--max-zbb-chunks 1 --max-output-events 1000` to the preparation command and
+use a **distinct pilot output directory**. Capped output is only for code
+validation: it has no processed-input-event denominator, and the trainer
+rejects it for yield projection. The validated pilot at
+`outputs/analysis/studies/v3_offline_inspection_20261002/pilot_default_v3_1000_final/`
+selected 1,021 Physics and 203 Zbb candidates; all 20 proposed feature
+columns were present. Its selected Physics and Zbb candidate keys matched the
+corresponding full-sample study rows exactly. The pilot retained 44 Physics
+and 108 Zbb candidates that failed the diagnostic π⁰ window, confirming
+that no photon veto entered the offline cut.
+The full-branch join was also checked on 1,000 Physics Stage 1 output events:
+1,070 candidate keys matched exactly, and the joined table retained the
+flattened Stage 1 columns plus Stage 2 ratios, thrust alignment, and pass
+flags. A placeholder score was used only to exercise the join; no BDT was
+trained in that capped validation.
+
+## Historical v2 recipe and optional veto studies
+
 Start from the Stage 1 ROOT tuples described in [stage1.md](stage1.md).
 This guide uses the v2 Physics and Zbb tuples as the signal and inclusive
 background inputs. PHSP is an acceptance cross-check; Λb→Λη reconstructed

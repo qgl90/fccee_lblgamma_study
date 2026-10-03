@@ -1,0 +1,46 @@
+{
+  "feature_sets": {
+    "full": [
+      "proton_pt", "proton_eta", "pion_pt", "pion_eta",
+      "gamma_E", "gamma_eta", "lambda_pt", "lambda_eta",
+      "lb_pt", "lb_eta", "proton_d0sig", "pion_d0sig",
+      "lambda_d0_sig", "lambda_flight_rxy", "lambda_flight_rxy_sig",
+      "lambda_vertex_chi2", "iso_R03_noLambda", "iso_R05_noLambda",
+      "lambda_thrust_cos", "gamma_thrust_cos", "m_rec", "Estar_gamma_rec"
+    ],
+    "topology": [
+      "proton_d0sig", "pion_d0sig", "lambda_d0_sig",
+      "lambda_flight_rxy", "lambda_flight_rxy_sig",
+      "lambda_vertex_chi2", "iso_R03_noLambda", "iso_R05_noLambda",
+      "lambda_thrust_cos", "gamma_thrust_cos"
+    ],
+    "v2_3d": [
+      "proton_p", "pion_p", "gamma_E", "lambda_p", "lb_p",
+      "proton_eta", "pion_eta", "gamma_eta", "lambda_eta", "lb_eta",
+      "proton_d0sig", "pion_d0sig", "lambda_flight_xyz_sig",
+      "lambda_vertex_chi2", "iso_R03_all_energy", "iso_R05_all_energy",
+      "iso_R05_charged_p", "iso_R05_neutral_energy",
+      "lambda_thrust_cos", "lb_thrust_cos", "z_partial_deltaE",
+      "z_partial_deltaP", "Estar_gamma_rec"
+    ],
+    "v2_3d_no_recoil": [
+      "proton_p", "pion_p", "gamma_E", "lambda_p", "lb_p",
+      "proton_eta", "pion_eta", "gamma_eta", "lambda_eta", "lb_eta",
+      "proton_d0sig", "pion_d0sig", "lambda_flight_xyz_sig",
+      "lambda_vertex_chi2", "iso_R03_all_energy", "iso_R05_all_energy",
+      "iso_R05_charged_p", "iso_R05_neutral_energy",
+      "lambda_thrust_cos", "lb_thrust_cos"
+    ],
+    "v3_offline_no_veto_proposal": [
+      "lb_E", "proton_p", "pion_p", "gamma_E", "lambda_p",
+      "proton_d0sig", "pion_d0sig", "lambda_flight_xyz_sig",
+      "lb_thrust_abs_cos", "iso_R03_all_energy_over_gamma_E",
+      "iso_R05_charged_n", "iso_R03_neutral_n",
+      "lambda0_iso_R05_charged_n_d0",
+      "lambda0_iso_R05_charged_absd0_min",
+      "lambda0_iso_R05_charged_absd0_max",
+      "z_partial_deltaE", "z_partial_deltaP",
+      "d_pi0", "d_eta", "min_pair"
+    ]
+  }
+}

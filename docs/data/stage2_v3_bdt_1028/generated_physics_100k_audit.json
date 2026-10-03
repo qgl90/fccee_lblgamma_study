@@ -1,0 +1,17 @@
+{
+  "input": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+  "mode": "gamma",
+  "input_events": 100000,
+  "processed_events": 100000,
+  "generated_direct_decays": 100002,
+  "generated_lambda_b": 49998,
+  "generated_anti_lambda_b": 50004,
+  "events_with_complete_chain": 100000,
+  "events_with_multiple_complete_chains": 2,
+  "lambda_b_parents": 101961,
+  "generated_cos_theta_p_mean": -0.21365519129080177,
+  "generated_cos_theta_p_mean_se": 0.0016959172944999764,
+  "expected_parent_alpha": null,
+  "angle_definition": "(anti)proton versus negative Lambda_b momentum in Lambda rest frame",
+  "definition": "Direct Lambda_b/anti-Lambda_b -> Lambda0(p pi) + gamma; both charges; MC truth only"
+}

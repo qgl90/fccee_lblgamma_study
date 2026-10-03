@@ -4,9 +4,12 @@
 
 import mplhep as hep
 import matplotlib.pyplot as plt
+from cycler import cycler
 
 
 plt.style.use(hep.style.LHCb1)
+plt.rcParams["axes.prop_cycle"] = cycler(
+    color=plt.rcParams["axes.prop_cycle"].by_key()["color"])
 # The LHCb style requests Times New Roman, which is absent on the CERN worker.
 # Keep the LHCb layout while choosing an installed serif font.
 plt.rcParams["font.family"] = "DejaVu Serif"
@@ -18,6 +21,7 @@ plt.rcParams.update({
     "ytick.labelsize": 9,
     "legend.fontsize": 9,
     "figure.titlesize": 13,
+    "lines.marker": "",
 })
 
 DIAGNOSTIC_LABELS = {
