@@ -689,3 +689,7 @@ For the paired reconstructed Λ displacement scan on the same scored rows,
 use [`v3_displacement_zss.md`](v3_displacement_zss.md); its
 [review](../docs/STAGE2_V3_DISPLACEMENT_ZSS_2026-10-04.md) records the
 conditional signal and background losses and frozen figures.
+For the three-flavour feature distributions that precede a mixed-background
+BDT training decision, use
+[`v3_flavour_feature_comparison.md`](v3_flavour_feature_comparison.md)
+and its [PI review](../docs/STAGE2_V3_FLAVOUR_FEATURES_2026-10-04.md).

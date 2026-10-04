@@ -79,3 +79,14 @@ the present veto proposals. The threshold-5 descriptive point is not an
 adopted cut. Test it on an independent sample, recompute PHSP angular
 acceptance and check PV/SV resolution assumptions before using it in a fit
 or treating its same-sample counting metric as an optimization result.
+
+The full [three-flavour feature comparison](../STAGE2_V3_FLAVOUR_FEATURES_2026-10-04.md)
+plots offline-selected and high-score Zbb/Zcc/Zss distributions, including
+the 5.4–5.9 GeV peak. After the current BDT and veto proposals, physically
+scaled inclusive peak background is 4.4% Zbb, 26.2% Zcc and 69.4% Zss.
+The current 20 features already contain strong energy, recoil and isolation
+separators, while reconstructed absolute Λ trajectory d0 significance is a
+specific additional feature candidate. The next named ablation is Zbb-only
+20 features versus physical-flavour-mixture 20 features versus mixture plus
+Λ d0, using frozen per-flavour held-out chunks and the same signal sample.
+Do not infer a trained-model gain from the marginal feature plots alone.
