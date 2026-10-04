@@ -4,7 +4,8 @@
 The default normalization treats the 100k forced physics events as one
 generated target decay per event. The output records candidate and event
 rates separately; a candidate yield is used in S/sqrt(S+B). No inferred
-background fit or Lambda_b mass signal window is introduced.
+background fit is introduced. The score objective is evaluated in a named
+reconstructed Lambda_b signal-peak mass window.
 """
 
 import argparse
@@ -43,23 +44,26 @@ def count_events(frame):
     return int(frame[["source_id", "event_entry"]].drop_duplicates().shape[0])
 
 
-def counts(frame, threshold, sample):
+def counts(frame, threshold, sample, mass_window=None):
     kept = frame[(frame.bdt_score >= threshold) &
                  ((frame.truth_matched == 1) if sample == "signal" else
                   (frame.truth_matched != 1))]
+    if mass_window is not None:
+        kept = kept.loc[kept.lb_mass.between(*mass_window)]
     return {"candidates": len(kept), "events": count_events(kept)}
 
 
-def projection(signal, background, threshold, ngen, nbg):
-    s = counts(signal, threshold, "signal")
-    b = counts(background, threshold, "zbb")
+def projection(signal, background, threshold, ngen, nbg, mass_window=None):
+    s = counts(signal, threshold, "signal", mass_window)
+    b = counts(background, threshold, "zbb", mass_window)
     expected_s = SIGNAL_FACTOR * s["candidates"] / ngen
     expected_b = BACKGROUND_FACTOR * b["candidates"] / nbg
     b_count = b["candidates"]
     b_low = 0.5 * chi2.ppf(.025, 2*b_count) if b_count else 0.
     b_high = 0.5 * chi2.ppf(.975, 2*(b_count+1))
     conservative_b = BACKGROUND_FACTOR * max(3, b["candidates"]) / nbg
-    return {"score": float(threshold), "signal": s, "zbb": b,
+    return {"score": float(threshold), "mass_window_gev": mass_window,
+            "signal": s, "zbb": b,
             "signal_candidate_efficiency": s["candidates"] / ngen,
             "signal_event_efficiency": s["events"] / ngen,
             "zbb_candidate_rate_per_event": b["candidates"] / nbg,
@@ -82,27 +86,27 @@ def projection(signal, background, threshold, ngen, nbg):
 
 
 def plot_expected_distributions(signal, background, threshold, ngen, nbg,
-                                mass_range, output):
+                                mass_range, peak_window, output):
     sig = signal[(signal.truth_matched == 1) & (signal.bdt_score >= threshold)]
     bg = background[(background.truth_matched != 1) &
                     (background.bdt_score >= threshold)]
     weight_s = SIGNAL_FACTOR / ngen
     weight_b = BACKGROUND_FACTOR / nbg
-    peak_min, peak_max = 5.4, 5.9  # diagnostic peak interval, not a fit cut
+    peak_min, peak_max = peak_window
     panels = [
         ("lb_mass", np.linspace(mass_range[0], mass_range[1], 37),
          np.ones(len(sig), bool), np.ones(len(bg), bool),
          "Full analysis mass interval"),
         ("lb_mass", np.linspace(peak_min, peak_max, 26),
          np.ones(len(sig), bool), np.ones(len(bg), bool),
-         "Diagnostic peak interval, 5.4–5.9 GeV"),
+         f"Optimization peak interval, {peak_min:g}–{peak_max:g} GeV"),
         ("cos_theta_p", np.linspace(-1, 1, 21),
          np.ones(len(sig), bool), np.ones(len(bg), bool),
          "Helicity angle, full mass interval"),
         ("cos_theta_p", np.linspace(-1, 1, 21),
          sig.lb_mass.between(peak_min, peak_max).to_numpy(),
          bg.lb_mass.between(peak_min, peak_max).to_numpy(),
-         "Helicity angle, diagnostic peak interval"),
+         "Helicity angle, optimization peak interval"),
     ]
     fig, axes = plt.subplots(2, 2, figsize=(13, 9))
     for ax, (variable, edges, sig_mask, bg_mask, title) in zip(axes.flat, panels):
@@ -133,7 +137,7 @@ def plot_expected_distributions(signal, background, threshold, ngen, nbg,
 
 
 def plot_working_point_scan(scan, choice, target, minimum_significance,
-                            minimum_purity, output):
+                            minimum_purity, mass_window, output):
     score = np.asarray([row["score"] for row in scan])
     s = np.asarray([row["expected_signal_candidates"] for row in scan])
     b = np.asarray([row["expected_zbb_candidates"] for row in scan])
@@ -151,7 +155,7 @@ def plot_working_point_scan(scan, choice, target, minimum_significance,
                  label="Zbb 95% interval upper edge")
     axes[0].axhline(target, color="0.35", ls=":", label=f"Zbb target: {target:,.0f}")
     axes[0].set(xlabel="BDT signal-score cut", ylabel="Expected candidates",
-                yscale="log", title="Yields in 4.7–6.5 GeV")
+                yscale="log", title=f"Yields in {mass_window[0]:g}–{mass_window[1]:g} GeV")
     axes[0].legend(frameon=False, fontsize=8)
     axes[1].plot(score, significance, color="#283f74",
                  label="Central S/√(S+B), observed B>0")
@@ -232,11 +236,14 @@ def main():
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--min-validation-background", type=int, default=20)
     ap.add_argument("--max-expected-background", type=float, default=1_000_000,
-                    help="Target upper 95%% expected Zbb candidates in the full mass range")
+                    help="Target upper 95%% expected Zbb candidates in the signal-peak window")
     ap.add_argument("--min-significance", type=float, default=10.,
                     help="Requested minimum S/sqrt(S+B) at the chosen point")
     ap.add_argument("--min-expected-purity", type=float, default=0.,
                     help="Optional minimum S/(S+B), using the 95%% upper background count")
+    ap.add_argument("--signal-mass-window", nargs=2, type=float,
+                    metavar=("LOW_GEV", "HIGH_GEV"), default=(5.4, 5.9),
+                    help="Reconstructed Lambda_b peak window for S, B, score objective, and constraints")
     args = ap.parse_args()
     if args.max_expected_background <= 0 or args.min_significance <= 0:
         ap.error("Background target and significance target must be positive")
@@ -244,6 +251,9 @@ def main():
         ap.error("--min-expected-purity must be in [0, 1)")
     if args.min_validation_background < 1:
         ap.error("--min-validation-background must be positive")
+    peak_window = [float(x) for x in args.signal_mass_window]
+    if not peak_window[0] < peak_window[1]:
+        ap.error("--signal-mass-window needs increasing bounds")
     training = json.loads((args.model_dir / "training_summary.json").read_text())
     prepared_manifest_path = args.model_dir / "prepared_manifest.json"
     prepared_manifest_bytes = prepared_manifest_path.read_bytes()
@@ -255,6 +265,9 @@ def main():
         raise ValueError("Cannot project a pilot with unknown processed-event denominator")
     if training["scenario"] != prep["scenario"]:
         raise ValueError("Training/preparation scenario mismatch")
+    full_range = prep.get("fit_mass_range_gev", [4.7, 6.5])
+    if peak_window[0] < full_range[0] or peak_window[1] > full_range[1]:
+        ap.error("Signal peak window must lie inside the prepared mass range")
     generated = prep["events_processed"]["signal"]
     if not generated or not prep["events_processed"]["zbb"]:
         raise ValueError("Missing generated/processed denominator")
@@ -282,10 +295,14 @@ def main():
     valid_b = background[background.split == "validation"]
     test_s = signal[signal.split == "test"]
     test_b = background[background.split == "test"]
-    scores = valid_s.loc[valid_s.truth_matched == 1, "bdt_score"].to_numpy()
+    scores = valid_s.loc[(valid_s.truth_matched == 1) &
+                         valid_s.lb_mass.between(*peak_window), "bdt_score"].to_numpy()
     if not len(scores):
         raise ValueError("Validation partition has no direct signal")
-    bg_scores = valid_b.loc[valid_b.truth_matched != 1, "bdt_score"].to_numpy()
+    bg_scores = valid_b.loc[(valid_b.truth_matched != 1) &
+                            valid_b.lb_mass.between(*peak_window), "bdt_score"].to_numpy()
+    if not len(bg_scores):
+        raise ValueError("Validation peak window has no Zbb background candidates")
     # Resolve the tight tail by the actual background order statistics as
     # well as a dense numeric grid. Cuts immediately above a score account
     # for the >= convention and score ties without test-set tuning.
@@ -302,7 +319,7 @@ def main():
         tail_scores, np.nextafter(tail_scores, 1.)])
     grid = grid[np.isfinite(grid) & (grid >= 0) & (grid <= 1)]
     validation = [projection(valid_s, valid_b, cut, generated_counts["validation"],
-                             background_denominators["validation"]) for cut in grid]
+                             background_denominators["validation"], peak_window) for cut in grid]
     eligible = [item for item in validation if
                 item["zbb"]["candidates"] >= args.min_validation_background and
                 item["signal"]["candidates"] > 0]
@@ -321,10 +338,8 @@ def main():
                     if target_eligible else None
     chosen = target_choice
     test = projection(test_s, test_b, chosen["score"], generated_counts["test"],
-                      background_denominators["test"]) if chosen else None
-    peak_test = projection(test_s[test_s.lb_mass.between(5.4, 5.9)],
-                           test_b[test_b.lb_mass.between(5.4, 5.9)],
-                           chosen["score"], generated_counts["test"],
+                      background_denominators["test"], peak_window) if chosen else None
+    full_test = projection(test_s, test_b, chosen["score"], generated_counts["test"],
                            background_denominators["test"]) if chosen else None
     stage_signal = prep["stage_counts"]["signal"]
     stage_zbb = prep["stage_counts"]["zbb"]
@@ -343,10 +358,12 @@ def main():
                 stage_signal["selected"]["direct_candidates"] /
                 stage_signal["stage1"]["direct_candidates"]
                 if stage_signal["stage1"]["direct_candidates"] else None,
-            "bdt_conditional_on_offline_direct_candidates_test":
-                test["signal"]["candidates"] / signal_test_before_bdt
-                if test and signal_test_before_bdt else None,
+            "bdt_conditional_on_offline_direct_candidates_test_full_mass":
+                full_test["signal"]["candidates"] / signal_test_before_bdt
+                if full_test and signal_test_before_bdt else None,
             "full_stage0_to_bdt_direct_candidates_per_generated_event_test":
+                full_test["signal_candidate_efficiency"] if full_test else None,
+            "peak_stage0_to_bdt_direct_candidates_per_generated_event_test":
                 test["signal_candidate_efficiency"] if test else None,
         },
         "zbb": {
@@ -358,10 +375,12 @@ def main():
                 stage_zbb["selected"]["background_candidates"] /
                 stage_zbb["stage1"]["background_candidates"]
                 if stage_zbb["stage1"]["background_candidates"] else None,
-            "bdt_conditional_on_offline_other_candidates_test":
-                test["zbb"]["candidates"] / zbb_test_before_bdt
-                if test and zbb_test_before_bdt else None,
+            "bdt_conditional_on_offline_other_candidates_test_full_mass":
+                full_test["zbb"]["candidates"] / zbb_test_before_bdt
+                if full_test and zbb_test_before_bdt else None,
             "full_stage1_to_bdt_other_candidates_per_processed_event_test":
+                full_test["zbb_candidate_rate_per_event"] if full_test else None,
+            "peak_stage1_to_bdt_other_candidates_per_processed_event_test":
                 test["zbb_candidate_rate_per_event"] if test else None,
         },
         "note": "Stage 1/offline rates use all inputs; BDT conditional and final rates use the independent test split. Do not multiply mixed-split rates to reconstruct the test result."
@@ -376,6 +395,8 @@ def main():
         bg_rows["expected_weight"] = BACKGROUND_FACTOR / background_denominators["test"]
         signal_rows["expected_component"] = "signal"
         bg_rows["expected_component"] = "zbb"
+        signal_rows["inside_optimization_mass_window"] = signal_rows.lb_mass.between(*peak_window)
+        bg_rows["inside_optimization_mass_window"] = bg_rows.lb_mass.between(*peak_window)
         pq.write_table(pa.Table.from_pandas(pd.concat([signal_rows, bg_rows],
                                              ignore_index=True), preserve_index=False),
                        args.output_dir / "expected_test_candidates.parquet",
@@ -383,7 +404,7 @@ def main():
         plot_expected_distributions(test_s, test_b, chosen["score"],
                                     generated_counts["test"],
                                     background_denominators["test"],
-                                    prep.get("fit_mass_range_gev", [4.7, 6.5]),
+                                    full_range, peak_window,
                                     args.output_dir / "expected_mass_and_angle.png")
     summary = {
         "command": sys.argv,
@@ -397,6 +418,8 @@ def main():
         "training_summary": str(args.model_dir / "training_summary.json"),
         "scenario": prep["scenario"],
         "mass_range_gev": prep.get("fit_mass_range_gev", [4.7, 6.5]),
+        "optimization_mass_window_gev": peak_window,
+        "optimization_objective": "maximize expected S/sqrt(S+B) with both S and B in the reconstructed signal-peak mass window",
         "normalization": {"N_Z": NZ, "BR_Zbb": BR_ZBB, "f_Lambdab": FLB,
                           "BR_Lambdab_to_Lambda_gamma": BR_SIGNAL,
                           "BR_Lambda_to_p_pi": BR_LAMBDA,
@@ -418,8 +441,9 @@ def main():
         "score_grid_size": len(grid),
         "unconstrained_validation_choice": unconstrained,
         "background_target_validation_choice": target_choice,
-        "validation_choice": chosen, "independent_test": test,
-        "independent_test_diagnostic_peak_5p4_5p9": peak_test,
+        "validation_choice": chosen,
+        "independent_test": full_test,
+        "independent_test_optimization_peak": test,
         "independent_test_meets_background_target_at_95pct_upper":
             bool(test["expected_zbb_candidates_95pct_poisson_interval"][1]
                  <= args.max_expected_background) if test else None,
@@ -438,12 +462,13 @@ def main():
     (args.output_dir / "projection.json").write_text(json.dumps(summary, indent=2) + "\n")
     plot_working_point_scan(validation, chosen, args.max_expected_background,
                             args.min_significance, args.min_expected_purity,
+                            peak_window,
                             args.output_dir / "working_point_scan.png")
     fig, ax = plt.subplots(figsize=(7, 5))
     ax.plot([x["signal_candidate_efficiency"] for x in validation],
             [x["expected_zbb_candidates"] for x in validation], ".-")
     ax.set(xlabel="Validation direct-candidate efficiency / generated event",
-           ylabel="Expected Zbb candidates in 4.7–6.5 GeV", yscale="log")
+           ylabel=f"Expected Zbb candidates in {peak_window[0]:g}–{peak_window[1]:g} GeV", yscale="log")
     fig.tight_layout()
     fig.savefig(args.output_dir / "signal_vs_background.png", dpi=160)
     plt.close(fig)
@@ -466,7 +491,9 @@ def main():
             fig.tight_layout()
             fig.savefig(args.output_dir / filename, dpi=160)
             plt.close(fig)
-    print(json.dumps({"validation_choice": chosen, "independent_test": test}, indent=2))
+    print(json.dumps({"validation_choice": chosen,
+                      "independent_test_optimization_peak": test,
+                      "independent_test_full_mass": full_test}, indent=2))
 
 
 if __name__ == "__main__":

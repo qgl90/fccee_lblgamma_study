@@ -12,6 +12,9 @@ The separate fixed-score K⁰S ancestry and Armenteros study is in
 The 100k v3 PHSP angular acceptance through this frozen score, including the
 fit response and figures, is in [its PI review](../docs/STAGE2_V3_PHSP_ANGLE_REVIEW_2026-10-04.md)
 and [reproduction guide](v3_phsp_angle_acceptance.md).
+The refreshed [1,091-chunk signal-peak scan](../docs/STAGE2_V3_BDT_PEAK_REVIEW_2026-10-04.md)
+uses the same offline scenario with a newly trained model. Its proposed score
+is a separate snapshot; the PHSP response above belongs to the older score.
 The historical v2 workflow starts below the v3 recipe.
 
 ## Current v3 recipe: Physics + inclusive Zbb → Stage 2 → scored Stage 2
@@ -136,15 +139,17 @@ Train/validation/test splitting keeps Physics events together and whole Zbb
 chunks together. Truth matching labels signal and background for training;
 neither truth nor `lb_mass` or `cos_theta_p` is a model feature.
 
-To maximize central `S/sqrt(S+B)` on validation data with at least 20
-observed validation-background candidates **among points whose 95% upper
-background count is at most one million**, then evaluate that fixed score
+To maximize central `S/sqrt(S+B)` on validation data with **both** yields
+inside a named reconstructed signal-peak mass window, at least 20 observed
+validation-background candidates in that window, and a projected 95% upper
+background count of at most one million in that window, evaluate that fixed score
 on the independent test split and make a compact post-cut tuple:
 
 ```bash
 env -u PYTHONPATH -u PYTHONHOME "$PY" \
   studies/reconstruction/project_offline_bdt.py \
   --prepared-dir "$PREP" --model-dir "$MODEL" \
+  --signal-mass-window 5.4 5.9 \
   --max-expected-background 1000000 --min-significance 10 \
   --output-dir "$PROJECTION"
 
@@ -164,8 +169,9 @@ near-one score grid and the observed validation-background order statistics.
 `working_point_purity.png` show yield, significance, and purity, including
 the 95% background upper edge.
 For a PI-specified expected-purity requirement, add
-`--min-expected-purity FRACTION`; this uses `S/(S+B_95% upper)` in the full
-4.7–6.5 GeV mass interval. A sparse or zero-background tail is not treated
+`--min-expected-purity FRACTION`; this uses `S/(S+B_95% upper)` in the
+specified signal-peak window. The 5.4–5.9 GeV bounds are provisional until
+the PI confirms the fit window. A sparse or zero-background tail is not treated
 as a measured optimum. If no point has enough MC support and satisfies the
 constraints, no cut is frozen.
 
