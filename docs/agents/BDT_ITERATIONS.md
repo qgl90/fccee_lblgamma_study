@@ -72,3 +72,10 @@ Zss dominates the current expected peak under the explicit down-type-average
 branching scenario. A future mixture model therefore needs a frozen
 light-flavour training/test split and new score optimization against all
 three inclusive backgrounds; the present BDT and veto cuts remain proposals.
+
+The [paired displacement scan](../STAGE2_V3_DISPLACEMENT_ZSS_2026-10-04.md)
+finds additional Zss separation from reconstructed `|lambda_d0_sig|` after
+the present veto proposals. The threshold-5 descriptive point is not an
+adopted cut. Test it on an independent sample, recompute PHSP angular
+acceptance and check PV/SV resolution assumptions before using it in a fit
+or treating its same-sample counting metric as an optimization result.

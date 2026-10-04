@@ -1,0 +1,3527 @@
+{
+  "question": "Does a reconstructed Lambda displacement cut suppress Zss?",
+  "config": "config/v3_post_bdt_veto_sequence.json",
+  "config_sha256": "7a934dfac487ffa7de2a9a7bf9555293716198bad108081e8f6c4b172aed8acd",
+  "projection": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/projections/20261004_1091chunks_peak_5p4_5p9/projection.json",
+  "projection_sha256": "48736dce351ddb0c3c66e0d8b566e6f1de0bacb4013d85f75f4a55784c8c3a5c",
+  "score": 0.9538269639015198,
+  "mass_window_gev": [
+    5.4,
+    5.9
+  ],
+  "training_summary": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261004_1091chunks/training_summary.json",
+  "training_summary_sha256": "93aa7e76e02d4c32228c25cb763b07e95821ed717159bea5062503b9f89102b1",
+  "abs_lambda_d0_sig_in_bdt_features": false,
+  "lambda_flight_xyz_sig_in_bdt_features": true,
+  "input_meta": {
+    "signal": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261004_1091chunks/scored_selected/signal_-1_selected.parquet",
+    "zbb_catalog": "docs/data/stage2_v3_bdt_1091_peak/20261003_1091chunks.json",
+    "zbb_catalog_sha256": "40121821162fb42d01ffa60715f1a167b6e6ef5ed31bee405816bf6dcac1a038",
+    "eta": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_pseudoscalar_physics_100k_bdt1091peak/v3_eta_physics_100k_stage2_bdt1091peak/bdt_selected/lb_lambdaeta_physics_v3_-5.parquet",
+    "pi0": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_pseudoscalar_physics_100k_bdt1091peak/v3_pi0_physics_100k_stage2_bdt1091peak/bdt_selected/lb_lambdapi0_physics_v3_-4.parquet",
+    "zcc": {
+      "summary": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_zcc_zss_1200_bdt1091peak/v3_zcc_1200_bdt1091peak/summary.json",
+      "summary_sha256": "846012b27f5b2e628e2d378fbaf65db9dac05734fa4b160ee58b3b25bd19891d",
+      "processed_input_events": 499786495
+    },
+    "zss": {
+      "summary": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_zcc_zss_1200_bdt1091peak/v3_zss_1200_bdt1091peak/summary.json",
+      "summary_sha256": "120dee8780493eae4f28a2dfbf0b55f5e463677a94fe9b14801d28bd818a1761",
+      "processed_input_events": 499842440
+    },
+    "eta_summary_sha256": "9ad88ed56d4b2aad9ea705ebbaa54a29fd2a172923c7d7d5d67d86956e919df4",
+    "pi0_summary_sha256": "927e2d00a0adce28a0de7acd6b1e7c97d6c80612b08f532a5063e0ae6f1e69e7"
+  },
+  "weights": {
+    "signal": 8.166256674866503,
+    "signal_wrong": 8.166256674866503,
+    "zbb": 2274.8876749565875,
+    "zcc": 1444.2166949709194,
+    "zss": 1872.5900905893466,
+    "eta": 4.2102840960000005,
+    "pi0": 0.01795836398860057
+  },
+  "forced_mode_note": "Shown separately; may overlap inclusive Zbb",
+  "scan": [
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 0,
+      "components": {
+        "signal": {
+          "candidate_rows": 36900,
+          "candidate_bearing_events": 36900,
+          "expected_candidates": 301334.87130257394,
+          "candidate_count_95pct_expected_interval": [
+            298268.04389348644,
+            304425.3759868838
+          ],
+          "conditional_retention": 1.0
+        },
+        "signal_wrong": {
+          "candidate_rows": 168,
+          "candidate_bearing_events": 168,
+          "expected_candidates": 1371.9311213775725,
+          "candidate_count_95pct_expected_interval": [
+            1172.3148270554045,
+            1595.7932775284103
+          ],
+          "conditional_retention": 1.0
+        },
+        "zbb": {
+          "candidate_rows": 242,
+          "candidate_bearing_events": 242,
+          "expected_candidates": 550522.8173394941,
+          "candidate_count_95pct_expected_interval": [
+            483340.9071973501,
+            624430.8805873164
+          ],
+          "conditional_retention": 1.0
+        },
+        "eta": {
+          "candidate_rows": 3120,
+          "candidate_bearing_events": 3118,
+          "expected_candidates": 13136.086379520002,
+          "candidate_count_95pct_expected_interval": [
+            12679.155106147502,
+            13605.277182578617
+          ],
+          "conditional_retention": 1.0
+        },
+        "pi0": {
+          "candidate_rows": 5937,
+          "candidate_bearing_events": 5937,
+          "expected_candidates": 106.6188070003216,
+          "candidate_count_95pct_expected_interval": [
+            103.92380185988341,
+            109.36601712380141
+          ],
+          "conditional_retention": 1.0
+        },
+        "zcc": {
+          "candidate_rows": 469,
+          "candidate_bearing_events": 469,
+          "expected_candidates": 677337.6299413613,
+          "candidate_count_95pct_expected_interval": [
+            617415.8738048645,
+            741504.3018388133
+          ],
+          "conditional_retention": 1.0
+        },
+        "zss": {
+          "candidate_rows": 1221,
+          "candidate_bearing_events": 1221,
+          "expected_candidates": 2286432.500609592,
+          "candidate_count_95pct_expected_interval": [
+            2159967.817279756,
+            2418369.3339852896
+          ],
+          "conditional_retention": 1.0,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 932,
+            "Kshort pi/pi assigned p/pi": 273,
+            "Other or unmatched pair": 16
+          }
+        }
+      },
+      "inclusive_S": 301334.87130257394,
+      "inclusive_B": 3514292.9478904475,
+      "inclusive_purity": 0.07897386369467874,
+      "inclusive_S_over_sqrt_S_plus_B": 154.26463967060965,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 1,
+      "components": {
+        "signal": {
+          "candidate_rows": 33770,
+          "candidate_bearing_events": 33770,
+          "expected_candidates": 275774.4879102418,
+          "candidate_count_95pct_expected_interval": [
+            272840.94834896707,
+            278731.706631827
+          ],
+          "conditional_retention": 0.9151761517615176
+        },
+        "signal_wrong": {
+          "candidate_rows": 150,
+          "candidate_bearing_events": 150,
+          "expected_candidates": 1224.9385012299754,
+          "candidate_count_95pct_expected_interval": [
+            1036.7565996417193,
+            1437.4013575313204
+          ],
+          "conditional_retention": 0.8928571428571429
+        },
+        "zbb": {
+          "candidate_rows": 227,
+          "candidate_bearing_events": 227,
+          "expected_candidates": 516399.5022151454,
+          "candidate_count_95pct_expected_interval": [
+            451402.36914899235,
+            588127.3533172783
+          ],
+          "conditional_retention": 0.9380165289256198
+        },
+        "eta": {
+          "candidate_rows": 2839,
+          "candidate_bearing_events": 2837,
+          "expected_candidates": 11952.996548544,
+          "candidate_count_95pct_expected_interval": [
+            11517.312271928507,
+            12400.943905469238
+          ],
+          "conditional_retention": 0.9099358974358974
+        },
+        "pi0": {
+          "candidate_rows": 5518,
+          "candidate_bearing_events": 5518,
+          "expected_candidates": 99.09425248909795,
+          "candidate_count_95pct_expected_interval": [
+            96.49670043440507,
+            101.74401800786617
+          ],
+          "conditional_retention": 0.9294256358430184
+        },
+        "zcc": {
+          "candidate_rows": 356,
+          "candidate_bearing_events": 356,
+          "expected_candidates": 514141.14340964734,
+          "candidate_count_95pct_expected_interval": [
+            462114.02231528144,
+            570422.6939662431
+          ],
+          "conditional_retention": 0.7590618336886994
+        },
+        "zss": {
+          "candidate_rows": 880,
+          "candidate_bearing_events": 880,
+          "expected_candidates": 1647879.279718625,
+          "candidate_count_95pct_expected_interval": [
+            1540787.6188302496,
+            1760452.3492968772
+          ],
+          "conditional_retention": 0.7207207207207207,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 678,
+            "Kshort pi/pi assigned p/pi": 192,
+            "Other or unmatched pair": 10
+          }
+        }
+      },
+      "inclusive_S": 275774.4879102418,
+      "inclusive_B": 2678419.9253434176,
+      "inclusive_purity": 0.09335014874884698,
+      "inclusive_S_over_sqrt_S_plus_B": 160.44808963511585,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 2,
+      "components": {
+        "signal": {
+          "candidate_rows": 30900,
+          "candidate_bearing_events": 30900,
+          "expected_candidates": 252337.33125337493,
+          "candidate_count_95pct_expected_interval": [
+            249531.5516492331,
+            255166.79199224888
+          ],
+          "conditional_retention": 0.8373983739837398
+        },
+        "signal_wrong": {
+          "candidate_rows": 139,
+          "candidate_bearing_events": 139,
+          "expected_candidates": 1135.1096778064439,
+          "candidate_count_95pct_expected_interval": [
+            954.2564231987369,
+            1340.268578671619
+          ],
+          "conditional_retention": 0.8273809523809523
+        },
+        "zbb": {
+          "candidate_rows": 208,
+          "candidate_bearing_events": 208,
+          "expected_candidates": 473176.6363909702,
+          "candidate_count_95pct_expected_interval": [
+            411053.39932886884,
+            542037.0626067407
+          ],
+          "conditional_retention": 0.859504132231405
+        },
+        "eta": {
+          "candidate_rows": 2600,
+          "candidate_bearing_events": 2598,
+          "expected_candidates": 10946.738649600002,
+          "candidate_count_95pct_expected_interval": [
+            10529.969165100196,
+            11375.77467609506
+          ],
+          "conditional_retention": 0.8333333333333334
+        },
+        "pi0": {
+          "candidate_rows": 5127,
+          "candidate_bearing_events": 5127,
+          "expected_candidates": 92.07253216955513,
+          "candidate_count_95pct_expected_interval": [
+            89.56931756883463,
+            94.62796906771355
+          ],
+          "conditional_retention": 0.8635674583122789
+        },
+        "zcc": {
+          "candidate_rows": 266,
+          "candidate_bearing_events": 266,
+          "expected_candidates": 384161.64086226455,
+          "candidate_count_95pct_expected_interval": [
+            339378.48439405387,
+            433210.7881909443
+          ],
+          "conditional_retention": 0.5671641791044776
+        },
+        "zss": {
+          "candidate_rows": 608,
+          "candidate_bearing_events": 608,
+          "expected_candidates": 1138534.7750783227,
+          "candidate_count_95pct_expected_interval": [
+            1049822.4951625804,
+            1232740.8875775307
+          ],
+          "conditional_retention": 0.49795249795249796,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 488,
+            "Kshort pi/pi assigned p/pi": 110,
+            "Other or unmatched pair": 10
+          }
+        }
+      },
+      "inclusive_S": 252337.33125337493,
+      "inclusive_B": 1995873.0523315575,
+      "inclusive_purity": 0.1122391983845413,
+      "inclusive_S_over_sqrt_S_plus_B": 168.29182922047423,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 3,
+      "components": {
+        "signal": {
+          "candidate_rows": 28300,
+          "candidate_bearing_events": 28300,
+          "expected_candidates": 231105.06389872203,
+          "candidate_count_95pct_expected_interval": [
+            228420.25346006532,
+            233813.55751413587
+          ],
+          "conditional_retention": 0.7669376693766937
+        },
+        "signal_wrong": {
+          "candidate_rows": 129,
+          "candidate_bearing_events": 129,
+          "expected_candidates": 1053.4471110577788,
+          "candidate_count_95pct_expected_interval": [
+            879.5126114379431,
+            1251.7123626530672
+          ],
+          "conditional_retention": 0.7678571428571429
+        },
+        "zbb": {
+          "candidate_rows": 189,
+          "candidate_bearing_events": 189,
+          "expected_candidates": 429953.770566795,
+          "candidate_count_95pct_expected_interval": [
+            370839.0787870669,
+            495813.06707408285
+          ],
+          "conditional_retention": 0.78099173553719
+        },
+        "eta": {
+          "candidate_rows": 2382,
+          "candidate_bearing_events": 2380,
+          "expected_candidates": 10028.896716672001,
+          "candidate_count_95pct_expected_interval": [
+            9630.154014291222,
+            10439.909561882605
+          ],
+          "conditional_retention": 0.7634615384615384
+        },
+        "pi0": {
+          "candidate_rows": 4742,
+          "candidate_bearing_events": 4742,
+          "expected_candidates": 85.15856203394391,
+          "candidate_count_95pct_expected_interval": [
+            82.75182232983062,
+            87.61753377862273
+          ],
+          "conditional_retention": 0.7987198922014486
+        },
+        "zcc": {
+          "candidate_rows": 204,
+          "candidate_bearing_events": 204,
+          "expected_candidates": 294620.20577406755,
+          "candidate_count_95pct_expected_interval": [
+            255575.75166241144,
+            337942.7136665759
+          ],
+          "conditional_retention": 0.4349680170575693
+        },
+        "zss": {
+          "candidate_rows": 423,
+          "candidate_bearing_events": 423,
+          "expected_candidates": 792105.6083192936,
+          "candidate_count_95pct_expected_interval": [
+            718409.5268115909,
+            871310.127209552
+          ],
+          "conditional_retention": 0.3464373464373464,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 344,
+            "Kshort pi/pi assigned p/pi": 71,
+            "Other or unmatched pair": 8
+          }
+        }
+      },
+      "inclusive_S": 231105.06389872203,
+      "inclusive_B": 1516679.5846601562,
+      "inclusive_purity": 0.13222742520897976,
+      "inclusive_S_over_sqrt_S_plus_B": 174.80968952573755,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 4,
+      "components": {
+        "signal": {
+          "candidate_rows": 26031,
+          "candidate_bearing_events": 26031,
+          "expected_candidates": 212575.82750344992,
+          "candidate_count_95pct_expected_interval": [
+            210001.21232306934,
+            215174.12788711075
+          ],
+          "conditional_retention": 0.7054471544715447
+        },
+        "signal_wrong": {
+          "candidate_rows": 119,
+          "candidate_bearing_events": 119,
+          "expected_candidates": 971.7845443091138,
+          "candidate_count_95pct_expected_interval": [
+            805.0429199528141,
+            1162.8850919316978
+          ],
+          "conditional_retention": 0.7083333333333334
+        },
+        "zbb": {
+          "candidate_rows": 180,
+          "candidate_bearing_events": 180,
+          "expected_candidates": 409479.7814921857,
+          "candidate_count_95pct_expected_interval": [
+            351843.0012869637,
+            473865.078599956
+          ],
+          "conditional_retention": 0.743801652892562
+        },
+        "eta": {
+          "candidate_rows": 2184,
+          "candidate_bearing_events": 2182,
+          "expected_candidates": 9195.260465664001,
+          "candidate_count_95pct_expected_interval": [
+            8813.620291294721,
+            9589.174509250937
+          ],
+          "conditional_retention": 0.7
+        },
+        "pi0": {
+          "candidate_rows": 4410,
+          "candidate_bearing_events": 4410,
+          "expected_candidates": 79.19638518972852,
+          "candidate_count_95pct_expected_interval": [
+            76.87603472481221,
+            81.56897710079754
+          ],
+          "conditional_retention": 0.7427993936331481
+        },
+        "zcc": {
+          "candidate_rows": 149,
+          "candidate_bearing_events": 149,
+          "expected_candidates": 215188.287550667,
+          "candidate_count_95pct_expected_interval": [
+            182023.80674535932,
+            252647.2745141231
+          ],
+          "conditional_retention": 0.31769722814498935
+        },
+        "zss": {
+          "candidate_rows": 317,
+          "candidate_bearing_events": 317,
+          "expected_candidates": 593611.0587168229,
+          "candidate_count_95pct_expected_interval": [
+            530056.1440129114,
+            662688.0347208694
+          ],
+          "conditional_retention": 0.2596232596232596,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 257,
+            "Kshort pi/pi assigned p/pi": 53,
+            "Other or unmatched pair": 7
+          }
+        }
+      },
+      "inclusive_S": 212575.82750344992,
+      "inclusive_B": 1218279.1277596755,
+      "inclusive_purity": 0.14856560179040545,
+      "inclusive_S_over_sqrt_S_plus_B": 177.71172088284854,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 5,
+      "components": {
+        "signal": {
+          "candidate_rows": 24076,
+          "candidate_bearing_events": 24076,
+          "expected_candidates": 196610.79570408593,
+          "candidate_count_95pct_expected_interval": [
+            194135.04445637582,
+            199110.23412612124
+          ],
+          "conditional_retention": 0.6524661246612466
+        },
+        "signal_wrong": {
+          "candidate_rows": 111,
+          "candidate_bearing_events": 111,
+          "expected_candidates": 906.4544909101818,
+          "candidate_count_95pct_expected_interval": [
+            745.6880732241347,
+            1091.6050265058618
+          ],
+          "conditional_retention": 0.6607142857142857
+        },
+        "zbb": {
+          "candidate_rows": 171,
+          "candidate_bearing_events": 171,
+          "expected_candidates": 389005.7924175765,
+          "candidate_count_95pct_expected_interval": [
+            332884.39047674695,
+            451879.9255498165
+          ],
+          "conditional_retention": 0.7066115702479339
+        },
+        "eta": {
+          "candidate_rows": 1995,
+          "candidate_bearing_events": 1993,
+          "expected_candidates": 8399.51677152,
+          "candidate_count_95pct_expected_interval": [
+            8034.941317251457,
+            8776.370156640987
+          ],
+          "conditional_retention": 0.6394230769230769
+        },
+        "pi0": {
+          "candidate_rows": 4111,
+          "candidate_bearing_events": 4111,
+          "expected_candidates": 73.82683435713695,
+          "candidate_count_95pct_expected_interval": [
+            71.5871147874088,
+            76.11880479984627
+          ],
+          "conditional_retention": 0.6924372578743473
+        },
+        "zcc": {
+          "candidate_rows": 118,
+          "candidate_bearing_events": 118,
+          "expected_candidates": 170417.57000656848,
+          "candidate_count_95pct_expected_interval": [
+            141059.12712006978,
+            204084.4631979982
+          ],
+          "conditional_retention": 0.2515991471215352
+        },
+        "zss": {
+          "candidate_rows": 260,
+          "candidate_bearing_events": 260,
+          "expected_candidates": 486873.4235532301,
+          "candidate_count_95pct_expected_interval": [
+            429486.17259254487,
+            549793.2799530129
+          ],
+          "conditional_retention": 0.21294021294021295,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 211,
+            "Kshort pi/pi assigned p/pi": 42,
+            "Other or unmatched pair": 7
+          }
+        }
+      },
+      "inclusive_S": 196610.79570408593,
+      "inclusive_B": 1046296.7859773751,
+      "inclusive_purity": 0.15818617458113984,
+      "inclusive_S_over_sqrt_S_plus_B": 176.3550669920866,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 6,
+      "components": {
+        "signal": {
+          "candidate_rows": 22290,
+          "candidate_bearing_events": 22290,
+          "expected_candidates": 182025.86128277433,
+          "candidate_count_95pct_expected_interval": [
+            179644.0001753918,
+            184431.41158721258
+          ],
+          "conditional_retention": 0.6040650406504066
+        },
+        "signal_wrong": {
+          "candidate_rows": 102,
+          "candidate_bearing_events": 102,
+          "expected_candidates": 832.9581808363832,
+          "candidate_count_95pct_expected_interval": [
+            679.1778513857225,
+            1011.1543993664802
+          ],
+          "conditional_retention": 0.6071428571428571
+        },
+        "zbb": {
+          "candidate_rows": 166,
+          "candidate_bearing_events": 166,
+          "expected_candidates": 377631.3540427935,
+          "candidate_count_95pct_expected_interval": [
+            322369.1070496395,
+            439648.8188423604
+          ],
+          "conditional_retention": 0.6859504132231405
+        },
+        "eta": {
+          "candidate_rows": 1834,
+          "candidate_bearing_events": 1832,
+          "expected_candidates": 7721.661032064001,
+          "candidate_count_95pct_expected_interval": [
+            7372.271573853887,
+            8083.33236426602
+          ],
+          "conditional_retention": 0.5878205128205128
+        },
+        "pi0": {
+          "candidate_rows": 3839,
+          "candidate_bearing_events": 3839,
+          "expected_candidates": 68.9421593522376,
+          "candidate_count_95pct_expected_interval": [
+            66.77837762383949,
+            71.15820146761074
+          ],
+          "conditional_retention": 0.6466228735051373
+        },
+        "zcc": {
+          "candidate_rows": 103,
+          "candidate_bearing_events": 103,
+          "expected_candidates": 148754.3195820047,
+          "candidate_count_95pct_expected_interval": [
+            121418.0969361525,
+            180407.8746498884
+          ],
+          "conditional_retention": 0.21961620469083157
+        },
+        "zss": {
+          "candidate_rows": 213,
+          "candidate_bearing_events": 213,
+          "expected_candidates": 398861.68929553084,
+          "candidate_count_95pct_expected_interval": [
+            347091.82318606845,
+            456175.85083659255
+          ],
+          "conditional_retention": 0.17444717444717445,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 175,
+            "Kshort pi/pi assigned p/pi": 33,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 182025.86128277433,
+      "inclusive_B": 925247.362920329,
+      "inclusive_purity": 0.16439109815355382,
+      "inclusive_S_over_sqrt_S_plus_B": 172.98390453629412,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 8,
+      "components": {
+        "signal": {
+          "candidate_rows": 19479,
+          "candidate_bearing_events": 19479,
+          "expected_candidates": 159070.5137697246,
+          "candidate_count_95pct_expected_interval": [
+            156844.4062412084,
+            161320.3142253935
+          ],
+          "conditional_retention": 0.5278861788617886
+        },
+        "signal_wrong": {
+          "candidate_rows": 87,
+          "candidate_bearing_events": 87,
+          "expected_candidates": 710.4643307133857,
+          "candidate_count_95pct_expected_interval": [
+            569.052804239504,
+            876.355127157351
+          ],
+          "conditional_retention": 0.5178571428571429
+        },
+        "zbb": {
+          "candidate_rows": 152,
+          "candidate_bearing_events": 152,
+          "expected_candidates": 345782.9265934013,
+          "candidate_count_95pct_expected_interval": [
+            292997.73993846856,
+            405330.92859843356
+          ],
+          "conditional_retention": 0.628099173553719
+        },
+        "eta": {
+          "candidate_rows": 1601,
+          "candidate_bearing_events": 1599,
+          "expected_candidates": 6740.664837696001,
+          "candidate_count_95pct_expected_interval": [
+            6414.487192152322,
+            7079.131082509474
+          ],
+          "conditional_retention": 0.5131410256410256
+        },
+        "pi0": {
+          "candidate_rows": 3401,
+          "candidate_bearing_events": 3401,
+          "expected_candidates": 61.07639592523054,
+          "candidate_count_95pct_expected_interval": [
+            59.040792362768826,
+            63.164277526457994
+          ],
+          "conditional_retention": 0.572848239851777
+        },
+        "zcc": {
+          "candidate_rows": 81,
+          "candidate_bearing_events": 81,
+          "expected_candidates": 116981.55229264447,
+          "candidate_count_95pct_expected_interval": [
+            92900.23829350194,
+            145397.38833322644
+          ],
+          "conditional_retention": 0.17270788912579957
+        },
+        "zss": {
+          "candidate_rows": 158,
+          "candidate_bearing_events": 158,
+          "expected_candidates": 295869.23431311676,
+          "candidate_count_95pct_expected_interval": [
+            251533.82661654815,
+            345768.720934346
+          ],
+          "conditional_retention": 0.1294021294021294,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 134,
+            "Kshort pi/pi assigned p/pi": 19,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 159070.5137697246,
+      "inclusive_B": 758633.7131991625,
+      "inclusive_purity": 0.1733352741494102,
+      "inclusive_S_over_sqrt_S_plus_B": 166.04978504461468,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 10,
+      "components": {
+        "signal": {
+          "candidate_rows": 17195,
+          "candidate_bearing_events": 17195,
+          "expected_candidates": 140418.7835243295,
+          "candidate_count_95pct_expected_interval": [
+            138327.72332897544,
+            142533.5403286708
+          ],
+          "conditional_retention": 0.4659891598915989
+        },
+        "signal_wrong": {
+          "candidate_rows": 75,
+          "candidate_bearing_events": 75,
+          "expected_candidates": 612.4692506149877,
+          "candidate_count_95pct_expected_interval": [
+            481.74591821992277,
+            767.7355092117526
+          ],
+          "conditional_retention": 0.44642857142857145
+        },
+        "zbb": {
+          "candidate_rows": 138,
+          "candidate_bearing_events": 138,
+          "expected_candidates": 313934.4991440091,
+          "candidate_count_95pct_expected_interval": [
+            263743.45144896966,
+            370897.07640849915
+          ],
+          "conditional_retention": 0.5702479338842975
+        },
+        "eta": {
+          "candidate_rows": 1409,
+          "candidate_bearing_events": 1408,
+          "expected_candidates": 5932.290291264001,
+          "candidate_count_95pct_expected_interval": [
+            5626.544535502098,
+            6250.331396756464
+          ],
+          "conditional_retention": 0.4516025641025641
+        },
+        "pi0": {
+          "candidate_rows": 3091,
+          "candidate_bearing_events": 3091,
+          "expected_candidates": 55.50930308876436,
+          "candidate_count_95pct_expected_interval": [
+            53.56948679202149,
+            57.50141212105139
+          ],
+          "conditional_retention": 0.5206333164898097
+        },
+        "zcc": {
+          "candidate_rows": 63,
+          "candidate_bearing_events": 63,
+          "expected_candidates": 90985.65178316792,
+          "candidate_count_95pct_expected_interval": [
+            69915.8730297078,
+            116410.17292329509
+          ],
+          "conditional_retention": 0.13432835820895522
+        },
+        "zss": {
+          "candidate_rows": 128,
+          "candidate_bearing_events": 128,
+          "expected_candidates": 239691.53159543636,
+          "candidate_count_95pct_expected_interval": [
+            199968.9030612362,
+            284994.01459026587
+          ],
+          "conditional_retention": 0.10483210483210484,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 111,
+            "Kshort pi/pi assigned p/pi": 13,
+            "Other or unmatched pair": 4
+          }
+        }
+      },
+      "inclusive_S": 140418.7835243295,
+      "inclusive_B": 644611.6825226133,
+      "inclusive_purity": 0.17887048923262147,
+      "inclusive_S_over_sqrt_S_plus_B": 158.48273251823488,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 12,
+      "components": {
+        "signal": {
+          "candidate_rows": 15398,
+          "candidate_bearing_events": 15398,
+          "expected_candidates": 125744.0202795944,
+          "candidate_count_95pct_expected_interval": [
+            123765.65636035598,
+            127746.08426309988
+          ],
+          "conditional_retention": 0.417289972899729
+        },
+        "signal_wrong": {
+          "candidate_rows": 66,
+          "candidate_bearing_events": 66,
+          "expected_candidates": 538.9729405411892,
+          "candidate_count_95pct_expected_interval": [
+            416.8416331687532,
+            685.7057303475294
+          ],
+          "conditional_retention": 0.39285714285714285
+        },
+        "zbb": {
+          "candidate_rows": 127,
+          "candidate_bearing_events": 127,
+          "expected_candidates": 288910.7347194866,
+          "candidate_count_95pct_expected_interval": [
+            240851.86228922935,
+            343748.96101391484
+          ],
+          "conditional_retention": 0.5247933884297521
+        },
+        "eta": {
+          "candidate_rows": 1230,
+          "candidate_bearing_events": 1229,
+          "expected_candidates": 5178.64943808,
+          "candidate_count_95pct_expected_interval": [
+            4893.248617911183,
+            5476.353272530911
+          ],
+          "conditional_retention": 0.3942307692307692
+        },
+        "pi0": {
+          "candidate_rows": 2793,
+          "candidate_bearing_events": 2793,
+          "expected_candidates": 50.157710620161396,
+          "candidate_count_95pct_expected_interval": [
+            48.31461781168054,
+            52.053112536066216
+          ],
+          "conditional_retention": 0.47043961596766043
+        },
+        "zcc": {
+          "candidate_rows": 57,
+          "candidate_bearing_events": 57,
+          "expected_candidates": 82320.35161334241,
+          "candidate_count_95pct_expected_interval": [
+            62348.63040738841,
+            106655.56381362116
+          ],
+          "conditional_retention": 0.12153518123667377
+        },
+        "zss": {
+          "candidate_rows": 105,
+          "candidate_bearing_events": 105,
+          "expected_candidates": 196621.9595118814,
+          "candidate_count_95pct_expected_interval": [
+            160817.28292575627,
+            238022.87006527564
+          ],
+          "conditional_retention": 0.085995085995086,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 92,
+            "Kshort pi/pi assigned p/pi": 9,
+            "Other or unmatched pair": 4
+          }
+        }
+      },
+      "inclusive_S": 125744.0202795944,
+      "inclusive_B": 567853.0458447104,
+      "inclusive_purity": 0.18129260693420934,
+      "inclusive_S_over_sqrt_S_plus_B": 150.984970254909,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 15,
+      "components": {
+        "signal": {
+          "candidate_rows": 13169,
+          "candidate_bearing_events": 13169,
+          "expected_candidates": 107541.43415131698,
+          "candidate_count_95pct_expected_interval": [
+            105712.44175056617,
+            109394.13184870093
+          ],
+          "conditional_retention": 0.35688346883468836
+        },
+        "signal_wrong": {
+          "candidate_rows": 57,
+          "candidate_bearing_events": 57,
+          "expected_candidates": 465.4766304673907,
+          "candidate_count_95pct_expected_interval": [
+            352.54745427477036,
+            603.0789651840798
+          ],
+          "conditional_retention": 0.3392857142857143
+        },
+        "zbb": {
+          "candidate_rows": 111,
+          "candidate_bearing_events": 111,
+          "expected_candidates": 252512.5319201812,
+          "candidate_count_95pct_expected_interval": [
+            207727.5641311434,
+            304090.2239041414
+          ],
+          "conditional_retention": 0.45867768595041325
+        },
+        "eta": {
+          "candidate_rows": 1025,
+          "candidate_bearing_events": 1025,
+          "expected_candidates": 4315.5411984,
+          "candidate_count_95pct_expected_interval": [
+            4055.358239047859,
+            4588.038302665009
+          ],
+          "conditional_retention": 0.328525641025641
+        },
+        "pi0": {
+          "candidate_rows": 2464,
+          "candidate_bearing_events": 2464,
+          "expected_candidates": 44.249408867911804,
+          "candidate_count_95pct_expected_interval": [
+            42.519309700881266,
+            46.031838556895046
+          ],
+          "conditional_retention": 0.4150244231093145
+        },
+        "zcc": {
+          "candidate_rows": 54,
+          "candidate_bearing_events": 54,
+          "expected_candidates": 77987.70152842965,
+          "candidate_count_95pct_expected_interval": [
+            58586.76163665207,
+            101757.03350883938
+          ],
+          "conditional_retention": 0.11513859275053305
+        },
+        "zss": {
+          "candidate_rows": 84,
+          "candidate_bearing_events": 84,
+          "expected_candidates": 157297.56760950512,
+          "candidate_count_95pct_expected_interval": [
+            125466.70025946516,
+            194745.09199461914
+          ],
+          "conditional_retention": 0.0687960687960688,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 74,
+            "Kshort pi/pi assigned p/pi": 6,
+            "Other or unmatched pair": 4
+          }
+        }
+      },
+      "inclusive_S": 107541.43415131698,
+      "inclusive_B": 487797.801058116,
+      "inclusive_purity": 0.18063891608535632,
+      "inclusive_S_over_sqrt_S_plus_B": 139.37778911777377,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 20,
+      "components": {
+        "signal": {
+          "candidate_rows": 10558,
+          "candidate_bearing_events": 10558,
+          "expected_candidates": 86219.33797324053,
+          "candidate_count_95pct_expected_interval": [
+            84582.47999448898,
+            87879.90937453325
+          ],
+          "conditional_retention": 0.28612466124661246
+        },
+        "signal_wrong": {
+          "candidate_rows": 46,
+          "candidate_bearing_events": 46,
+          "expected_candidates": 375.64780704385913,
+          "candidate_count_95pct_expected_interval": [
+            275.0214072257116,
+            501.0615325425529
+          ],
+          "conditional_retention": 0.27380952380952384
+        },
+        "zbb": {
+          "candidate_rows": 91,
+          "candidate_bearing_events": 91,
+          "expected_candidates": 207014.77842104947,
+          "candidate_count_95pct_expected_interval": [
+            166675.3861775332,
+            254168.2746012386
+          ],
+          "conditional_retention": 0.3760330578512397
+        },
+        "eta": {
+          "candidate_rows": 810,
+          "candidate_bearing_events": 810,
+          "expected_candidates": 3410.3301177600006,
+          "candidate_count_95pct_expected_interval": [
+            3179.4867942989204,
+            3653.503527329107
+          ],
+          "conditional_retention": 0.25961538461538464
+        },
+        "pi0": {
+          "candidate_rows": 2055,
+          "candidate_bearing_events": 2055,
+          "expected_candidates": 36.904437996574174,
+          "candidate_count_95pct_expected_interval": [
+            35.32592678896113,
+            38.53531320282222
+          ],
+          "conditional_retention": 0.3461344113188479
+        },
+        "zcc": {
+          "candidate_rows": 47,
+          "candidate_bearing_events": 47,
+          "expected_candidates": 67878.18466363322,
+          "candidate_count_95pct_expected_interval": [
+            49874.33695700013,
+            90263.59591945153
+          ],
+          "conditional_retention": 0.10021321961620469
+        },
+        "zss": {
+          "candidate_rows": 75,
+          "candidate_bearing_events": 75,
+          "expected_candidates": 140444.256794201,
+          "candidate_count_95pct_expected_interval": [
+            110468.31719323105,
+            176048.09204297952
+          ],
+          "conditional_retention": 0.06142506142506143,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 66,
+            "Kshort pi/pi assigned p/pi": 6,
+            "Other or unmatched pair": 3
+          }
+        }
+      },
+      "inclusive_S": 86219.33797324053,
+      "inclusive_B": 415337.2198788837,
+      "inclusive_purity": 0.17190352039751597,
+      "inclusive_S_over_sqrt_S_plus_B": 121.74320401543272,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 30,
+      "components": {
+        "signal": {
+          "candidate_rows": 7369,
+          "candidate_bearing_events": 7369,
+          "expected_candidates": 60177.14543709126,
+          "candidate_count_95pct_expected_interval": [
+            58810.93228179735,
+            61567.08731007166
+          ],
+          "conditional_retention": 0.19970189701897018
+        },
+        "signal_wrong": {
+          "candidate_rows": 34,
+          "candidate_bearing_events": 34,
+          "expected_candidates": 277.6527269454611,
+          "candidate_count_95pct_expected_interval": [
+            192.28258481184244,
+            387.9918560809868
+          ],
+          "conditional_retention": 0.20238095238095238
+        },
+        "zbb": {
+          "candidate_rows": 69,
+          "candidate_bearing_events": 69,
+          "expected_candidates": 156967.24957200454,
+          "candidate_count_95pct_expected_interval": [
+            122129.88942122443,
+            198652.10045356167
+          ],
+          "conditional_retention": 0.28512396694214875
+        },
+        "eta": {
+          "candidate_rows": 545,
+          "candidate_bearing_events": 545,
+          "expected_candidates": 2294.6048323200002,
+          "candidate_count_95pct_expected_interval": [
+            2105.9780896050197,
+            2495.593059064325
+          ],
+          "conditional_retention": 0.17467948717948717
+        },
+        "pi0": {
+          "candidate_rows": 1527,
+          "candidate_bearing_events": 1527,
+          "expected_candidates": 27.42242181059307,
+          "candidate_count_95pct_expected_interval": [
+            26.06409237110306,
+            28.83317696483615
+          ],
+          "conditional_retention": 0.25720060636685194
+        },
+        "zcc": {
+          "candidate_rows": 36,
+          "candidate_bearing_events": 36,
+          "expected_candidates": 51991.8010189531,
+          "candidate_count_95pct_expected_interval": [
+            36414.4182483725,
+            71978.56786092365
+          ],
+          "conditional_retention": 0.0767590618336887
+        },
+        "zss": {
+          "candidate_rows": 62,
+          "candidate_bearing_events": 62,
+          "expected_candidates": 116100.5856165395,
+          "candidate_count_95pct_expected_interval": [
+            89013.65326053053,
+            148835.7110206538
+          ],
+          "conditional_retention": 0.050778050778050775,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 55,
+            "Kshort pi/pi assigned p/pi": 4,
+            "Other or unmatched pair": 3
+          }
+        }
+      },
+      "inclusive_S": 60177.14543709126,
+      "inclusive_B": 325059.6362074971,
+      "inclusive_purity": 0.15620820312170886,
+      "inclusive_S_over_sqrt_S_plus_B": 96.95444166061588,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 0,
+      "components": {
+        "signal": {
+          "candidate_rows": 36900,
+          "candidate_bearing_events": 36900,
+          "expected_candidates": 301334.87130257394,
+          "candidate_count_95pct_expected_interval": [
+            298268.04389348644,
+            304425.3759868838
+          ],
+          "conditional_retention": 1.0
+        },
+        "signal_wrong": {
+          "candidate_rows": 168,
+          "candidate_bearing_events": 168,
+          "expected_candidates": 1371.9311213775725,
+          "candidate_count_95pct_expected_interval": [
+            1172.3148270554045,
+            1595.7932775284103
+          ],
+          "conditional_retention": 1.0
+        },
+        "zbb": {
+          "candidate_rows": 242,
+          "candidate_bearing_events": 242,
+          "expected_candidates": 550522.8173394941,
+          "candidate_count_95pct_expected_interval": [
+            483340.9071973501,
+            624430.8805873164
+          ],
+          "conditional_retention": 1.0
+        },
+        "eta": {
+          "candidate_rows": 3120,
+          "candidate_bearing_events": 3118,
+          "expected_candidates": 13136.086379520002,
+          "candidate_count_95pct_expected_interval": [
+            12679.155106147502,
+            13605.277182578617
+          ],
+          "conditional_retention": 1.0
+        },
+        "pi0": {
+          "candidate_rows": 5937,
+          "candidate_bearing_events": 5937,
+          "expected_candidates": 106.6188070003216,
+          "candidate_count_95pct_expected_interval": [
+            103.92380185988341,
+            109.36601712380141
+          ],
+          "conditional_retention": 1.0
+        },
+        "zcc": {
+          "candidate_rows": 469,
+          "candidate_bearing_events": 469,
+          "expected_candidates": 677337.6299413613,
+          "candidate_count_95pct_expected_interval": [
+            617415.8738048645,
+            741504.3018388133
+          ],
+          "conditional_retention": 1.0
+        },
+        "zss": {
+          "candidate_rows": 1221,
+          "candidate_bearing_events": 1221,
+          "expected_candidates": 2286432.500609592,
+          "candidate_count_95pct_expected_interval": [
+            2159967.817279756,
+            2418369.3339852896
+          ],
+          "conditional_retention": 1.0,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 932,
+            "Kshort pi/pi assigned p/pi": 273,
+            "Other or unmatched pair": 16
+          }
+        }
+      },
+      "inclusive_S": 301334.87130257394,
+      "inclusive_B": 3514292.9478904475,
+      "inclusive_purity": 0.07897386369467874,
+      "inclusive_S_over_sqrt_S_plus_B": 154.26463967060965,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 50,
+      "components": {
+        "signal": {
+          "candidate_rows": 35139,
+          "candidate_bearing_events": 35139,
+          "expected_candidates": 286954.09329813404,
+          "candidate_count_95pct_expected_interval": [
+            283961.52763204154,
+            289970.33726908476
+          ],
+          "conditional_retention": 0.9522764227642276
+        },
+        "signal_wrong": {
+          "candidate_rows": 161,
+          "candidate_bearing_events": 161,
+          "expected_candidates": 1314.7673246535069,
+          "candidate_count_95pct_expected_interval": [
+            1119.521188945554,
+            1534.2722750845064
+          ],
+          "conditional_retention": 0.9583333333333334
+        },
+        "zbb": {
+          "candidate_rows": 236,
+          "candidate_bearing_events": 236,
+          "expected_candidates": 536873.4912897546,
+          "candidate_count_95pct_expected_interval": [
+            470557.12629878346,
+            609917.7834654084
+          ],
+          "conditional_retention": 0.9752066115702479
+        },
+        "eta": {
+          "candidate_rows": 3026,
+          "candidate_bearing_events": 3024,
+          "expected_candidates": 12740.319674496002,
+          "candidate_count_95pct_expected_interval": [
+            12290.385225797807,
+            13202.51478552771
+          ],
+          "conditional_retention": 0.9698717948717949
+        },
+        "pi0": {
+          "candidate_rows": 5764,
+          "candidate_bearing_events": 5764,
+          "expected_candidates": 103.5120100302937,
+          "candidate_count_95pct_expected_interval": [
+            100.8568112795069,
+            106.21941715376067
+          ],
+          "conditional_retention": 0.9708607040592891
+        },
+        "zcc": {
+          "candidate_rows": 463,
+          "candidate_bearing_events": 463,
+          "expected_candidates": 668672.3297715357,
+          "candidate_count_95pct_expected_interval": [
+            609144.0237263334,
+            732445.967794111
+          ],
+          "conditional_retention": 0.9872068230277186
+        },
+        "zss": {
+          "candidate_rows": 1188,
+          "candidate_bearing_events": 1188,
+          "expected_candidates": 2224637.0276201437,
+          "candidate_count_95pct_expected_interval": [
+            2099917.412632064,
+            2354829.5109721366
+          ],
+          "conditional_retention": 0.972972972972973,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 899,
+            "Kshort pi/pi assigned p/pi": 273,
+            "Other or unmatched pair": 16
+          }
+        }
+      },
+      "inclusive_S": 286954.09329813404,
+      "inclusive_B": 3430182.848681434,
+      "inclusive_purity": 0.07719761143513752,
+      "inclusive_S_over_sqrt_S_plus_B": 148.83605273639702,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 100,
+      "components": {
+        "signal": {
+          "candidate_rows": 31279,
+          "candidate_bearing_events": 31279,
+          "expected_candidates": 255432.34253314935,
+          "candidate_count_95pct_expected_interval": [
+            252609.361017872,
+            258279.00490694348
+          ],
+          "conditional_retention": 0.847669376693767
+        },
+        "signal_wrong": {
+          "candidate_rows": 138,
+          "candidate_bearing_events": 138,
+          "expected_candidates": 1126.9434211315775,
+          "candidate_count_95pct_expected_interval": [
+            946.7705788544393,
+            1331.4242981105333
+          ],
+          "conditional_retention": 0.8214285714285714
+        },
+        "zbb": {
+          "candidate_rows": 225,
+          "candidate_bearing_events": 225,
+          "expected_candidates": 511849.72686523217,
+          "candidate_count_95pct_expected_interval": [
+            447149.2914478223,
+            583281.5229646479
+          ],
+          "conditional_retention": 0.9297520661157025
+        },
+        "eta": {
+          "candidate_rows": 2731,
+          "candidate_bearing_events": 2730,
+          "expected_candidates": 11498.285866176002,
+          "candidate_count_95pct_expected_interval": [
+            11071.04610124087,
+            11937.790219477205
+          ],
+          "conditional_retention": 0.8753205128205128
+        },
+        "pi0": {
+          "candidate_rows": 5193,
+          "candidate_bearing_events": 5193,
+          "expected_candidates": 93.25778419280276,
+          "candidate_count_95pct_expected_interval": [
+            90.73839946353102,
+            95.82938965884453
+          ],
+          "conditional_retention": 0.8746841839312784
+        },
+        "zcc": {
+          "candidate_rows": 429,
+          "candidate_bearing_events": 429,
+          "expected_candidates": 619568.9621425244,
+          "candidate_count_95pct_expected_interval": [
+            562320.0690882079,
+            681065.7075020327
+          ],
+          "conditional_retention": 0.9147121535181236
+        },
+        "zss": {
+          "candidate_rows": 1064,
+          "candidate_bearing_events": 1064,
+          "expected_candidates": 1992435.8563870648,
+          "candidate_count_95pct_expected_interval": [
+            1874500.6368331974,
+            2115846.9349405672
+          ],
+          "conditional_retention": 0.8714168714168714,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 790,
+            "Kshort pi/pi assigned p/pi": 262,
+            "Other or unmatched pair": 12
+          }
+        }
+      },
+      "inclusive_S": 255432.34253314935,
+      "inclusive_B": 3123854.545394821,
+      "inclusive_purity": 0.0755876464486178,
+      "inclusive_S_over_sqrt_S_plus_B": 138.95153687145003,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 150,
+      "components": {
+        "signal": {
+          "candidate_rows": 27485,
+          "candidate_bearing_events": 27485,
+          "expected_candidates": 224449.56470870582,
+          "candidate_count_95pct_expected_interval": [
+            221803.808489038,
+            227119.00480411033
+          ],
+          "conditional_retention": 0.7448509485094851
+        },
+        "signal_wrong": {
+          "candidate_rows": 117,
+          "candidate_bearing_events": 117,
+          "expected_candidates": 955.4520309593809,
+          "candidate_count_95pct_expected_interval": [
+            790.1848614997617,
+            1145.0841821855145
+          ],
+          "conditional_retention": 0.6964285714285714
+        },
+        "zbb": {
+          "candidate_rows": 211,
+          "candidate_bearing_events": 211,
+          "expected_candidates": 480001.29941583995,
+          "candidate_count_95pct_expected_interval": [
+            417415.80756679026,
+            549322.9013046746
+          ],
+          "conditional_retention": 0.871900826446281
+        },
+        "eta": {
+          "candidate_rows": 2437,
+          "candidate_bearing_events": 2436,
+          "expected_candidates": 10260.462341952001,
+          "candidate_count_95pct_expected_interval": [
+            9857.09634730817,
+            10676.097525635569
+          ],
+          "conditional_retention": 0.7810897435897436
+        },
+        "pi0": {
+          "candidate_rows": 4587,
+          "candidate_bearing_events": 4587,
+          "expected_candidates": 82.37501561571082,
+          "candidate_count_95pct_expected_interval": [
+            80.00821858013391,
+            84.79404895604894
+          ],
+          "conditional_retention": 0.7726124305204649
+        },
+        "zcc": {
+          "candidate_rows": 398,
+          "candidate_bearing_events": 398,
+          "expected_candidates": 574798.2445984259,
+          "candidate_count_95pct_expected_interval": [
+            519707.7875838582,
+            634139.1264147965
+          ],
+          "conditional_retention": 0.8486140724946695
+        },
+        "zss": {
+          "candidate_rows": 918,
+          "candidate_bearing_events": 918,
+          "expected_candidates": 1719037.70316102,
+          "candidate_count_95pct_expected_interval": [
+            1609619.9332695643,
+            1833935.6005500664
+          ],
+          "conditional_retention": 0.7518427518427518,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 672,
+            "Kshort pi/pi assigned p/pi": 238,
+            "Other or unmatched pair": 8
+          }
+        }
+      },
+      "inclusive_S": 224449.56470870582,
+      "inclusive_B": 2773837.2471752856,
+      "inclusive_purity": 0.07485927090733244,
+      "inclusive_S_over_sqrt_S_plus_B": 129.62303332958172,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 200,
+      "components": {
+        "signal": {
+          "candidate_rows": 24210,
+          "candidate_bearing_events": 24210,
+          "expected_candidates": 197705.07409851803,
+          "candidate_count_95pct_expected_interval": [
+            195222.42121098473,
+            200211.4140177026
+          ],
+          "conditional_retention": 0.6560975609756098
+        },
+        "signal_wrong": {
+          "candidate_rows": 105,
+          "candidate_bearing_events": 105,
+          "expected_candidates": 857.4569508609828,
+          "candidate_count_95pct_expected_interval": [
+            701.3148348515689,
+            1038.0039183213319
+          ],
+          "conditional_retention": 0.625
+        },
+        "zbb": {
+          "candidate_rows": 195,
+          "candidate_bearing_events": 195,
+          "expected_candidates": 443603.0966165346,
+          "candidate_count_95pct_expected_interval": [
+            383522.6244681731,
+            510425.71595343
+          ],
+          "conditional_retention": 0.8057851239669421
+        },
+        "eta": {
+          "candidate_rows": 2164,
+          "candidate_bearing_events": 2163,
+          "expected_candidates": 9111.054783744,
+          "candidate_count_95pct_expected_interval": [
+            8731.184506792191,
+            9503.199334444284
+          ],
+          "conditional_retention": 0.6935897435897436
+        },
+        "pi0": {
+          "candidate_rows": 4096,
+          "candidate_bearing_events": 4096,
+          "expected_candidates": 73.55745889730794,
+          "candidate_count_95pct_expected_interval": [
+            71.32186038111269,
+            75.8453087863752
+          ],
+          "conditional_retention": 0.6899107293245748
+        },
+        "zcc": {
+          "candidate_rows": 358,
+          "candidate_bearing_events": 358,
+          "expected_candidates": 517029.57679958915,
+          "candidate_count_95pct_expected_interval": [
+            464852.60843747173,
+            573460.7681726816
+          ],
+          "conditional_retention": 0.7633262260127932
+        },
+        "zss": {
+          "candidate_rows": 811,
+          "candidate_bearing_events": 811,
+          "expected_candidates": 1518670.56346796,
+          "candidate_count_95pct_expected_interval": [
+            1415934.8976916191,
+            1626890.1896726368
+          ],
+          "conditional_retention": 0.6642096642096642,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 583,
+            "Kshort pi/pi assigned p/pi": 221,
+            "Other or unmatched pair": 7
+          }
+        }
+      },
+      "inclusive_S": 197705.07409851803,
+      "inclusive_B": 2479303.2368840836,
+      "inclusive_purity": 0.07385299227029667,
+      "inclusive_S_over_sqrt_S_plus_B": 120.83505827861501,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 300,
+      "components": {
+        "signal": {
+          "candidate_rows": 19226,
+          "candidate_bearing_events": 19226,
+          "expected_candidates": 157004.45083098338,
+          "candidate_count_95pct_expected_interval": [
+            154792.89780553305,
+            159239.6971588687
+          ],
+          "conditional_retention": 0.521029810298103
+        },
+        "signal_wrong": {
+          "candidate_rows": 81,
+          "candidate_bearing_events": 81,
+          "expected_candidates": 661.4667906641868,
+          "candidate_count_95pct_expected_interval": [
+            525.3001116125963,
+            822.1428246321968
+          ],
+          "conditional_retention": 0.48214285714285715
+        },
+        "zbb": {
+          "candidate_rows": 169,
+          "candidate_bearing_events": 169,
+          "expected_candidates": 384456.0170676633,
+          "candidate_count_95pct_expected_interval": [
+            328676.7482254915,
+            446988.9986203976
+          ],
+          "conditional_retention": 0.6983471074380165
+        },
+        "eta": {
+          "candidate_rows": 1698,
+          "candidate_bearing_events": 1697,
+          "expected_candidates": 7149.062395008001,
+          "candidate_count_95pct_expected_interval": [
+            6813.028886213035,
+            7497.381535746002
+          ],
+          "conditional_retention": 0.5442307692307692
+        },
+        "pi0": {
+          "candidate_rows": 3333,
+          "candidate_bearing_events": 3333,
+          "expected_candidates": 59.855227174005705,
+          "candidate_count_95pct_expected_interval": [
+            57.84024837214465,
+            61.92248706237572
+          ],
+          "conditional_retention": 0.5613946437594745
+        },
+        "zcc": {
+          "candidate_rows": 297,
+          "candidate_bearing_events": 297,
+          "expected_candidates": 428932.35840636306,
+          "candidate_count_95pct_expected_interval": [
+            381532.42586866685,
+            480593.71338126727
+          ],
+          "conditional_retention": 0.6332622601279317
+        },
+        "zss": {
+          "candidate_rows": 644,
+          "candidate_bearing_events": 644,
+          "expected_candidates": 1205948.0183395392,
+          "candidate_count_95pct_expected_interval": [
+            1114594.6681988777,
+            1302793.1160767474
+          ],
+          "conditional_retention": 0.5274365274365275,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 452,
+            "Kshort pi/pi assigned p/pi": 187,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 157004.45083098338,
+      "inclusive_B": 2019336.3938135656,
+      "inclusive_purity": 0.07214148060370854,
+      "inclusive_S_over_sqrt_S_plus_B": 106.42618824480796,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 500,
+      "components": {
+        "signal": {
+          "candidate_rows": 12680,
+          "candidate_bearing_events": 12680,
+          "expected_candidates": 103548.13463730726,
+          "candidate_count_95pct_expected_interval": [
+            101753.56656396744,
+            105366.40933594931
+          ],
+          "conditional_retention": 0.34363143631436316
+        },
+        "signal_wrong": {
+          "candidate_rows": 53,
+          "candidate_bearing_events": 53,
+          "expected_candidates": 432.8116037679247,
+          "candidate_count_95pct_expected_interval": [
+            324.2055913453158,
+            566.1282341152698
+          ],
+          "conditional_retention": 0.31547619047619047
+        },
+        "zbb": {
+          "candidate_rows": 120,
+          "candidate_bearing_events": 120,
+          "expected_candidates": 272986.5209947905,
+          "candidate_count_95pct_expected_interval": [
+            226332.95536414543,
+            326424.9641290455
+          ],
+          "conditional_retention": 0.49586776859504134
+        },
+        "eta": {
+          "candidate_rows": 1137,
+          "candidate_bearing_events": 1136,
+          "expected_candidates": 4787.093017152,
+          "candidate_count_95pct_expected_interval": [
+            4512.849099211588,
+            5073.6446261288565
+          ],
+          "conditional_retention": 0.3644230769230769
+        },
+        "pi0": {
+          "candidate_rows": 2237,
+          "candidate_bearing_events": 2237,
+          "expected_candidates": 40.172860242499475,
+          "candidate_count_95pct_expected_interval": [
+            38.52518878756142,
+            41.8728796689429
+          ],
+          "conditional_retention": 0.37678962438942226
+        },
+        "zcc": {
+          "candidate_rows": 224,
+          "candidate_bearing_events": 224,
+          "expected_candidates": 323504.53967348597,
+          "candidate_count_95pct_expected_interval": [
+            282523.8409321685,
+            368758.8613554423
+          ],
+          "conditional_retention": 0.47761194029850745
+        },
+        "zss": {
+          "candidate_rows": 415,
+          "candidate_bearing_events": 415,
+          "expected_candidates": 777124.8875945788,
+          "candidate_count_95pct_expected_interval": [
+            704146.1642074258,
+            855612.8916577455
+          ],
+          "conditional_retention": 0.33988533988533987,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 286,
+            "Kshort pi/pi assigned p/pi": 125,
+            "Other or unmatched pair": 4
+          }
+        }
+      },
+      "inclusive_S": 103548.13463730726,
+      "inclusive_B": 1373615.9482628552,
+      "inclusive_purity": 0.07009927728137552,
+      "inclusive_S_over_sqrt_S_plus_B": 85.1977077268503,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 0,
+      "components": {
+        "signal": {
+          "candidate_rows": 23849,
+          "candidate_bearing_events": 23849,
+          "expected_candidates": 194757.05543889123,
+          "candidate_count_95pct_expected_interval": [
+            192293.03974841183,
+            197244.7585481264
+          ],
+          "conditional_retention": 1.0
+        },
+        "signal_wrong": {
+          "candidate_rows": 103,
+          "candidate_bearing_events": 103,
+          "expected_candidates": 841.1244375112498,
+          "candidate_count_95pct_expected_interval": [
+            686.5530276773382,
+            1020.1080043516571
+          ],
+          "conditional_retention": 1.0
+        },
+        "zbb": {
+          "candidate_rows": 27,
+          "candidate_bearing_events": 27,
+          "expected_candidates": 61421.967223827865,
+          "candidate_count_95pct_expected_interval": [
+            40477.46343115737,
+            89365.7375326403
+          ],
+          "conditional_retention": 1.0
+        },
+        "eta": {
+          "candidate_rows": 457,
+          "candidate_bearing_events": 457,
+          "expected_candidates": 1924.0998318720003,
+          "candidate_count_95pct_expected_interval": [
+            1751.713117450066,
+            2108.8640796521536
+          ],
+          "conditional_retention": 1.0
+        },
+        "pi0": {
+          "candidate_rows": 3321,
+          "candidate_bearing_events": 3321,
+          "expected_candidates": 59.6397268061425,
+          "candidate_count_95pct_expected_interval": [
+            57.62840943803411,
+            61.70332580827505
+          ],
+          "conditional_retention": 1.0
+        },
+        "zcc": {
+          "candidate_rows": 252,
+          "candidate_bearing_events": 252,
+          "expected_candidates": 363942.6071326717,
+          "candidate_count_95pct_expected_interval": [
+            320391.15882246464,
+            411762.37871481624
+          ],
+          "conditional_retention": 1.0
+        },
+        "zss": {
+          "candidate_rows": 514,
+          "candidate_bearing_events": 514,
+          "expected_candidates": 962511.3065629242,
+          "candidate_count_95pct_expected_interval": [
+            881089.4890500661,
+            1049433.393968529
+          ],
+          "conditional_retention": 1.0,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 483,
+            "Kshort pi/pi assigned p/pi": 24,
+            "Other or unmatched pair": 7
+          }
+        }
+      },
+      "inclusive_S": 194757.05543889123,
+      "inclusive_B": 1387875.8809194237,
+      "inclusive_purity": 0.12305889190391359,
+      "inclusive_S_over_sqrt_S_plus_B": 154.8114576921845,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 1,
+      "components": {
+        "signal": {
+          "candidate_rows": 21876,
+          "candidate_bearing_events": 21876,
+          "expected_candidates": 178645.03101937962,
+          "candidate_count_95pct_expected_interval": [
+            176285.46549909588,
+            181028.28624059714
+          ],
+          "conditional_retention": 0.9172711644094091
+        },
+        "signal_wrong": {
+          "candidate_rows": 95,
+          "candidate_bearing_events": 95,
+          "expected_candidates": 775.7943841123177,
+          "candidate_count_95pct_expected_interval": [
+            627.6639844381517,
+            948.3684045227858
+          ],
+          "conditional_retention": 0.9223300970873787
+        },
+        "zbb": {
+          "candidate_rows": 26,
+          "candidate_bearing_events": 26,
+          "expected_candidates": 59147.079548871276,
+          "candidate_count_95pct_expected_interval": [
+            38636.83607984366,
+            86664.17565155038
+          ],
+          "conditional_retention": 0.9629629629629629
+        },
+        "eta": {
+          "candidate_rows": 420,
+          "candidate_bearing_events": 420,
+          "expected_candidates": 1768.3193203200003,
+          "candidate_count_95pct_expected_interval": [
+            1603.2259492947824,
+            1945.7984270343118
+          ],
+          "conditional_retention": 0.9190371991247265
+        },
+        "pi0": {
+          "candidate_rows": 3115,
+          "candidate_bearing_events": 3115,
+          "expected_candidates": 55.940303824490776,
+          "candidate_count_95pct_expected_interval": [
+            53.99290492797491,
+            57.939994241045966
+          ],
+          "conditional_retention": 0.9379704908160192
+        },
+        "zcc": {
+          "candidate_rows": 194,
+          "candidate_bearing_events": 194,
+          "expected_candidates": 280178.0388243584,
+          "candidate_count_95pct_expected_interval": [
+            242137.36421045533,
+            322499.2332265865
+          ],
+          "conditional_retention": 0.7698412698412699
+        },
+        "zss": {
+          "candidate_rows": 370,
+          "candidate_bearing_events": 370,
+          "expected_candidates": 692858.3335180582,
+          "candidate_count_95pct_expected_interval": [
+            624050.4670754883,
+            767180.7201333289
+          ],
+          "conditional_retention": 0.7198443579766537,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 350,
+            "Kshort pi/pi assigned p/pi": 15,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 178645.03101937962,
+      "inclusive_B": 1032183.4518912878,
+      "inclusive_purity": 0.14753950170542832,
+      "inclusive_S_over_sqrt_S_plus_B": 162.3490032576426,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 2,
+      "components": {
+        "signal": {
+          "candidate_rows": 20034,
+          "candidate_bearing_events": 20034,
+          "expected_candidates": 163602.7862242755,
+          "candidate_count_95pct_expected_interval": [
+            161345.0783576614,
+            165884.1862198231
+          ],
+          "conditional_retention": 0.8400352216025829
+        },
+        "signal_wrong": {
+          "candidate_rows": 87,
+          "candidate_bearing_events": 87,
+          "expected_candidates": 710.4643307133857,
+          "candidate_count_95pct_expected_interval": [
+            569.052804239504,
+            876.355127157351
+          ],
+          "conditional_retention": 0.8446601941747572
+        },
+        "zbb": {
+          "candidate_rows": 25,
+          "candidate_bearing_events": 25,
+          "expected_candidates": 56872.191873914686,
+          "candidate_count_95pct_expected_interval": [
+            36804.68393267081,
+            83954.57426382652
+          ],
+          "conditional_retention": 0.9259259259259259
+        },
+        "eta": {
+          "candidate_rows": 390,
+          "candidate_bearing_events": 390,
+          "expected_candidates": 1642.0107974400003,
+          "candidate_count_95pct_expected_interval": [
+            1483.0704422202075,
+            1813.3443742045758
+          ],
+          "conditional_retention": 0.8533916849015317
+        },
+        "pi0": {
+          "candidate_rows": 2938,
+          "candidate_bearing_events": 2938,
+          "expected_candidates": 52.76167339850848,
+          "candidate_count_95pct_expected_interval": [
+            50.87090451195228,
+            54.70474311572532
+          ],
+          "conditional_retention": 0.8846732911773563
+        },
+        "zcc": {
+          "candidate_rows": 148,
+          "candidate_bearing_events": 148,
+          "expected_candidates": 213744.07085569607,
+          "candidate_count_95pct_expected_interval": [
+            180695.79552024123,
+            251087.23321632735
+          ],
+          "conditional_retention": 0.5873015873015873
+        },
+        "zss": {
+          "candidate_rows": 269,
+          "candidate_bearing_events": 269,
+          "expected_candidates": 503726.73436853423,
+          "candidate_count_95pct_expected_interval": [
+            445323.6022698946,
+            567660.5881708489
+          ],
+          "conditional_retention": 0.5233463035019456,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 257,
+            "Kshort pi/pi assigned p/pi": 7,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 163602.7862242755,
+      "inclusive_B": 774342.9970981451,
+      "inclusive_purity": 0.1744266983585732,
+      "inclusive_S_over_sqrt_S_plus_B": 168.92807298777737,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 3,
+      "components": {
+        "signal": {
+          "candidate_rows": 18395,
+          "candidate_bearing_events": 18395,
+          "expected_candidates": 150218.29153416932,
+          "candidate_count_95pct_expected_interval": [
+            148055.23055175404,
+            152405.04710564346
+          ],
+          "conditional_retention": 0.7713111660866284
+        },
+        "signal_wrong": {
+          "candidate_rows": 82,
+          "candidate_bearing_events": 82,
+          "expected_candidates": 669.6330473390533,
+          "candidate_count_95pct_expected_interval": [
+            532.5790348722661,
+            831.1911754944997
+          ],
+          "conditional_retention": 0.7961165048543689
+        },
+        "zbb": {
+          "candidate_rows": 23,
+          "candidate_bearing_events": 23,
+          "expected_candidates": 52322.41652400151,
+          "candidate_count_95pct_expected_interval": [
+            33167.92380710675,
+            78509.31485327252
+          ],
+          "conditional_retention": 0.8518518518518519
+        },
+        "eta": {
+          "candidate_rows": 358,
+          "candidate_bearing_events": 358,
+          "expected_candidates": 1507.2817063680002,
+          "candidate_count_95pct_expected_interval": [
+            1355.1716657920313,
+            1671.7939630008234
+          ],
+          "conditional_retention": 0.7833698030634574
+        },
+        "pi0": {
+          "candidate_rows": 2738,
+          "candidate_bearing_events": 2738,
+          "expected_candidates": 49.17000060078836,
+          "candidate_count_95pct_expected_interval": [
+            47.345314650207655,
+            51.04699896862216
+          ],
+          "conditional_retention": 0.8244504667268895
+        },
+        "zcc": {
+          "candidate_rows": 112,
+          "candidate_bearing_events": 112,
+          "expected_candidates": 161752.26983674298,
+          "candidate_count_95pct_expected_interval": [
+            133186.31860951072,
+            194630.01207398236
+          ],
+          "conditional_retention": 0.4444444444444444
+        },
+        "zss": {
+          "candidate_rows": 203,
+          "candidate_bearing_events": 203,
+          "expected_candidates": 380135.78838963737,
+          "candidate_count_95pct_expected_interval": [
+            329638.9360560661,
+            436179.9298851188
+          ],
+          "conditional_retention": 0.3949416342412451,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 192,
+            "Kshort pi/pi assigned p/pi": 6,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 150218.29153416932,
+      "inclusive_B": 594210.4747503819,
+      "inclusive_purity": 0.20179001448843759,
+      "inclusive_S_over_sqrt_S_plus_B": 174.10500057467726,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 4,
+      "components": {
+        "signal": {
+          "candidate_rows": 16943,
+          "candidate_bearing_events": 16943,
+          "expected_candidates": 138360.88684226316,
+          "candidate_count_95pct_expected_interval": [
+            136285.2629323269,
+            140460.20781239477
+          ],
+          "conditional_retention": 0.7104281101932995
+        },
+        "signal_wrong": {
+          "candidate_rows": 75,
+          "candidate_bearing_events": 75,
+          "expected_candidates": 612.4692506149877,
+          "candidate_count_95pct_expected_interval": [
+            481.74591821992277,
+            767.7355092117526
+          ],
+          "conditional_retention": 0.7281553398058253
+        },
+        "zbb": {
+          "candidate_rows": 23,
+          "candidate_bearing_events": 23,
+          "expected_candidates": 52322.41652400151,
+          "candidate_count_95pct_expected_interval": [
+            33167.92380710675,
+            78509.31485327252
+          ],
+          "conditional_retention": 0.8518518518518519
+        },
+        "eta": {
+          "candidate_rows": 332,
+          "candidate_bearing_events": 332,
+          "expected_candidates": 1397.8143198720002,
+          "candidate_count_95pct_expected_interval": [
+            1251.48225899668,
+            1556.5568374313586
+          ],
+          "conditional_retention": 0.7264770240700219
+        },
+        "pi0": {
+          "candidate_rows": 2563,
+          "candidate_bearing_events": 2563,
+          "expected_candidates": 46.02728690278326,
+          "candidate_count_95pct_expected_interval": [
+            44.262432791862324,
+            47.84446466057664
+          ],
+          "conditional_retention": 0.7717554953327311
+        },
+        "zcc": {
+          "candidate_rows": 83,
+          "candidate_bearing_events": 83,
+          "expected_candidates": 119869.98568258631,
+          "candidate_count_95pct_expected_interval": [
+            95475.7744874124,
+            148596.88233886083
+          ],
+          "conditional_retention": 0.32936507936507936
+        },
+        "zss": {
+          "candidate_rows": 156,
+          "candidate_bearing_events": 156,
+          "expected_candidates": 292124.0541319381,
+          "candidate_count_95pct_expected_interval": [
+            248081.71516943007,
+            341731.3813423499
+          ],
+          "conditional_retention": 0.3035019455252918,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 146,
+            "Other or unmatched pair": 5,
+            "Kshort pi/pi assigned p/pi": 5
+          }
+        }
+      },
+      "inclusive_S": 138360.88684226316,
+      "inclusive_B": 464316.4563385259,
+      "inclusive_purity": 0.22957705048613072,
+      "inclusive_S_over_sqrt_S_plus_B": 178.22593611450628,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 5,
+      "components": {
+        "signal": {
+          "candidate_rows": 15686,
+          "candidate_bearing_events": 15686,
+          "expected_candidates": 128095.90220195596,
+          "candidate_count_95pct_expected_interval": [
+            126099.05039676429,
+            130116.45347796552
+          ],
+          "conditional_retention": 0.6577214977567194
+        },
+        "signal_wrong": {
+          "candidate_rows": 71,
+          "candidate_bearing_events": 71,
+          "expected_candidates": 579.8042239155217,
+          "candidate_count_95pct_expected_interval": [
+            452.831909248257,
+            731.3441351383059
+          ],
+          "conditional_retention": 0.6893203883495146
+        },
+        "zbb": {
+          "candidate_rows": 21,
+          "candidate_bearing_events": 21,
+          "expected_candidates": 47772.641174088334,
+          "candidate_count_95pct_expected_interval": [
+            29572.017838356205,
+            73025.55670602286
+          ],
+          "conditional_retention": 0.7777777777777778
+        },
+        "eta": {
+          "candidate_rows": 310,
+          "candidate_bearing_events": 310,
+          "expected_candidates": 1305.1880697600002,
+          "candidate_count_95pct_expected_interval": [
+            1163.9244768838028,
+            1458.869882255101
+          ],
+          "conditional_retention": 0.6783369803063457
+        },
+        "pi0": {
+          "candidate_rows": 2416,
+          "candidate_bearing_events": 2416,
+          "expected_candidates": 43.38740739645898,
+          "candidate_count_95pct_expected_interval": [
+            41.674410422467,
+            45.15273837657835
+          ],
+          "conditional_retention": 0.727491719361638
+        },
+        "zcc": {
+          "candidate_rows": 63,
+          "candidate_bearing_events": 63,
+          "expected_candidates": 90985.65178316792,
+          "candidate_count_95pct_expected_interval": [
+            69915.8730297078,
+            116410.17292329509
+          ],
+          "conditional_retention": 0.25
+        },
+        "zss": {
+          "candidate_rows": 132,
+          "candidate_bearing_events": 132,
+          "expected_candidates": 247181.89195779373,
+          "candidate_count_95pct_expected_interval": [
+            206815.04491594122,
+            293126.18647125154
+          ],
+          "conditional_retention": 0.25680933852140075,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 123,
+            "Other or unmatched pair": 5,
+            "Kshort pi/pi assigned p/pi": 4
+          }
+        }
+      },
+      "inclusive_S": 128095.90220195596,
+      "inclusive_B": 385940.18491505,
+      "inclusive_purity": 0.24919632183877882,
+      "inclusive_S_over_sqrt_S_plus_B": 178.6645674758914,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 6,
+      "components": {
+        "signal": {
+          "candidate_rows": 14556,
+          "candidate_bearing_events": 14556,
+          "expected_candidates": 118868.03215935682,
+          "candidate_count_95pct_expected_interval": [
+            116944.73458299786,
+            120815.03163482437
+          ],
+          "conditional_retention": 0.6103400561868422
+        },
+        "signal_wrong": {
+          "candidate_rows": 66,
+          "candidate_bearing_events": 66,
+          "expected_candidates": 538.9729405411892,
+          "candidate_count_95pct_expected_interval": [
+            416.8416331687532,
+            685.7057303475294
+          ],
+          "conditional_retention": 0.6407766990291263
+        },
+        "zbb": {
+          "candidate_rows": 20,
+          "candidate_bearing_events": 20,
+          "expected_candidates": 45497.75349913175,
+          "candidate_count_95pct_expected_interval": [
+            27791.209835701193,
+            70267.59019019586
+          ],
+          "conditional_retention": 0.7407407407407407
+        },
+        "eta": {
+          "candidate_rows": 292,
+          "candidate_bearing_events": 292,
+          "expected_candidates": 1229.4029560320002,
+          "candidate_count_95pct_expected_interval": [
+            1092.4217696020687,
+            1378.8093514850304
+          ],
+          "conditional_retention": 0.6389496717724289
+        },
+        "pi0": {
+          "candidate_rows": 2284,
+          "candidate_bearing_events": 2284,
+          "expected_candidates": 41.016903349963705,
+          "candidate_count_95pct_expected_interval": [
+            39.351833751618656,
+            42.734317094783265
+          ],
+          "conditional_retention": 0.68774465522433
+        },
+        "zcc": {
+          "candidate_rows": 56,
+          "candidate_bearing_events": 56,
+          "expected_candidates": 80876.13491837149,
+          "candidate_count_95pct_expected_interval": [
+            61092.96316264506,
+            105024.38836382485
+          ],
+          "conditional_retention": 0.2222222222222222
+        },
+        "zss": {
+          "candidate_rows": 111,
+          "candidate_bearing_events": 111,
+          "expected_candidates": 207857.50005541748,
+          "candidate_count_95pct_expected_interval": [
+            170992.43290843593,
+            250314.04679743474
+          ],
+          "conditional_retention": 0.21595330739299612,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 104,
+            "Kshort pi/pi assigned p/pi": 4,
+            "Other or unmatched pair": 3
+          }
+        }
+      },
+      "inclusive_S": 118868.03215935682,
+      "inclusive_B": 334231.38847292075,
+      "inclusive_purity": 0.26234425988336607,
+      "inclusive_S_over_sqrt_S_plus_B": 176.59089988059583,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 8,
+      "components": {
+        "signal": {
+          "candidate_rows": 12745,
+          "candidate_bearing_events": 12745,
+          "expected_candidates": 104078.94132117358,
+          "candidate_count_95pct_expected_interval": [
+            102279.7596224679,
+            105901.82946417626
+          ],
+          "conditional_retention": 0.5344039582372426
+        },
+        "signal_wrong": {
+          "candidate_rows": 58,
+          "candidate_bearing_events": 58,
+          "expected_candidates": 473.64288714225717,
+          "candidate_count_95pct_expected_interval": [
+            359.65690193218654,
+            612.2932656987547
+          ],
+          "conditional_retention": 0.5631067961165048
+        },
+        "zbb": {
+          "candidate_rows": 16,
+          "candidate_bearing_events": 16,
+          "expected_candidates": 36398.2027993054,
+          "candidate_count_95pct_expected_interval": [
+            20804.717826553337,
+            59108.400993118004
+          ],
+          "conditional_retention": 0.5925925925925926
+        },
+        "eta": {
+          "candidate_rows": 272,
+          "candidate_bearing_events": 272,
+          "expected_candidates": 1145.197274112,
+          "candidate_count_95pct_expected_interval": [
+            1013.1323125123255,
+            1289.6960050322666
+          ],
+          "conditional_retention": 0.5951859956236324
+        },
+        "pi0": {
+          "candidate_rows": 2054,
+          "candidate_bearing_events": 2054,
+          "expected_candidates": 36.88647963258557,
+          "candidate_count_95pct_expected_interval": [
+            35.30835670943487,
+            38.51696664826165
+          ],
+          "conditional_retention": 0.6184884071062933
+        },
+        "zcc": {
+          "candidate_rows": 46,
+          "candidate_bearing_events": 46,
+          "expected_candidates": 66433.9679686623,
+          "candidate_count_95pct_expected_interval": [
+            48638.01416041843,
+            88613.60343140319
+          ],
+          "conditional_retention": 0.18253968253968253
+        },
+        "zss": {
+          "candidate_rows": 86,
+          "candidate_bearing_events": 86,
+          "expected_candidates": 161042.74779068382,
+          "candidate_count_95pct_expected_interval": [
+            128813.4110671817,
+            198886.48342366162
+          ],
+          "conditional_retention": 0.16731517509727625,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 81,
+            "Other or unmatched pair": 3,
+            "Kshort pi/pi assigned p/pi": 2
+          }
+        }
+      },
+      "inclusive_S": 104078.94132117358,
+      "inclusive_B": 263874.9185586515,
+      "inclusive_purity": 0.2828586751479278,
+      "inclusive_S_over_sqrt_S_plus_B": 171.57981073805297,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 10,
+      "components": {
+        "signal": {
+          "candidate_rows": 11241,
+          "candidate_bearing_events": 11241,
+          "expected_candidates": 91796.89128217436,
+          "candidate_count_95pct_expected_interval": [
+            90107.6714127065,
+            93509.82217749892
+          ],
+          "conditional_retention": 0.47134051742211414
+        },
+        "signal_wrong": {
+          "candidate_rows": 51,
+          "candidate_bearing_events": 51,
+          "expected_candidates": 416.4790904181916,
+          "candidate_count_95pct_expected_interval": [
+            310.0960384556453,
+            547.5930890037446
+          ],
+          "conditional_retention": 0.49514563106796117
+        },
+        "zbb": {
+          "candidate_rows": 14,
+          "candidate_bearing_events": 14,
+          "expected_candidates": 31848.427449392224,
+          "candidate_count_95pct_expected_interval": [
+            17411.83165053329,
+            53436.249579463685
+          ],
+          "conditional_retention": 0.5185185185185185
+        },
+        "eta": {
+          "candidate_rows": 246,
+          "candidate_bearing_events": 246,
+          "expected_candidates": 1035.729887616,
+          "candidate_count_95pct_expected_interval": [
+            910.334982651957,
+            1173.5712037167748
+          ],
+          "conditional_retention": 0.5382932166301969
+        },
+        "pi0": {
+          "candidate_rows": 1897,
+          "candidate_bearing_events": 1897,
+          "expected_candidates": 34.06701648637528,
+          "candidate_count_95pct_expected_interval": [
+            32.55107356407787,
+            35.635339148313264
+          ],
+          "conditional_retention": 0.571213489912677
+        },
+        "zcc": {
+          "candidate_rows": 36,
+          "candidate_bearing_events": 36,
+          "expected_candidates": 51991.8010189531,
+          "candidate_count_95pct_expected_interval": [
+            36414.4182483725,
+            71978.56786092365
+          ],
+          "conditional_retention": 0.14285714285714285
+        },
+        "zss": {
+          "candidate_rows": 72,
+          "candidate_bearing_events": 72,
+          "expected_candidates": 134826.48652243294,
+          "candidate_count_95pct_expected_interval": [
+            105493.42205919187,
+            169791.64607511088
+          ],
+          "conditional_retention": 0.14007782101167315,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 68,
+            "Other or unmatched pair": 2,
+            "Kshort pi/pi assigned p/pi": 2
+          }
+        }
+      },
+      "inclusive_S": 91796.89128217436,
+      "inclusive_B": 218666.71499077824,
+      "inclusive_purity": 0.2956768182402307,
+      "inclusive_S_over_sqrt_S_plus_B": 164.74893850540488,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 12,
+      "components": {
+        "signal": {
+          "candidate_rows": 10105,
+          "candidate_bearing_events": 10105,
+          "expected_candidates": 82520.023699526,
+          "candidate_count_95pct_expected_interval": [
+            80918.83442972257,
+            84144.92811367875
+          ],
+          "conditional_retention": 0.42370749297664473
+        },
+        "signal_wrong": {
+          "candidate_rows": 48,
+          "candidate_bearing_events": 48,
+          "expected_candidates": 391.98032039359214,
+          "candidate_count_95pct_expected_interval": [
+            289.01534487021263,
+            519.7090365177174
+          ],
+          "conditional_retention": 0.46601941747572817
+        },
+        "zbb": {
+          "candidate_rows": 12,
+          "candidate_bearing_events": 12,
+          "expected_candidates": 27298.652099479048,
+          "candidate_count_95pct_expected_interval": [
+            14105.611892474775,
+            47685.25147365205
+          ],
+          "conditional_retention": 0.4444444444444444
+        },
+        "eta": {
+          "candidate_rows": 224,
+          "candidate_bearing_events": 224,
+          "expected_candidates": 943.1036375040001,
+          "candidate_count_95pct_expected_interval": [
+            823.6337651819588,
+            1075.0322819493167
+          ],
+          "conditional_retention": 0.49015317286652077
+        },
+        "pi0": {
+          "candidate_rows": 1722,
+          "candidate_bearing_events": 1722,
+          "expected_candidates": 30.924302788370184,
+          "candidate_count_95pct_expected_interval": [
+            29.480785341007376,
+            32.42021987401187
+          ],
+          "conditional_retention": 0.5185185185185185
+        },
+        "zcc": {
+          "candidate_rows": 34,
+          "candidate_bearing_events": 34,
+          "expected_candidates": 49103.36762901126,
+          "candidate_count_95pct_expected_interval": [
+            34005.50952459062,
+            68617.03450854066
+          ],
+          "conditional_retention": 0.1349206349206349
+        },
+        "zss": {
+          "candidate_rows": 64,
+          "candidate_bearing_events": 64,
+          "expected_candidates": 119845.76579771818,
+          "candidate_count_95pct_expected_interval": [
+            92295.8431446445,
+            153040.36738360263
+          ],
+          "conditional_retention": 0.1245136186770428,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 60,
+            "Other or unmatched pair": 2,
+            "Kshort pi/pi assigned p/pi": 2
+          }
+        }
+      },
+      "inclusive_S": 82520.023699526,
+      "inclusive_B": 196247.7855262085,
+      "inclusive_purity": 0.29601704704973575,
+      "inclusive_S_over_sqrt_S_plus_B": 156.2924621919045,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 15,
+      "components": {
+        "signal": {
+          "candidate_rows": 8647,
+          "candidate_bearing_events": 8647,
+          "expected_candidates": 70613.62146757064,
+          "candidate_count_95pct_expected_interval": [
+            69133.02539702303,
+            72117.93911399109
+          ],
+          "conditional_retention": 0.3625728542077236
+        },
+        "signal_wrong": {
+          "candidate_rows": 40,
+          "candidate_bearing_events": 40,
+          "expected_candidates": 326.6502669946601,
+          "candidate_count_95pct_expected_interval": [
+            233.36373977515873,
+            444.80495184058196
+          ],
+          "conditional_retention": 0.3883495145631068
+        },
+        "zbb": {
+          "candidate_rows": 10,
+          "candidate_bearing_events": 10,
+          "expected_candidates": 22748.876749565876,
+          "candidate_count_95pct_expected_interval": [
+            10908.970641457814,
+            41835.994298049656
+          ],
+          "conditional_retention": 0.37037037037037035
+        },
+        "eta": {
+          "candidate_rows": 195,
+          "candidate_bearing_events": 195,
+          "expected_candidates": 821.0053987200001,
+          "candidate_count_95pct_expected_interval": [
+            709.8105212097315,
+            944.678411038097
+          ],
+          "conditional_retention": 0.42669584245076586
+        },
+        "pi0": {
+          "candidate_rows": 1536,
+          "candidate_bearing_events": 1536,
+          "expected_candidates": 27.58404708649048,
+          "candidate_count_95pct_expected_interval": [
+            26.221670083148542,
+            28.998848493019814
+          ],
+          "conditional_retention": 0.46251129177958444
+        },
+        "zcc": {
+          "candidate_rows": 33,
+          "candidate_bearing_events": 33,
+          "expected_candidates": 47659.15093404034,
+          "candidate_count_95pct_expected_interval": [
+            32806.366564979704,
+            66931.16739476203
+          ],
+          "conditional_retention": 0.13095238095238096
+        },
+        "zss": {
+          "candidate_rows": 51,
+          "candidate_bearing_events": 51,
+          "expected_candidates": 95502.09462005667,
+          "candidate_count_95pct_expected_interval": [
+            71107.58231862055,
+            125567.61720453578
+          ],
+          "conditional_retention": 0.09922178988326848,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 48,
+            "Other or unmatched pair": 2,
+            "Kshort pi/pi assigned p/pi": 1
+          }
+        }
+      },
+      "inclusive_S": 70613.62146757064,
+      "inclusive_B": 165910.12230366288,
+      "inclusive_purity": 0.2985477074803464,
+      "inclusive_S_over_sqrt_S_plus_B": 145.19481673265128,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 20,
+      "components": {
+        "signal": {
+          "candidate_rows": 6960,
+          "candidate_bearing_events": 6960,
+          "expected_candidates": 56837.14645707086,
+          "candidate_count_95pct_expected_interval": [
+            55509.607471522286,
+            58188.41685133439
+          ],
+          "conditional_retention": 0.29183613568703093
+        },
+        "signal_wrong": {
+          "candidate_rows": 33,
+          "candidate_bearing_events": 33,
+          "expected_candidates": 269.4864702705946,
+          "candidate_count_95pct_expected_interval": [
+            185.50208626744705,
+            378.4591982611643
+          ],
+          "conditional_retention": 0.32038834951456313
+        },
+        "zbb": {
+          "candidate_rows": 9,
+          "candidate_bearing_events": 9,
+          "expected_candidates": 20473.989074609286,
+          "candidate_count_95pct_expected_interval": [
+            9362.011537073888,
+            38866.008800689226
+          ],
+          "conditional_retention": 0.3333333333333333
+        },
+        "eta": {
+          "candidate_rows": 152,
+          "candidate_bearing_events": 152,
+          "expected_candidates": 639.9631825920001,
+          "candidate_count_95pct_expected_interval": [
+            542.2701692954663,
+            750.1725826210138
+          ],
+          "conditional_retention": 0.33260393873085337
+        },
+        "pi0": {
+          "candidate_rows": 1303,
+          "candidate_bearing_events": 1303,
+          "expected_candidates": 23.399748277146543,
+          "candidate_count_95pct_expected_interval": [
+            22.14630591991079,
+            24.705653237929766
+          ],
+          "conditional_retention": 0.39235170129479074
+        },
+        "zcc": {
+          "candidate_rows": 28,
+          "candidate_bearing_events": 28,
+          "expected_candidates": 40438.067459185746,
+          "candidate_count_95pct_expected_interval": [
+            26870.80215362355,
+            58444.26650994437
+          ],
+          "conditional_retention": 0.1111111111111111
+        },
+        "zss": {
+          "candidate_rows": 45,
+          "candidate_bearing_events": 45,
+          "expected_candidates": 84266.5540765206,
+          "candidate_count_95pct_expected_interval": [
+            61464.60277720207,
+            112755.27925390538
+          ],
+          "conditional_retention": 0.08754863813229571,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 42,
+            "Other or unmatched pair": 2,
+            "Kshort pi/pi assigned p/pi": 1
+          }
+        }
+      },
+      "inclusive_S": 56837.14645707086,
+      "inclusive_B": 145178.61061031563,
+      "inclusive_purity": 0.28135006537193863,
+      "inclusive_S_over_sqrt_S_plus_B": 126.45605905314041,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "abs_lambda_d0_sig",
+      "threshold": 30,
+      "components": {
+        "signal": {
+          "candidate_rows": 4831,
+          "candidate_bearing_events": 4831,
+          "expected_candidates": 39451.18599628007,
+          "candidate_count_95pct_expected_interval": [
+            38346.46737717282,
+            40579.65516505285
+          ],
+          "conditional_retention": 0.20256614533104114
+        },
+        "signal_wrong": {
+          "candidate_rows": 22,
+          "candidate_bearing_events": 22,
+          "expected_candidates": 179.65764684706306,
+          "candidate_count_95pct_expected_interval": [
+            112.59049078361767,
+            272.0038363795797
+          ],
+          "conditional_retention": 0.21359223300970873
+        },
+        "zbb": {
+          "candidate_rows": 8,
+          "candidate_bearing_events": 8,
+          "expected_candidates": 18199.1013996527,
+          "candidate_count_95pct_expected_interval": [
+            7857.080250253648,
+            35859.48487502631
+          ],
+          "conditional_retention": 0.2962962962962963
+        },
+        "eta": {
+          "candidate_rows": 106,
+          "candidate_bearing_events": 106,
+          "expected_candidates": 446.29011417600003,
+          "candidate_count_95pct_expected_interval": [
+            365.38577818820426,
+            539.7750371110509
+          ],
+          "conditional_retention": 0.23194748358862144
+        },
+        "pi0": {
+          "candidate_rows": 981,
+          "candidate_bearing_events": 981,
+          "expected_candidates": 17.61715507281716,
+          "candidate_count_95pct_expected_interval": [
+            16.531835929992493,
+            18.75501051705841
+          ],
+          "conditional_retention": 0.2953929539295393
+        },
+        "zcc": {
+          "candidate_rows": 23,
+          "candidate_bearing_events": 23,
+          "expected_candidates": 33216.98398433115,
+          "candidate_count_95pct_expected_interval": [
+            21056.71846002731,
+            49841.785363749135
+          ],
+          "conditional_retention": 0.09126984126984126
+        },
+        "zss": {
+          "candidate_rows": 38,
+          "candidate_bearing_events": 38,
+          "expected_candidates": 71158.42344239517,
+          "candidate_count_95pct_expected_interval": [
+            50355.93556222156,
+            97670.49574347267
+          ],
+          "conditional_retention": 0.07392996108949416,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 35,
+            "Other or unmatched pair": 2,
+            "Kshort pi/pi assigned p/pi": 1
+          }
+        }
+      },
+      "inclusive_S": 39451.18599628007,
+      "inclusive_B": 122574.50882637902,
+      "inclusive_purity": 0.24348721997125403,
+      "inclusive_S_over_sqrt_S_plus_B": 98.00948731017371,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 0,
+      "components": {
+        "signal": {
+          "candidate_rows": 23849,
+          "candidate_bearing_events": 23849,
+          "expected_candidates": 194757.05543889123,
+          "candidate_count_95pct_expected_interval": [
+            192293.03974841183,
+            197244.7585481264
+          ],
+          "conditional_retention": 1.0
+        },
+        "signal_wrong": {
+          "candidate_rows": 103,
+          "candidate_bearing_events": 103,
+          "expected_candidates": 841.1244375112498,
+          "candidate_count_95pct_expected_interval": [
+            686.5530276773382,
+            1020.1080043516571
+          ],
+          "conditional_retention": 1.0
+        },
+        "zbb": {
+          "candidate_rows": 27,
+          "candidate_bearing_events": 27,
+          "expected_candidates": 61421.967223827865,
+          "candidate_count_95pct_expected_interval": [
+            40477.46343115737,
+            89365.7375326403
+          ],
+          "conditional_retention": 1.0
+        },
+        "eta": {
+          "candidate_rows": 457,
+          "candidate_bearing_events": 457,
+          "expected_candidates": 1924.0998318720003,
+          "candidate_count_95pct_expected_interval": [
+            1751.713117450066,
+            2108.8640796521536
+          ],
+          "conditional_retention": 1.0
+        },
+        "pi0": {
+          "candidate_rows": 3321,
+          "candidate_bearing_events": 3321,
+          "expected_candidates": 59.6397268061425,
+          "candidate_count_95pct_expected_interval": [
+            57.62840943803411,
+            61.70332580827505
+          ],
+          "conditional_retention": 1.0
+        },
+        "zcc": {
+          "candidate_rows": 252,
+          "candidate_bearing_events": 252,
+          "expected_candidates": 363942.6071326717,
+          "candidate_count_95pct_expected_interval": [
+            320391.15882246464,
+            411762.37871481624
+          ],
+          "conditional_retention": 1.0
+        },
+        "zss": {
+          "candidate_rows": 514,
+          "candidate_bearing_events": 514,
+          "expected_candidates": 962511.3065629242,
+          "candidate_count_95pct_expected_interval": [
+            881089.4890500661,
+            1049433.393968529
+          ],
+          "conditional_retention": 1.0,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 483,
+            "Kshort pi/pi assigned p/pi": 24,
+            "Other or unmatched pair": 7
+          }
+        }
+      },
+      "inclusive_S": 194757.05543889123,
+      "inclusive_B": 1387875.8809194237,
+      "inclusive_purity": 0.12305889190391359,
+      "inclusive_S_over_sqrt_S_plus_B": 154.8114576921845,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 50,
+      "components": {
+        "signal": {
+          "candidate_rows": 22485,
+          "candidate_bearing_events": 22485,
+          "expected_candidates": 183618.2813343733,
+          "candidate_count_95pct_expected_interval": [
+            181225.99043478258,
+            186034.2611985184
+          ],
+          "conditional_retention": 0.9428068262820244
+        },
+        "signal_wrong": {
+          "candidate_rows": 97,
+          "candidate_bearing_events": 97,
+          "expected_candidates": 792.1268974620508,
+          "candidate_count_95pct_expected_interval": [
+            642.3615520436814,
+            966.3276387243685
+          ],
+          "conditional_retention": 0.941747572815534
+        },
+        "zbb": {
+          "candidate_rows": 21,
+          "candidate_bearing_events": 21,
+          "expected_candidates": 47772.641174088334,
+          "candidate_count_95pct_expected_interval": [
+            29572.017838356205,
+            73025.55670602286
+          ],
+          "conditional_retention": 0.7777777777777778
+        },
+        "eta": {
+          "candidate_rows": 451,
+          "candidate_bearing_events": 451,
+          "expected_candidates": 1898.8381272960003,
+          "candidate_count_95pct_expected_interval": [
+            1727.6134924776313,
+            2082.441557031253
+          ],
+          "conditional_retention": 0.986870897155361
+        },
+        "pi0": {
+          "candidate_rows": 3237,
+          "candidate_bearing_events": 3237,
+          "expected_candidates": 58.13122423110005,
+          "candidate_count_95pct_expected_interval": [
+            56.14572434056461,
+            60.16900967297509
+          ],
+          "conditional_retention": 0.974706413730804
+        },
+        "zcc": {
+          "candidate_rows": 248,
+          "candidate_bearing_events": 248,
+          "expected_candidates": 358165.740352788,
+          "candidate_count_95pct_expected_interval": [
+            314972.4612858694,
+            405628.04484534904
+          ],
+          "conditional_retention": 0.9841269841269841
+        },
+        "zss": {
+          "candidate_rows": 493,
+          "candidate_bearing_events": 493,
+          "expected_candidates": 923186.9146605479,
+          "candidate_count_95pct_expected_interval": [
+            843482.9141930909,
+            1008392.8682072326
+          ],
+          "conditional_retention": 0.9591439688715954,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 462,
+            "Kshort pi/pi assigned p/pi": 24,
+            "Other or unmatched pair": 7
+          }
+        }
+      },
+      "inclusive_S": 183618.2813343733,
+      "inclusive_B": 1329125.296187424,
+      "inclusive_purity": 0.12138096903057419,
+      "inclusive_S_over_sqrt_S_plus_B": 149.290873532493,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 100,
+      "components": {
+        "signal": {
+          "candidate_rows": 19722,
+          "candidate_bearing_events": 19722,
+          "expected_candidates": 161054.91414171716,
+          "candidate_count_95pct_expected_interval": [
+            158814.9161144718,
+            163318.6047424819
+          ],
+          "conditional_retention": 0.826952912071785
+        },
+        "signal_wrong": {
+          "candidate_rows": 85,
+          "candidate_bearing_events": 85,
+          "expected_candidates": 694.1318173636528,
+          "candidate_count_95pct_expected_interval": [
+            554.4478418203374,
+            858.3047415681515
+          ],
+          "conditional_retention": 0.8252427184466019
+        },
+        "zbb": {
+          "candidate_rows": 19,
+          "candidate_bearing_events": 19,
+          "expected_candidates": 43222.86582417516,
+          "candidate_count_95pct_expected_interval": [
+            26022.98873567392,
+            67497.8590954417
+          ],
+          "conditional_retention": 0.7037037037037037
+        },
+        "eta": {
+          "candidate_rows": 422,
+          "candidate_bearing_events": 422,
+          "expected_candidates": 1776.7398885120003,
+          "candidate_count_95pct_expected_interval": [
+            1611.2442586241646,
+            1954.6207834596203
+          ],
+          "conditional_retention": 0.9234135667396062
+        },
+        "pi0": {
+          "candidate_rows": 2959,
+          "candidate_bearing_events": 2959,
+          "expected_candidates": 53.13879904226909,
+          "candidate_count_95pct_expected_interval": [
+            51.24122376282986,
+            55.08867400428098
+          ],
+          "conditional_retention": 0.8909966877446552
+        },
+        "zcc": {
+          "candidate_rows": 224,
+          "candidate_bearing_events": 224,
+          "expected_candidates": 323504.53967348597,
+          "candidate_count_95pct_expected_interval": [
+            282523.8409321685,
+            368758.8613554423
+          ],
+          "conditional_retention": 0.8888888888888888
+        },
+        "zss": {
+          "candidate_rows": 444,
+          "candidate_bearing_events": 444,
+          "expected_candidates": 831430.0002216699,
+          "candidate_count_95pct_expected_interval": [
+            755882.5118968775,
+            912483.8211982736
+          ],
+          "conditional_retention": 0.8638132295719845,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 415,
+            "Kshort pi/pi assigned p/pi": 24,
+            "Other or unmatched pair": 5
+          }
+        }
+      },
+      "inclusive_S": 161054.91414171716,
+      "inclusive_B": 1198157.405719331,
+      "inclusive_purity": 0.11849135840541951,
+      "inclusive_S_over_sqrt_S_plus_B": 138.1434600497623,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 150,
+      "components": {
+        "signal": {
+          "candidate_rows": 17083,
+          "candidate_bearing_events": 17083,
+          "expected_candidates": 139504.16277674446,
+          "candidate_count_95pct_expected_interval": [
+            137419.9490905589,
+            141612.07327122233
+          ],
+          "conditional_retention": 0.7162983772904524
+        },
+        "signal_wrong": {
+          "candidate_rows": 72,
+          "candidate_bearing_events": 72,
+          "expected_candidates": 587.9704805903882,
+          "candidate_count_95pct_expected_interval": [
+            460.0506893498809,
+            740.4515115537445
+          ],
+          "conditional_retention": 0.6990291262135923
+        },
+        "zbb": {
+          "candidate_rows": 18,
+          "candidate_bearing_events": 18,
+          "expected_candidates": 40947.97814921857,
+          "candidate_count_95pct_expected_interval": [
+            24268.366998497644,
+            64715.45921271912
+          ],
+          "conditional_retention": 0.6666666666666666
+        },
+        "eta": {
+          "candidate_rows": 381,
+          "candidate_bearing_events": 381,
+          "expected_candidates": 1604.1182405760003,
+          "candidate_count_95pct_expected_interval": [
+            1447.0696273396609,
+            1773.562490805687
+          ],
+          "conditional_retention": 0.8336980306345733
+        },
+        "pi0": {
+          "candidate_rows": 2630,
+          "candidate_bearing_events": 2630,
+          "expected_candidates": 47.2304972900195,
+          "candidate_count_95pct_expected_interval": [
+            45.44250181336874,
+            49.07081198220294
+          ],
+          "conditional_retention": 0.7919301415236375
+        },
+        "zcc": {
+          "candidate_rows": 206,
+          "candidate_bearing_events": 206,
+          "expected_candidates": 297508.6391640094,
+          "candidate_count_95pct_expected_interval": [
+            258266.40622956914,
+            341028.4541737133
+          ],
+          "conditional_retention": 0.8174603174603174
+        },
+        "zss": {
+          "candidate_rows": 382,
+          "candidate_bearing_events": 382,
+          "expected_candidates": 715329.4146051304,
+          "candidate_count_95pct_expected_interval": [
+            645385.5987370756,
+            790786.2638130215
+          ],
+          "conditional_retention": 0.7431906614785992,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 357,
+            "Kshort pi/pi assigned p/pi": 23,
+            "Other or unmatched pair": 2
+          }
+        }
+      },
+      "inclusive_S": 139504.16277674446,
+      "inclusive_B": 1053786.0319183585,
+      "inclusive_purity": 0.11690715585942538,
+      "inclusive_S_over_sqrt_S_plus_B": 127.70683184849398,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 200,
+      "components": {
+        "signal": {
+          "candidate_rows": 14861,
+          "candidate_bearing_events": 14861,
+          "expected_candidates": 121358.7404451911,
+          "candidate_count_95pct_expected_interval": [
+            119415.31651154245,
+            123325.86559533208
+          ],
+          "conditional_retention": 0.6231288523627825
+        },
+        "signal_wrong": {
+          "candidate_rows": 64,
+          "candidate_bearing_events": 64,
+          "expected_candidates": 522.6404271914562,
+          "candidate_count_95pct_expected_interval": [
+            402.49681386767077,
+            667.4001576485097
+          ],
+          "conditional_retention": 0.6213592233009708
+        },
+        "zbb": {
+          "candidate_rows": 17,
+          "candidate_bearing_events": 17,
+          "expected_candidates": 38673.09047426199,
+          "candidate_count_95pct_expected_interval": [
+            22528.500349245976,
+            61919.36417050232
+          ],
+          "conditional_retention": 0.6296296296296297
+        },
+        "eta": {
+          "candidate_rows": 338,
+          "candidate_bearing_events": 338,
+          "expected_candidates": 1423.0760244480002,
+          "candidate_count_95pct_expected_interval": [
+            1275.3910461368266,
+            1583.169474155475
+          ],
+          "conditional_retention": 0.7396061269146609
+        },
+        "pi0": {
+          "candidate_rows": 2359,
+          "candidate_bearing_events": 2359,
+          "expected_candidates": 42.36378064910875,
+          "candidate_count_95pct_expected_interval": [
+            40.67131473948146,
+            44.108584839377905
+          ],
+          "conditional_retention": 0.710328214393255
+        },
+        "zcc": {
+          "candidate_rows": 179,
+          "candidate_bearing_events": 179,
+          "expected_candidates": 258514.78839979458,
+          "candidate_count_95pct_expected_interval": [
+            222029.65672022916,
+            299284.5160193835
+          ],
+          "conditional_retention": 0.7103174603174603
+        },
+        "zss": {
+          "candidate_rows": 335,
+          "candidate_bearing_events": 335,
+          "expected_candidates": 627317.6803474311,
+          "candidate_count_95pct_expected_interval": [
+            561932.6545074302,
+            698222.0076058189
+          ],
+          "conditional_retention": 0.6517509727626459,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 311,
+            "Kshort pi/pi assigned p/pi": 22,
+            "Other or unmatched pair": 2
+          }
+        }
+      },
+      "inclusive_S": 121358.7404451911,
+      "inclusive_B": 924505.5592214877,
+      "inclusive_purity": 0.11603679414611305,
+      "inclusive_S_over_sqrt_S_plus_B": 118.66793662514826,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 300,
+      "components": {
+        "signal": {
+          "candidate_rows": 11537,
+          "candidate_bearing_events": 11537,
+          "expected_candidates": 94214.10325793484,
+          "candidate_count_95pct_expected_interval": [
+            92502.6859671598,
+            95949.2306025605
+          ],
+          "conditional_retention": 0.48375193928466603
+        },
+        "signal_wrong": {
+          "candidate_rows": 48,
+          "candidate_bearing_events": 48,
+          "expected_candidates": 391.98032039359214,
+          "candidate_count_95pct_expected_interval": [
+            289.01534487021263,
+            519.7090365177174
+          ],
+          "conditional_retention": 0.46601941747572817
+        },
+        "zbb": {
+          "candidate_rows": 12,
+          "candidate_bearing_events": 12,
+          "expected_candidates": 27298.652099479048,
+          "candidate_count_95pct_expected_interval": [
+            14105.611892474775,
+            47685.25147365205
+          ],
+          "conditional_retention": 0.4444444444444444
+        },
+        "eta": {
+          "candidate_rows": 269,
+          "candidate_bearing_events": 269,
+          "expected_candidates": 1132.5664218240001,
+          "candidate_count_95pct_expected_interval": [
+            1001.254299930788,
+            1276.313678211092
+          ],
+          "conditional_retention": 0.5886214442013129
+        },
+        "pi0": {
+          "candidate_rows": 1933,
+          "candidate_bearing_events": 1933,
+          "expected_candidates": 34.7135175899649,
+          "candidate_count_95pct_expected_interval": [
+            33.183096043177336,
+            36.296315121046646
+          ],
+          "conditional_retention": 0.5820535983137609
+        },
+        "zcc": {
+          "candidate_rows": 139,
+          "candidate_bearing_events": 139,
+          "expected_candidates": 200746.1206009578,
+          "candidate_count_95pct_expected_interval": [
+            168761.90799983396,
+            237028.8290129137
+          ],
+          "conditional_retention": 0.5515873015873016
+        },
+        "zss": {
+          "candidate_rows": 271,
+          "candidate_bearing_events": 271,
+          "expected_candidates": 507471.9145497129,
+          "candidate_count_95pct_expected_interval": [
+            448845.35134035937,
+            571628.7935617048
+          ],
+          "conditional_retention": 0.5272373540856031,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 251,
+            "Kshort pi/pi assigned p/pi": 19,
+            "Other or unmatched pair": 1
+          }
+        }
+      },
+      "inclusive_S": 94214.10325793484,
+      "inclusive_B": 735516.6872501498,
+      "inclusive_purity": 0.1135477968706488,
+      "inclusive_S_over_sqrt_S_plus_B": 103.43018833533233,
+      "forced_modes_are_separate": true
+    },
+    {
+      "stage": "post_bdt_armenteros_pi0_eta",
+      "variable": "lambda_flight_xyz_sig",
+      "threshold": 500,
+      "components": {
+        "signal": {
+          "candidate_rows": 7386,
+          "candidate_bearing_events": 7386,
+          "expected_candidates": 60315.97180056399,
+          "candidate_count_95pct_expected_interval": [
+            58948.17469835402,
+            61707.497513466275
+          ],
+          "conditional_retention": 0.3096985198540819
+        },
+        "signal_wrong": {
+          "candidate_rows": 28,
+          "candidate_bearing_events": 28,
+          "expected_candidates": 228.65518689626208,
+          "candidate_count_95pct_expected_interval": [
+            151.93971113210543,
+            330.47040873884947
+          ],
+          "conditional_retention": 0.27184466019417475
+        },
+        "zbb": {
+          "candidate_rows": 9,
+          "candidate_bearing_events": 9,
+          "expected_candidates": 20473.989074609286,
+          "candidate_count_95pct_expected_interval": [
+            9362.011537073888,
+            38866.008800689226
+          ],
+          "conditional_retention": 0.3333333333333333
+        },
+        "eta": {
+          "candidate_rows": 183,
+          "candidate_bearing_events": 183,
+          "expected_candidates": 770.4819895680001,
+          "candidate_count_95pct_expected_interval": [
+            662.8906070808122,
+            890.5608234550602
+          ],
+          "conditional_retention": 0.40043763676148797
+        },
+        "pi0": {
+          "candidate_rows": 1313,
+          "candidate_bearing_events": 1313,
+          "expected_candidates": 23.57933191703255,
+          "candidate_count_95pct_expected_interval": [
+            22.321023132210506,
+            24.890101460240984
+          ],
+          "conditional_retention": 0.3953628425173141
+        },
+        "zcc": {
+          "candidate_rows": 104,
+          "candidate_bearing_events": 104,
+          "expected_candidates": 150198.53627697562,
+          "candidate_count_95pct_expected_interval": [
+            122723.08820319799,
+            181990.66617235198
+          ],
+          "conditional_retention": 0.4126984126984127
+        },
+        "zss": {
+          "candidate_rows": 174,
+          "candidate_bearing_events": 174,
+          "expected_candidates": 325830.6757625463,
+          "candidate_count_95pct_expected_interval": [
+            279214.5706766823,
+            378004.15398183354
+          ],
+          "conditional_retention": 0.33852140077821014,
+          "truth_pair_origin_after_selection": {
+            "True Lambda pair": 162,
+            "Kshort pi/pi assigned p/pi": 11,
+            "Other or unmatched pair": 1
+          }
+        }
+      },
+      "inclusive_S": 60315.97180056399,
+      "inclusive_B": 496503.2011141312,
+      "inclusive_purity": 0.1083223687949488,
+      "inclusive_S_over_sqrt_S_plus_B": 80.83049512162117,
+      "forced_modes_are_separate": true
+    }
+  ]
+}

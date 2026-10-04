@@ -685,3 +685,7 @@ physically weighted, linear mass and cos θp plots for the BDT, Armenteros,
 lists the frozen counts, branching assumptions, figures and limitations.
 For the full Zss post-BDT truth composition and paired K⁰S rejection check,
 use [`v3_zss_ancestry_armenteros.md`](v3_zss_ancestry_armenteros.md).
+For the paired reconstructed Λ displacement scan on the same scored rows,
+use [`v3_displacement_zss.md`](v3_displacement_zss.md); its
+[review](../docs/STAGE2_V3_DISPLACEMENT_ZSS_2026-10-04.md) records the
+conditional signal and background losses and frozen figures.
