@@ -103,13 +103,17 @@ score and Armenteros versus 26.32% at the old score. Preserve these as named
 scenarios and compare a newly trained flavour-mixture model at matched signal
 efficiency with a fresh held-out tail and angular response before adoption.
 
-The PI subsequently specified **S/√(Bbb+Bcc+Bss)** as the high-purity
-optimization objective, with the reconstructed Armenteros cut mandatory. A
-separate [frozen high-score scan](../data/stage2_v3_three_flavour_sqrtb_1091peak/three_flavour_score_scan.json)
-chooses 0.9918887019 on validation, compared with 0.985562 for the earlier
-S/√(S+B) objective. Held-out test central S/√B is 234.0 versus 166.7 at
-the original 0.953827 cut. This point has only 1/1/11 Zbb/Zcc/Zss
-validation peak rows, so the precise threshold is fragile; zero-observed-B
-points have undefined central S/√B. PHSP generated-decay acceptance is
-10.96% at the new point. Treat it as a provisional high-score scenario,
-not an adopted model change or systematic discovery significance.
+The PI corrected the objective to **S/√(S+Bbb+Bcc+Bss)** after Armenteros.
+The interim S/√B 0.991889 point is [archived](../data/stage2_v3_three_flavour_sqrtb_1091peak/three_flavour_score_scan.json)
+as a superseded diagnostic, not a selection recommendation. The exact
+validation maximum is 0.985562 for Armenteros alone. An alternative
+reconstructed **|lambda_d0_sig|≥5** cut, added only after the frozen BDT,
+has a separately optimized score of 0.981096 and improves the held-out
+central FoM 174.5→217.1 while lowering PHSP generated-decay acceptance
+16.05%→11.88%. The [six-scenario scan](../data/stage2_v3_three_flavour_splusb_d0sig5_1091peak/three_flavour_score_scan.json)
+and [PI review](../STAGE2_V3_THREE_FLAVOUR_SCORE_REOPTIMIZATION_2026-10-04.md)
+show expected Zbb/Zcc/Zss components and raw tail counts. Only 0/4/6
+Zbb/Zcc/Zss validation peak rows survive the IP optimum. Its threshold was
+chosen after prior inspection of these campaigns and its significance
+uncertainty omits Λ direction uncertainty; confirm on new data and test
+PV/SV/track response before any reference-selection decision.

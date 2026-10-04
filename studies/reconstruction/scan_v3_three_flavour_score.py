@@ -18,15 +18,19 @@ import v3_plot_style  # noqa: F401
 
 
 BASE = Path("/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs")
-STAGES = ("arm_only", "arm_eta", "arm_pi0", "arm_pi0_eta")
+STAGES = ("arm_only", "arm_eta", "arm_pi0", "arm_pi0_eta",
+          "arm_d0sig5", "arm_d0sig5_eta")
 LABELS = {"arm_only": "Armenteros only", "arm_eta": "Armenteros + η veto",
-          "arm_pi0": "Armenteros + π⁰ veto", "arm_pi0_eta": "Armenteros + π⁰ + η veto"}
+          "arm_pi0": "Armenteros + π⁰ veto", "arm_pi0_eta": "Armenteros + π⁰ + η veto",
+          "arm_d0sig5": "Armenteros + |d₀(Λ)|/σ ≥ 5",
+          "arm_d0sig5_eta": "Armenteros + |d₀(Λ)|/σ ≥ 5 + η"}
 COLORS = {"arm_only": "#2670a8", "arm_eta": "#ba4148",
-          "arm_pi0": "#d89428", "arm_pi0_eta": "#198466"}
+          "arm_pi0": "#d89428", "arm_pi0_eta": "#198466",
+          "arm_d0sig5": "#694caa", "arm_d0sig5_eta": "#a8659d"}
 SAMPLES = ("signal", "zbb", "zcc", "zss")
 PARTITIONS = ("all", "validation", "test")
 COLUMNS = ("event_entry", "truth_matched", "bdt_score", "lb_mass",
-           "arm_alpha", "arm_qt", "pass_pi0", "pass_eta")
+           "arm_alpha", "arm_qt", "pass_pi0", "pass_eta", "lambda_d0_sig")
 
 
 def sha(path):
@@ -59,8 +63,12 @@ def read_one(item, box, window):
     arm = ~reject
     pi0 = table["pass_pi0"].to_numpy(zero_copy_only=False).astype(bool)
     eta = table["pass_eta"].to_numpy(zero_copy_only=False).astype(bool)
+    lambda_d0 = np.abs(table["lambda_d0_sig"].to_numpy(zero_copy_only=False))
+    displaced = np.isfinite(lambda_d0) & (lambda_d0 >= 5.0)
     cuts = {"arm_only": arm, "arm_eta": arm & eta,
-            "arm_pi0": arm & pi0, "arm_pi0_eta": arm & pi0 & eta}
+            "arm_pi0": arm & pi0, "arm_pi0_eta": arm & pi0 & eta,
+            "arm_d0sig5": arm & displaced,
+            "arm_d0sig5_eta": arm & displaced & eta}
     if name == "signal":
         partitions = split_signal(table["event_entry"].to_numpy(zero_copy_only=False))
     else:
@@ -137,15 +145,15 @@ def plot_fom(curves, choices, fixed, objective, output):
         ax.grid(alpha=.2)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="lower center", bbox_to_anchor=(.5, -.015),
-               ncol=4, frameon=False)
+               ncol=3, frameon=False)
     fig.suptitle("Signal peak 5.4–5.9 GeV • B = Zbb + Zcc + Zss", fontsize=13)
-    fig.tight_layout(rect=(0, .10, 1, .92))
+    fig.tight_layout(rect=(0, .15, 1, .92))
     fig.savefig(output, dpi=180, bbox_inches="tight")
     plt.close(fig)
 
 
 def plot_yields(curves, fixed, output):
-    fig, axes = plt.subplots(2, 2, figsize=(13.4, 8.1))
+    fig, axes = plt.subplots(2, 3, figsize=(17, 8.1))
     for ax, stage in zip(axes.flat, STAGES):
         row = curves["all"][stage]
         ax.plot(row["thresholds"], row["signal"], color="#2670a8", label="Signal")
@@ -289,6 +297,7 @@ def main():
                            for name in ("zbb", "zcc", "zss")},
               "input_meta": input_meta, "scored_dir": str(scored),
               "peak_window_gev": cfg["mass_window_gev"], "scenario_labels": LABELS,
+              "offline_lambda_d0_sig_min": 5.0,
               "processed_or_generated_denominators": split_events, "weights": weights,
               "selected_rows_all_truth": row_counts,
               "optimization": "exact unique observed score thresholds; central " + args.objective +

@@ -17,7 +17,8 @@ import v3_plot_style  # noqa: F401
 
 
 BASE = Path("/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs")
-COLS = ("lb_mass", "cos_theta_p", "truth_matched", "bdt_score", "arm_alpha", "arm_qt")
+COLS = ("lb_mass", "cos_theta_p", "truth_matched", "bdt_score", "arm_alpha", "arm_qt",
+        "lambda_d0_sig")
 MASS = np.linspace(4.7, 6.5, 73)
 ANGLE = np.linspace(-1, 1, 21)
 COLORS = {"signal": "#2670a8", "signal_wrong": "#8b8b8b", "zbb": "#333333",
@@ -36,7 +37,7 @@ def sha(path):
     return h.hexdigest()
 
 
-def read_one(item, score, box):
+def read_one(item, score, box, scenario):
     name, path = item
     table = pq.read_table(path, columns=list(COLS), use_threads=False)
     s = table["bdt_score"].to_numpy(zero_copy_only=False)
@@ -47,6 +48,9 @@ def read_one(item, score, box):
     mass = table["lb_mass"].to_numpy(zero_copy_only=False)
     angle = table["cos_theta_p"].to_numpy(zero_copy_only=False)
     truth = table["truth_matched"].to_numpy(zero_copy_only=False)
+    if scenario == "arm_d0sig5":
+        d0 = np.abs(table["lambda_d0_sig"].to_numpy(zero_copy_only=False))
+        arm &= np.isfinite(d0) & (d0 >= 5.0)
     keep = (s >= score) & arm
     classes = {name: keep} if name in ("eta", "pi0") else \
               {"signal": keep & (truth == 1), "signal_wrong": keep & (truth != 1)} if name == "signal" else \
@@ -59,7 +63,7 @@ def read_one(item, score, box):
             for key, mask in classes.items()}
 
 
-def plot(results, weights, score, output):
+def plot(results, weights, score, scenario, output):
     fig, axes = plt.subplots(2, 2, figsize=(13.8, 8.4))
     for col, (axis, edges, unit) in enumerate((('mass', MASS, '25 MeV'),
                                                ('angle_peak', ANGLE, '0.1'))):
@@ -90,7 +94,8 @@ def plot(results, weights, score, output):
     handles1, labels1 = axes[1, 0].get_legend_handles_labels()
     fig.legend(handles0 + handles1[:2], labels0 + labels1[:2], loc="lower center",
                bbox_to_anchor=(.5, -.01), ncol=4, frameon=False, fontsize=8)
-    fig.suptitle(f"v3 score ≥{score:.6f} + Armenteros; central expected yields at 6×10¹² Z",
+    addition = " + |d₀(Λ)|/σ ≥ 5" if scenario == "arm_d0sig5" else ""
+    fig.suptitle(f"v3 score ≥{score:.6f} + Armenteros{addition}; central expected yields at 6×10¹² Z",
                  fontsize=13)
     fig.tight_layout(rect=(0, .055, 1, .95))
     fig.savefig(output, dpi=180, bbox_inches="tight")
@@ -105,13 +110,14 @@ def main():
     ap.add_argument("--pi0-summary", type=Path, default=Path("docs/data/stage2_v3_pseudoscalar_100k_bdt1091peak/pi0_physics_summary.json"))
     ap.add_argument("--config", type=Path, default=Path("config/v3_post_bdt_veto_sequence.json"))
     ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--scenario", choices=("arm_only", "arm_d0sig5"), default="arm_only")
     ap.add_argument("--output-dir", type=Path, required=True)
     args = ap.parse_args()
     scan = json.loads(args.scan.read_text())
     cfg = json.loads(args.config.read_text())
     if scan["config_sha256"] != sha(args.config):
         raise ValueError("Scan and configuration differ")
-    score = scan["choices"]["arm_only"]["validation_maximum"]["score"]
+    score = scan["choices"][args.scenario]["validation_maximum"]["score"]
     scored = args.base / "stage2_v3_incremental/models/20261004_1091chunks/scored_selected"
     paths = [("signal", scored / "signal_-1_selected.parquet")]
     zbb = sorted(scored.glob("zbb_*_selected.parquet"))
@@ -131,13 +137,14 @@ def main():
     results = {name: {"rows": 0, "peak_rows": 0, "mass": np.zeros(72, dtype=np.int64),
                       "angle_peak": np.zeros(20, dtype=np.int64)} for name in COLORS}
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
-        for found in pool.map(lambda item: read_one(item, score, cfg["armenteros_reject_box"]), paths):
+        for found in pool.map(lambda item: read_one(item, score, cfg["armenteros_reject_box"],
+                                                  args.scenario), paths):
             for name, row in found.items():
                 results[name]["rows"] += row["rows"]
                 results[name]["peak_rows"] += row["peak_rows"]
                 results[name]["mass"] += row["mass"]
                 results[name]["angle_peak"] += row["angle_peak"]
-    expected = scan["choices"]["arm_only"]["all_at_validation_choice"]["peak_candidate_rows"]
+    expected = scan["choices"][args.scenario]["all_at_validation_choice"]["peak_candidate_rows"]
     if any(results[name]["peak_rows"] != expected[name] for name in ("signal", "zbb", "zcc", "zss")):
         raise ValueError("Stack peak counts differ from frozen score scan")
     weights = dict(scan["weights"]["all"])
@@ -154,10 +161,13 @@ def main():
         input_meta[name] = {"summary": str(path), "sha256": sha(path),
                             "generated_direct_decays": summary["generated_direct_decays"]}
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    plot(results, weights, score, args.output_dir / "reoptimized_arm_only_stack.png")
+    plot(results, weights, score, args.scenario, args.output_dir / "reoptimized_arm_only_stack.png")
     output = {"script_sha256": sha(Path(__file__)), "scan": str(args.scan),
               "scan_sha256": sha(args.scan), "score": score,
-              "selection": "Frozen BDT score plus Armenteros box; no pi0 or eta photon veto",
+              "selection": "Frozen BDT score plus Armenteros box" +
+                           (" and |lambda_d0_sig| >= 5" if args.scenario == "arm_d0sig5" else "") +
+                           "; no pi0 or eta photon veto",
+              "scenario": args.scenario,
               "config_sha256": sha(args.config), "input_meta": input_meta,
               "weights": weights, "mass_edges": MASS.tolist(), "angle_edges": ANGLE.tolist(),
               "angle_window_gev": [5.4, 5.9],

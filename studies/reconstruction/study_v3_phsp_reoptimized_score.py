@@ -19,7 +19,8 @@ import v3_plot_style  # noqa: F401
 BASE = Path("/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs")
 COLS = ("source_id", "event_entry", "candidate_slot", "lb_mc_index", "lb_sign",
         "truth_matched", "truth_cos_theta_p", "cos_theta_p", "lb_mass",
-        "bdt_score", "arm_alpha", "arm_qt", "pass_eta", "pass_pi0")
+        "bdt_score", "arm_alpha", "arm_qt", "pass_eta", "pass_pi0",
+        "lambda_d0_sig")
 
 
 def sha(path):
@@ -31,6 +32,7 @@ def main():
     ap.add_argument("--base", type=Path, default=BASE)
     ap.add_argument("--scan", type=Path, required=True)
     ap.add_argument("--config", type=Path, default=Path("config/v3_post_bdt_veto_sequence.json"))
+    ap.add_argument("--scenario", choices=("arm_only", "arm_d0sig5"), default="arm_only")
     ap.add_argument("--output-dir", type=Path, required=True)
     args = ap.parse_args()
     scan = json.loads(args.scan.read_text())
@@ -53,12 +55,14 @@ def main():
     box = cfg["armenteros_reject_box"]
     arm = ~((alpha >= box["abs_alpha_min"]) & (alpha <= box["abs_alpha_max"]) &
             (qt >= box["qt_min_gev"]) & (qt <= box["qt_max_gev"]))
+    displaced = np.isfinite(direct.lambda_d0_sig) & (direct.lambda_d0_sig.abs() >= 5.0)
+    new_selection = arm & displaced if args.scenario == "arm_d0sig5" else arm
     previous = float(scan["fixed_previous_score"])
-    new = float(scan["choices"]["arm_only"]["validation_maximum"]["score"])
+    new = float(scan["choices"][args.scenario]["validation_maximum"]["score"])
     stages = {"offline": direct,
               "old_bdt_arm": direct.loc[(direct.bdt_score >= previous) & arm],
-              "new_bdt_arm": direct.loc[(direct.bdt_score >= new) & arm],
-              "new_bdt_arm_eta": direct.loc[(direct.bdt_score >= new) & arm & direct.pass_eta.astype(bool)]}
+              "new_bdt_arm": direct.loc[(direct.bdt_score >= new) & new_selection],
+              "new_bdt_arm_eta": direct.loc[(direct.bdt_score >= new) & new_selection & direct.pass_eta.astype(bool)]}
     results = {name: stage_result(frame, generated) for name, frame in stages.items()}
     for name, frame in stages.items():
         unique = frame.sort_values("bdt_score", ascending=False).drop_duplicates("generated_decay_id")
@@ -77,10 +81,11 @@ def main():
     args.output_dir.mkdir(parents=True, exist_ok=True)
     fig, ax = plt.subplots(figsize=(9.2, 5.8))
     centers = (BINS[:-1] + BINS[1:]) / 2
+    suffix = " + |d₀(Λ)|/σ ≥ 5" if args.scenario == "arm_d0sig5" else ""
     for name, label, color in (("offline", "Offline selected", "#8b8b8b"),
                                ("old_bdt_arm", "Old score + Armenteros", "#d89428"),
-                               ("new_bdt_arm", "New score + Armenteros", "#2670a8"),
-                               ("new_bdt_arm_eta", "New score + Armenteros + η", "#ba4148")):
+                               ("new_bdt_arm", "New score + Armenteros" + suffix, "#2670a8"),
+                               ("new_bdt_arm_eta", "New score + Armenteros" + suffix + " + η", "#ba4148")):
         row = results[name]
         eff = np.array(row["efficiency"])
         lo, hi = np.array(row["binomial_68pct_interval"]).T
@@ -88,7 +93,8 @@ def main():
                     color=color, label=f"{label}: {row['unique_selected_decays']:,}")
     ax.set(xlabel=r"Generated $\cos\theta_p$",
            ylabel="Unique selected direct decays / generated direct decays",
-           xlim=(-1, 1), ylim=(0, 1), title="v3 100k PHSP angular acceptance at the reoptimized score")
+           xlim=(-1, 1), ylim=(0, 1),
+           title="v3 100k PHSP angular acceptance at the reoptimized score")
     ax.grid(alpha=.2)
     ax.legend(frameon=False, fontsize=9)
     fig.tight_layout()
@@ -99,7 +105,7 @@ def main():
     im = ax.imshow(response, origin="lower", extent=(-1, 1, -1, 1), aspect="auto", cmap="viridis")
     fig.colorbar(im, ax=ax, label="Selected candidates / generated truth-bin decay")
     ax.set(xlabel=r"Reconstructed $\cos\theta_p$", ylabel=r"Generated $\cos\theta_p$",
-           title="Acceptance × migration, new score + Armenteros")
+           title="Acceptance × migration, new score + Armenteros" + suffix)
     fig.tight_layout()
     fig.savefig(args.output_dir / "phsp_reoptimized_response.png", dpi=180)
     plt.close(fig)
@@ -110,6 +116,7 @@ def main():
                       args.output_dir / "phsp_reoptimized_acceptance_for_fit.csv", index=False)
     output = {"script_sha256": sha(Path(__file__)), "scan": str(args.scan),
               "scan_sha256": sha(args.scan), "config_sha256": sha(args.config),
+              "scenario": args.scenario,
               "generated": str(generated_path), "generated_sha256": sha(generated_path),
               "candidates": str(candidates_path), "candidates_sha256": sha(candidates_path),
               "generated_direct_decays": len(generated), "maximum_angle_match_error": error,
