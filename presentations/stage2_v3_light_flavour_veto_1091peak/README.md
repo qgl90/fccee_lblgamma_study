@@ -2,7 +2,7 @@
 
 Build with `bash presentations/stage2_v3_light_flavour_veto_1091peak/build.sh`
 from the repository root. The output is
-`stage2_v3_light_flavour_veto_1091peak.pdf` (10 pages). The deck presents
+`stage2_v3_light_flavour_veto_1091peak.pdf` (12 pages). The deck presents
 expected candidate rows on a **linear scale**. Its source review is
 [`docs/STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md`](../../docs/STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md);
 reproduce all plots via [`howto/v3_post_bdt_veto_sequence.md`](../../howto/v3_post_bdt_veto_sequence.md).
@@ -23,8 +23,12 @@ the six-component summary SHA-256 is
 | `sequence_mass_detail_linear.png` | [`docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/`](../../docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/sequence_mass_detail_linear.png) | `5382f8134a21568e3e850eff6141af3493d7507fe93100c6b5f68538ac31efee` |
 | `sequence_angle_detail_linear.png` | [`docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/`](../../docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/sequence_angle_detail_linear.png) | `28046139106c6f93d81df51741687ebc4ba4c1ce0d7a7bf890a1a7ee8437347f` |
 | `sequence_mass_pi0_linear.png` | [`docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/`](../../docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/sequence_mass_pi0_linear.png) | `0f216a0370ee8e337099944ecb3ad374b8025e03d91d2d01b817704ab0fc94ed` |
+| `zss_peak_pair_origin.png` | [Zss pair-origin result](../../docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_pair_origin.png) | `c04d6967f9cabe3f8a61b31afab12b815913e3723345bdbeb37e03871a09e22b` |
+| `zss_peak_photon_origin.png` | [Zss photon-origin result](../../docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_photon_origin.png) | `e77fb1e2bbca7d2b27e134df7124b50df5d30b36153d62501694add54a3b773e` |
 
 The all-component curves include Zcc and Zss. The smaller-component slides
 use the four-component plot snapshot to make the forced modes and signal
 visible under the same physical weights. Forced b-mode projections are never
 summed with inclusive Zbb.
+The Zss ancestry slides use the [separate frozen truth audit](../../docs/data/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_ancestry.json),
+SHA-256 `735e87ac5474ad0c8e3fda181bbba0ec7e83b45e174945a79833bb5c03e5947f`.

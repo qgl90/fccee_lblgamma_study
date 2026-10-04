@@ -683,3 +683,5 @@ the full 1,200-chunk Zcc and Zss preparation and scoring. Then use
 physically weighted, linear mass and cos θp plots for the BDT, Armenteros,
 π⁰ veto and η veto stages. The [PI review](../docs/STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md)
 lists the frozen counts, branching assumptions, figures and limitations.
+For the full Zss post-BDT truth composition and paired K⁰S rejection check,
+use [`v3_zss_ancestry_armenteros.md`](v3_zss_ancestry_armenteros.md).

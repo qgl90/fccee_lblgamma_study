@@ -1,0 +1,393 @@
+{
+  "zss_summary": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_zcc_zss_1200_bdt1091peak/v3_zss_1200_bdt1091peak/summary.json",
+  "zss_summary_sha256": "120dee8780493eae4f28a2dfbf0b55f5e463677a94fe9b14801d28bd818a1761",
+  "projection": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/projections/20261004_1091chunks_peak_5p4_5p9/projection.json",
+  "projection_sha256": "48736dce351ddb0c3c66e0d8b566e6f1de0bacb4013d85f75f4a55784c8c3a5c",
+  "config": "config/v3_post_bdt_veto_sequence.json",
+  "config_sha256": "7a934dfac487ffa7de2a9a7bf9555293716198bad108081e8f6c4b172aed8acd",
+  "input_chunks": 1200,
+  "processed_input_events": 499842440,
+  "score_cut": 0.9538269639015198,
+  "candidate_weight": 1872.5900905893466,
+  "mass_window_gev": [
+    5.4,
+    5.9
+  ],
+  "truth_use": "Ancestry labels only after reconstructed BDT and veto cuts",
+  "stages": {
+    "post_bdt": {
+      "candidate_rows": 1221,
+      "candidate_bearing_events": 1221,
+      "expected_candidates": 2286432.500609592,
+      "pair_origin": {
+        "Kshort pi/pi assigned p/pi": 273,
+        "True Lambda pair": 932,
+        "p/pi identities, other ancestry": 0,
+        "Other or unmatched pair": 16
+      },
+      "photon_origin": {
+        "pi0 photon": 195,
+        "eta photon": 147,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 879
+      },
+      "kshort_pair_by_photon_origin": {
+        "pi0 photon": 31,
+        "eta photon": 26,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 216
+      },
+      "same_parent_track_pair_abs_pdg_top12": {
+        "3122": 932,
+        "310": 273,
+        "111": 2
+      },
+      "true_lambda_parent_abs_pdg_top12": {
+        "3": 553,
+        "3212": 61,
+        "1": 60,
+        "2": 56,
+        "3114": 46,
+        "3322": 43,
+        "3224": 36,
+        "3214": 36,
+        "3312": 26,
+        "4": 11,
+        "5": 3,
+        "5122": 1
+      },
+      "selected_photon_abs_parent_pdg_top12": {
+        "3": 680,
+        "111": 195,
+        "221": 147,
+        "0": 64,
+        "11": 61,
+        "22": 40,
+        "223": 21,
+        "2": 6,
+        "331": 4,
+        "4": 1,
+        "1": 1,
+        "20213": 1
+      },
+      "other_photon_abs_parent_pdg_top12": {
+        "3": 680,
+        "0": 64,
+        "11": 61,
+        "22": 40,
+        "223": 21,
+        "2": 6,
+        "331": 4,
+        "4": 1,
+        "1": 1,
+        "20213": 1
+      },
+      "other_photon_no_mc_match": 64,
+      "pair_by_photon_origin": {
+        "Kshort pi/pi assigned p/pi": {
+          "pi0 photon": 31,
+          "eta photon": 26,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 216
+        },
+        "True Lambda pair": {
+          "pi0 photon": 162,
+          "eta photon": 119,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 651
+        },
+        "p/pi identities, other ancestry": {
+          "pi0 photon": 0,
+          "eta photon": 0,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 0
+        },
+        "Other or unmatched pair": {
+          "pi0 photon": 2,
+          "eta photon": 2,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 12
+        }
+      }
+    },
+    "post_bdt_armenteros": {
+      "candidate_rows": 794,
+      "candidate_bearing_events": 794,
+      "expected_candidates": 1486836.5319279411,
+      "pair_origin": {
+        "Kshort pi/pi assigned p/pi": 31,
+        "True Lambda pair": 752,
+        "p/pi identities, other ancestry": 0,
+        "Other or unmatched pair": 11
+      },
+      "photon_origin": {
+        "pi0 photon": 154,
+        "eta photon": 115,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 525
+      },
+      "kshort_pair_by_photon_origin": {
+        "pi0 photon": 5,
+        "eta photon": 3,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 23
+      },
+      "same_parent_track_pair_abs_pdg_top12": {
+        "3122": 752,
+        "310": 31,
+        "111": 2
+      },
+      "true_lambda_parent_abs_pdg_top12": {
+        "3": 452,
+        "3212": 49,
+        "1": 47,
+        "2": 47,
+        "3322": 33,
+        "3114": 32,
+        "3224": 30,
+        "3214": 29,
+        "3312": 22,
+        "4": 7,
+        "5": 3,
+        "5122": 1
+      },
+      "selected_photon_abs_parent_pdg_top12": {
+        "3": 392,
+        "111": 154,
+        "221": 115,
+        "0": 45,
+        "11": 44,
+        "22": 19,
+        "223": 16,
+        "2": 4,
+        "331": 3,
+        "4": 1,
+        "20213": 1
+      },
+      "other_photon_abs_parent_pdg_top12": {
+        "3": 392,
+        "0": 45,
+        "11": 44,
+        "22": 19,
+        "223": 16,
+        "2": 4,
+        "331": 3,
+        "4": 1,
+        "20213": 1
+      },
+      "other_photon_no_mc_match": 45,
+      "pair_by_photon_origin": {
+        "Kshort pi/pi assigned p/pi": {
+          "pi0 photon": 5,
+          "eta photon": 3,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 23
+        },
+        "True Lambda pair": {
+          "pi0 photon": 147,
+          "eta photon": 110,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 495
+        },
+        "p/pi identities, other ancestry": {
+          "pi0 photon": 0,
+          "eta photon": 0,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 0
+        },
+        "Other or unmatched pair": {
+          "pi0 photon": 2,
+          "eta photon": 2,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 7
+        }
+      }
+    },
+    "post_bdt_armenteros_pi0": {
+      "candidate_rows": 699,
+      "candidate_bearing_events": 699,
+      "expected_candidates": 1308940.4733219533,
+      "pair_origin": {
+        "Kshort pi/pi assigned p/pi": 27,
+        "True Lambda pair": 662,
+        "p/pi identities, other ancestry": 0,
+        "Other or unmatched pair": 10
+      },
+      "photon_origin": {
+        "pi0 photon": 63,
+        "eta photon": 112,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 524
+      },
+      "kshort_pair_by_photon_origin": {
+        "pi0 photon": 1,
+        "eta photon": 3,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 23
+      },
+      "same_parent_track_pair_abs_pdg_top12": {
+        "3122": 662,
+        "310": 27,
+        "111": 2
+      },
+      "true_lambda_parent_abs_pdg_top12": {
+        "3": 388,
+        "3212": 46,
+        "2": 41,
+        "1": 40,
+        "3322": 33,
+        "3224": 29,
+        "3114": 27,
+        "3214": 26,
+        "3312": 22,
+        "4": 7,
+        "5": 2,
+        "5122": 1
+      },
+      "selected_photon_abs_parent_pdg_top12": {
+        "3": 391,
+        "221": 112,
+        "111": 63,
+        "0": 45,
+        "11": 44,
+        "22": 19,
+        "223": 16,
+        "2": 4,
+        "331": 3,
+        "4": 1,
+        "20213": 1
+      },
+      "other_photon_abs_parent_pdg_top12": {
+        "3": 391,
+        "0": 45,
+        "11": 44,
+        "22": 19,
+        "223": 16,
+        "2": 4,
+        "331": 3,
+        "4": 1,
+        "20213": 1
+      },
+      "other_photon_no_mc_match": 45,
+      "pair_by_photon_origin": {
+        "Kshort pi/pi assigned p/pi": {
+          "pi0 photon": 1,
+          "eta photon": 3,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 23
+        },
+        "True Lambda pair": {
+          "pi0 photon": 61,
+          "eta photon": 107,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 494
+        },
+        "p/pi identities, other ancestry": {
+          "pi0 photon": 0,
+          "eta photon": 0,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 0
+        },
+        "Other or unmatched pair": {
+          "pi0 photon": 1,
+          "eta photon": 2,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 7
+        }
+      }
+    },
+    "post_bdt_armenteros_pi0_eta": {
+      "candidate_rows": 514,
+      "candidate_bearing_events": 514,
+      "expected_candidates": 962511.3065629242,
+      "pair_origin": {
+        "Kshort pi/pi assigned p/pi": 24,
+        "True Lambda pair": 483,
+        "p/pi identities, other ancestry": 0,
+        "Other or unmatched pair": 7
+      },
+      "photon_origin": {
+        "pi0 photon": 41,
+        "eta photon": 17,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 456
+      },
+      "kshort_pair_by_photon_origin": {
+        "pi0 photon": 1,
+        "eta photon": 2,
+        "direct Lambda_b photon": 0,
+        "Other or unmatched photon": 21
+      },
+      "same_parent_track_pair_abs_pdg_top12": {
+        "3122": 483,
+        "310": 24,
+        "111": 1
+      },
+      "true_lambda_parent_abs_pdg_top12": {
+        "3": 285,
+        "3212": 33,
+        "3322": 29,
+        "1": 26,
+        "2": 24,
+        "3224": 24,
+        "3114": 20,
+        "3312": 19,
+        "3214": 18,
+        "4": 3,
+        "5": 1,
+        "5122": 1
+      },
+      "selected_photon_abs_parent_pdg_top12": {
+        "3": 352,
+        "0": 45,
+        "111": 41,
+        "11": 26,
+        "221": 17,
+        "22": 15,
+        "223": 9,
+        "2": 4,
+        "331": 3,
+        "4": 1,
+        "20213": 1
+      },
+      "other_photon_abs_parent_pdg_top12": {
+        "3": 352,
+        "0": 45,
+        "11": 26,
+        "22": 15,
+        "223": 9,
+        "2": 4,
+        "331": 3,
+        "4": 1,
+        "20213": 1
+      },
+      "other_photon_no_mc_match": 45,
+      "pair_by_photon_origin": {
+        "Kshort pi/pi assigned p/pi": {
+          "pi0 photon": 1,
+          "eta photon": 2,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 21
+        },
+        "True Lambda pair": {
+          "pi0 photon": 39,
+          "eta photon": 15,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 429
+        },
+        "p/pi identities, other ancestry": {
+          "pi0 photon": 0,
+          "eta photon": 0,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 0
+        },
+        "Other or unmatched pair": {
+          "pi0 photon": 1,
+          "eta photon": 0,
+          "direct Lambda_b photon": 0,
+          "Other or unmatched photon": 6
+        }
+      }
+    }
+  }
+}

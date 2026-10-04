@@ -97,6 +97,11 @@ a final fit purity. The η veto's substantial signal loss and the large Zss
 projection call for a dedicated light-flavour background and angular
 acceptance study before any cut or training-mixture change.
 
+The follow-up [Zss ancestry audit](STAGE2_V3_ZSS_ANCESTRY_ARMENTEROS_2026-10-04.md)
+shows why the Armenteros reduction is incomplete: most Zss candidates
+already contain a genuine Λ pair, and 483/514 final peak candidates still
+do. Its truth classes are diagnostic only.
+
 ## Results and figures
 
 - [Six-component linear expected mass sequence](figures/stage2_v3_post_bdt_veto_sequence_1091peak_all/sequence_mass_linear.png) and [reconstructed cos θp sequence](figures/stage2_v3_post_bdt_veto_sequence_1091peak_all/sequence_angle_linear.png)
