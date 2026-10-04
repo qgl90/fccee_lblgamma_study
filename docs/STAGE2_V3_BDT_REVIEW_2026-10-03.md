@@ -142,6 +142,13 @@ measurement. With only 56 test background survivors, the after-score mass
 shape is statistically noisy; no smooth mass-background or sideband model is
 claimed here.
 
+### Results and figures
+
+- [Held-out score response](figures/stage2_v3_bdt_1028/test_response_three_categories.png), [ROC](figures/stage2_v3_bdt_1028/test_roc.png), and [feature importance](figures/stage2_v3_bdt_1028/feature_importance.png)
+- [Validation score scan](figures/stage2_v3_bdt_1028/working_point_scan.png), [tight tail](figures/stage2_v3_bdt_1028/working_point_tail.png), and [purity](figures/stage2_v3_bdt_1028/working_point_purity.png)
+- [Expected mass and angle](figures/stage2_v3_bdt_1028/expected_mass_and_angle.png), [mass shape](figures/stage2_v3_bdt_1028/mass_before_after_bdt.png), and [angle shape](figures/stage2_v3_bdt_1028/angle_before_after_bdt.png)
+- [Frozen scan counts and intervals](data/stage2_v3_bdt_1028/projection.json)
+
 ## PI decision and limits
 
 The 0.9787 point meets the specified background ceiling but does **not**

@@ -85,3 +85,10 @@ independent sample. A full background model needs Zcc/Zss normalization too.
 
 Reproduction commands and stage boundaries are in
 [howto/v3_post_bdt_armenteros.md](../howto/v3_post_bdt_armenteros.md).
+
+## Results and figures
+
+- [Post-BDT Armenteros plane and proposed veto box](figures/stage2_v3_armenteros_1028/broad_plane.png)
+- [Armenteros α and qT projections](figures/stage2_v3_armenteros_1028/broad_1d.png)
+- [Signal, Zbb and true K⁰S retention](figures/stage2_v3_armenteros_1028/broad_retention.png)
+- [Broad-box counts and truth categories](data/stage2_v3_armenteros_1028/broad_summary.json) and [narrow-box comparison](data/stage2_v3_armenteros_1028/narrow_summary.json)

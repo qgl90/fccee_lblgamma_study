@@ -9,6 +9,9 @@ frozen catalog, model, summaries, scan rows and plots are copied into
 The separate fixed-score K⁰S ancestry and Armenteros study is in
 [the PI review](../docs/STAGE2_V3_ARMENTEROS_REVIEW_2026-10-03.md) and
 [its v3 how-to](v3_post_bdt_armenteros.md).
+The 100k v3 PHSP angular acceptance through this frozen score, including the
+fit response and figures, is in [its PI review](../docs/STAGE2_V3_PHSP_ANGLE_REVIEW_2026-10-04.md)
+and [reproduction guide](v3_phsp_angle_acceptance.md).
 The historical v2 workflow starts below the v3 recipe.
 
 ## Current v3 recipe: Physics + inclusive Zbb → Stage 2 → scored Stage 2

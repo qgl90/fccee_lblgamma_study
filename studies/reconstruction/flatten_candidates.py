@@ -156,7 +156,15 @@ def candidate_columns(block, mode, source_id=None, candidate_branches=None,
     lambda_slots = block["lb_lambda_slot"]
     columns["lambda_slot"] = flat(lambda_slots)
     for output, branch in (lambda_branches or LAMBDA_BRANCHES).items():
-        columns[output] = flat(block[branch][lambda_slots])
+        try:
+            columns[output] = flat(block[branch][lambda_slots])
+        except IndexError:
+            # Some historical lambda_* diagnostics are candidate aligned
+            # despite their prefix. Preserve those rows directly when their
+            # per-event lengths prove that alignment.
+            if not ak.all(ak.num(block[branch]) == ak.num(mass)):
+                raise ValueError(f"Cannot align Stage-1 branch {branch} to candidates")
+            columns[output] = flat(block[branch])
 
     # An MT snapshot made before the Lambda-to-PV pointing fields were added
     # still stores the fitted Lambda momentum and PV/SV coordinates. Derive
@@ -398,6 +406,16 @@ def main():
                               CANDIDATE_BRANCHES.items() if branch in available}
         lambda_branches = {name: branch for name, branch in
                            LAMBDA_BRANCHES.items() if branch in available}
+        # Include new Stage-1 candidate and Lambda-slot fields automatically.
+        # A Lambda-slot name can collide with a candidate alias (for example
+        # lambda_mass), so retain its source name under lambda_slot_*.
+        for name in sorted(available):
+            if "vector" not in tree[name].typename.lower():
+                continue
+            if name.startswith("lb_") and name not in candidate_branches.values():
+                candidate_branches.setdefault(name, name)
+            if name.startswith("lambda_") and name not in lambda_branches.values():
+                lambda_branches.setdefault("lambda_slot_" + name[7:], name)
         branches = sorted(set(event_branches) | set(candidate_branches.values()) |
                           set(lambda_branches.values()) |
                           set(LEG_BRANCHES.values()) |
