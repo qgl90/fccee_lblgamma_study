@@ -52,6 +52,16 @@ nonmatched Zbb candidate, 1,444.22 per nonmatched Zcc candidate, and
 1,872.59 per nonmatched Zss candidate. The signal and forced-mode weights
 follow the separate [four-component review](STAGE2_V3_POST_BDT_VETO_SEQUENCE_2026-10-04.md).
 
+**Zdd is absent.** Every input in the frozen Zss catalog is from the dedicated
+`p8_ee_Zss_ecm91` dataset; no `p8_ee_Zdd_ecm91` files were processed.
+The down-type average is \([\mathcal B_{dd}+\mathcal B_{ss}+\mathcal B_{bb}]/3\),
+so assigning its 15.6% value as a *single-flavour approximation* to Zss
+candidates does not create a Z→dd sample or include a Zdd yield.
+The inclusive sum and all three-flavour FoMs in this review cover only
+Zbb+Zcc+Zss. Zdd needs its own generated sample, Stage 1/2 processing,
+selection efficiency and separately scaled projection. A Zss rejection
+factor cannot be assumed for Zdd without that check.
+
 ## Paired four-step comparison
 
 The same candidate rows are tested at each step: fixed BDT only; reject

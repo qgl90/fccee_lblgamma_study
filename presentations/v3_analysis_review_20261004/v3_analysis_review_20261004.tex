@@ -34,7 +34,7 @@ Forced $\Lambda\pi^0$ & 100,000 & 100,005 & dedicated physics response\\
 \bottomrule\end{tabular}
 \vspace{.5em}
 
-\scriptsize v3 denotes the reconstruction scenario, not the Stage 0 EDM4hep generator label. Candidate rows and candidate-bearing events have separate counters. Forced modes cannot be added blindly to inclusive Zbb.
+\scriptsize v3 denotes the reconstruction scenario, not the Stage 0 EDM4hep generator label. Candidate rows and candidate-bearing events have separate counters. Forced modes cannot be added blindly to inclusive Zbb. \textbf{A primary Zdd sample has not been processed.}
 \end{frame}
 
 \begin{frame}{Stage 1: candidate construction from reconstructed objects}
@@ -133,7 +133,7 @@ Expected after both photon vetoes & 61,422 & 363,943 & 962,511\\
 \vspace{.8em}
 
 \begin{itemize}
-\item Scale each flavour with its own processed-event denominator and $\mathcal B(Z\to q\bar q)$. For Zss, 0.156 is an explicit equal-down-type scenario.
+\item Scale each flavour with its own processed-event denominator and $\mathcal B(Z\to q\bar q)$. For Zss, 0.156 is an assumed per-flavour value from the down-type average; it does \emph{not} include Zdd candidates.
 \item After all vetoes, 483/514 Zss peak rows still have a genuine $\Lambda$ pair; 352/514 selected photons have an immediate recorded $s$-quark parent. Armenteros cannot remove this genuine-$\Lambda$ component.
 \end{itemize}
 \end{frame}
@@ -144,7 +144,7 @@ Expected after both photon vetoes & 61,422 & 363,943 & 962,511\\
 \item In the 5.4--5.9 GeV peak, scale direct signal by generated direct decays; scale Zbb, Zcc and Zss separately by $N_Z\mathcal B_q/N_{\rm processed,q}$.
 \item Scan every observed validation score for $S/\sqrt{S+B_{bb}+B_{cc}+B_{ss}}$, then evaluate that fixed score on held-out test partitions. No MC ancestry is an input cut.
 \end{enumerate}
-\scriptsize $N_Z=6\times10^{12}$, $\mathcal B_{bb}=0.15$, $\mathcal B_{cc}=0.1203$, $\mathcal B_{ss}=0.156$. Forced modes and wrong signal combinations are shown separately, not included in this exact objective.
+\scriptsize $N_Z=6\times10^{12}$, $\mathcal B_{bb}=0.15$, $\mathcal B_{cc}=0.1203$, $\mathcal B_{ss}=0.156$ per-flavour scenario. Zdd has no processed sample and is absent from $B$. Forced modes and wrong signal combinations are shown separately.
 \end{frame}
 
 \fig{Correct objective: three-flavour $S/\sqrt{S+B}$ versus score}{three_flavour_fom_score_scan.png}
@@ -218,7 +218,7 @@ Branch, split & Score & $S$ & Zbb & Zcc & Zss & $S/\sqrt{S+B}$\\\midrule
 \begin{itemize}
 \item The corrected peak objective is $S/\sqrt{S+B_{bb}+B_{cc}+B_{ss}}$ after Armenteros. Its no-IP validation score is .985562; the prior .991889 $S/\sqrt B$ point is not an optimum for this objective.
 \item Adding reconstructed $|d_0(\Lambda)|/\sigma\geq5$ \emph{after} the unchanged BDT gives a validation score .981096 and held-out central FoM 217.1 versus 174.5 without IP. PHSP acceptance falls 16.05\%$\to$11.88\%.
-\item The IP result is sparse and post-hoc. The present IP-significance uncertainty omits $\Lambda$ direction uncertainty; require more high-tail MC, a fresh validation sample and PV/SV/track-response checks before adopting a reference cut.
+\item The IP result is sparse and post-hoc. Zdd is also missing from $B$: the Zss sample does not represent it. Require a dedicated Zdd projection, more high-tail MC and PV/SV/track-response checks before adopting a reference cut.
 \item Compare this offline option with a weighted Zbb/Zcc/Zss BDT and a named $\Lambda$-IP feature ablation at matched signal efficiency and angular acceptance.
 \end{itemize}
 \end{frame}

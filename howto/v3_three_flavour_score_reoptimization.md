@@ -4,6 +4,12 @@ This is the frozen 2026-10-04 1,091-Zbb-chunk model, 1,200-Zcc-chunk and 1,200-Z
 
 The current PI objective is **S/√(S+Bbb+Bcc+Bss)** with the reconstructed Armenteros box applied. The archived `stage2_v3_three_flavour_sqrtb_1091peak/` snapshot used S/√B and is a superseded diagnostic, not a selection prescription. All three backgrounds are scaled with their own processed-event counts and Z branching scenario. The current additional-cut snapshot is `stage2_v3_three_flavour_splusb_d0sig5_1091peak/`.
 
+These three inclusive samples are exactly Zbb, Zcc and **Zss**. The 0.156
+down-type-average assumption is used as a per-flavour weight for Zss; it
+does not supply Zdd candidates. Do not interpret the resulting B or optimum
+as including Zdd. Process and normalize a dedicated Zdd sample before an
+all-relevant-flavour optimization.
+
 From the repository root, with the EOS outputs mounted and `myenv` available:
 
 ```bash

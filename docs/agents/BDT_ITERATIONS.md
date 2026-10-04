@@ -72,6 +72,9 @@ Zss dominates the current expected peak under the explicit down-type-average
 branching scenario. A future mixture model therefore needs a frozen
 light-flavour training/test split and new score optimization against all
 three inclusive backgrounds; the present BDT and veto cuts remain proposals.
+The Zss sample and its per-flavour 0.156 scaling do **not** cover Zdd. Before
+claiming a complete light-flavour mixture or final peak optimum, process a
+dedicated Zdd sample through the same v3 chain and add its own expected yield.
 
 The [paired displacement scan](../STAGE2_V3_DISPLACEMENT_ZSS_2026-10-04.md)
 finds additional Zss separation from reconstructed `|lambda_d0_sig|` after

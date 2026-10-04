@@ -6,6 +6,13 @@
 
 **PI correction.** The score must maximize **S/√(S+Bbb+Bcc+Bss)**, with the reconstructed Armenteros rejection applied and each inclusive background scaled separately to the same 6×10¹²-Z exposure. The intervening S/√B scan used the wrong objective for the selection decision. Its 0.9918887 threshold is retained only as a high-score diagnostic, **not** the recommended optimum. The Zbb-trained BDT model and its 20 inputs have not changed.
 
+**Scope of B:** Zss is the dedicated primary Z→ss sample, not a combined
+down-type sample. Its 0.156 branching input is an assumed *per-flavour* scale
+derived from the down-type average; it does not account for Z→dd. All scores,
+expected backgrounds and FoMs below therefore omit Zdd and may move after a
+separately processed Zdd sample is added. In particular, the current
+Armenteros and Λ-IP rejection measured on Zss cannot be assigned to Zdd.
+
 The exact observed-score **validation** maximum for Armenteros only is **score ≥0.9855620861**. The same 5.4–5.9 GeV reconstructed peak, candidate rows and generated/processed denominators are used at every point. The held-out test is evaluated at the validation-selected threshold. Values below are expected peak candidates; FoM values are central counting estimates, rounded for display.
 
 | Partition and score | Direct S | Combined B | S/√(S+B) | Raw peak S; bb,cc,ss |
