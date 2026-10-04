@@ -1,0 +1,56 @@
+{
+  "sample": "zss",
+  "catalog": "outputs/analysis/studies/stage2_v3_zcc_zss_20261004/catalogs/zss_1200_v3.json",
+  "run_identity": {
+    "catalog_sha256": "fd4f0425e4501ed7ae13ada938c2d908fd0bc15d7964b36ab7214bcfd8323dcc",
+    "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66",
+    "projection_sha256": "48736dce351ddb0c3c66e0d8b566e6f1de0bacb4013d85f75f4a55784c8c3a5c",
+    "config_sha256": "c26d246adb0f4e2ddb3ecc4b41b1be10db38b687541989cdd7c7148bf20a1779",
+    "runner_sha256": "3c4c0d585f06e94767a55c1b25fddd9c5c73c56ee79ea7288d36843065741ef9",
+    "preparation_sha256": "5eb2a517239d0005e1e3b6701338016585fcb868ab2dce6913c7b9dd84a8fd7d",
+    "scenario": "lambda12p5_lbE10p5_same_hemi_all",
+    "score_cut": 0.9538269639015198,
+    "mass_window_gev": [
+      5.4,
+      5.9
+    ],
+    "max_output_events": null
+  },
+  "input_chunks": 1200,
+  "processed_input_events": 499842440,
+  "candidate_bearing_stage1_events_in_root": 5723761,
+  "read_stage1_output_events": 5723761,
+  "stage_counts": {
+    "audit": {
+      "candidate_rows": 6965022,
+      "candidate_bearing_events": 5723761,
+      "direct_signal_rows": 5,
+      "nonmatched_rows": 6965017,
+      "peak_candidate_rows": 1436640,
+      "peak_direct_signal_rows": 5,
+      "peak_nonmatched_rows": 1436635,
+      "peak_candidate_bearing_events": 1358911
+    },
+    "offline_selected": {
+      "candidate_rows": 2161761,
+      "candidate_bearing_events": 1997702,
+      "direct_signal_rows": 2,
+      "nonmatched_rows": 2161759,
+      "peak_candidate_rows": 578741,
+      "peak_direct_signal_rows": 2,
+      "peak_nonmatched_rows": 578739,
+      "peak_candidate_bearing_events": 562889
+    },
+    "bdt_selected": {
+      "candidate_rows": 4578,
+      "candidate_bearing_events": 4571,
+      "direct_signal_rows": 1,
+      "nonmatched_rows": 4577,
+      "peak_candidate_rows": 1222,
+      "peak_direct_signal_rows": 1,
+      "peak_nonmatched_rows": 1221,
+      "peak_candidate_bearing_events": 1222
+    }
+  },
+  "complete_catalog": true
+}

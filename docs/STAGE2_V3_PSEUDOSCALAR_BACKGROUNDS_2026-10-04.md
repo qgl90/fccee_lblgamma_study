@@ -54,6 +54,12 @@ Their SHA256 values are
 (π⁰) and
 `84f31a21353a9dde3d7cd33941d1e2aac92e5781f6500ee87c64217a7cdade2e`
 (η); the local and EOS copies match byte for byte.
+The recovered independent full-range v3 validator checked **338 candidate
+vector branches** in every candidate-bearing event of both tuples. It found
+44,717 η and 48,298 π⁰ candidate rows with consistent lengths and the same
+v3 schema hash as the inclusive flavour catalogs. The first validator attempt
+stalled on Uproot's default file source; the successful rerun used the
+memory-mapped source already used by Stage 2 preparation.
 
 The offline scenario is `lambda12p5_lbE10p5_same_hemi_all`: reconstructed
 Λ mass within 12.5 MeV, Λb energy ≥10.5 GeV, same hemisphere, no explicit
@@ -162,4 +168,5 @@ check the possible overlap and BDT mass sculpting.
 - [η PHSP cross-check mass and angle](figures/stage2_v3_pseudoscalar_100k_bdt1091peak/eta_phsp_post_bdt_mass_angle.png) and [its stage cutflow](figures/stage2_v3_pseudoscalar_100k_bdt1091peak/eta_phsp_mass_cutflow.png)
 - [η PHSP branching-scaled mass](figures/stage2_v3_pseudoscalar_100k_bdt1091peak/eta_phsp_post_bdt_expected_mass.png)
 - [Generated audits, per-stage counts, branching projection, comparison JSON and study manifest](data/stage2_v3_pseudoscalar_100k_bdt1091peak/)
+- [Full η Stage 1 vector validation](data/stage2_v3_pseudoscalar_100k_bdt1091peak/eta_physics_stage1_full_vector_validation.json) and [full π⁰ validation](data/stage2_v3_pseudoscalar_100k_bdt1091peak/pi0_physics_stage1_full_vector_validation.json)
 - [Beamer PI review deck](../presentations/stage2_v3_pseudoscalar_100k_bdt1091peak/stage2_v3_pseudoscalar_100k_bdt1091peak.pdf)

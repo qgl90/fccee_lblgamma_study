@@ -59,11 +59,24 @@ the same fitted-track and same-hemisphere Λγ candidate logic as signal;
 it does not know whether the photon came from π⁰, η or a direct decay.
 The complete Stage 2 preparation below checks the ROOT counters and flattens
 all Stage 1 candidate rows, then joins them to the offline audit by
-`source_id`, `event_entry` and `candidate_slot`. For an additional independent
-ROOT vector audit, run `studies/reconstruction/verify_stage1_v3_outputs.py`
-with `--input <stage1_v3.root> --output <validation.json>`. The optional
-`--all-vectors` pass reads every candidate diagnostic branch and is
-substantially slower for a full tuple.
+`source_id`, `event_entry` and `candidate_slot`. Independently rerun the
+full-vector check for each Stage 1 tuple with:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/verify_stage1_v3_outputs.py \
+  --input /tmp/lbgamma_eta_physics_100k_stage1_v3.root \
+  --output /tmp/eta_physics_stage1_full_vector_validation.json --all-vectors
+
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
+  studies/reconstruction/verify_stage1_v3_outputs.py \
+  --input /tmp/lbgamma_pi0_physics_100k_stage1_v3.root \
+  --output /tmp/pi0_physics_stage1_full_vector_validation.json --all-vectors
+```
+
+The frozen validation JSONs are in the study data directory. The validator
+uses the same Uproot memory-mapped file source as Stage 2 preparation; older
+attempts with Uproot's default source stalled on this host.
 
 ## Stage 2 and fixed BDT
 

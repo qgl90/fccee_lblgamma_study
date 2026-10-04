@@ -1,0 +1,98 @@
+{
+  "catalog": "docs/data/stage2_v3_bdt_1091_peak/20261003_1091chunks.json",
+  "scored_dir": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261004_1091chunks/scored_selected",
+  "score_cut": 0.9538269639015198,
+  "processed_input_events": 395623929,
+  "candidate_weight": 2274.8876749565875,
+  "stages": {
+    "post_bdt": {
+      "direct_signal": {
+        "candidate_rows": 427,
+        "peak_candidate_rows": 416,
+        "projected_peak_candidates_at_zbb_weight": 946353.2727819404
+      },
+      "eta_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "pi0_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "other_nonmatched": {
+        "candidate_rows": 528,
+        "peak_candidate_rows": 242,
+        "projected_peak_candidates_at_zbb_weight": 550522.8173394941
+      }
+    },
+    "post_bdt_armenteros": {
+      "direct_signal": {
+        "candidate_rows": 318,
+        "peak_candidate_rows": 309,
+        "projected_peak_candidates_at_zbb_weight": 702940.2915615855
+      },
+      "eta_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "pi0_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "other_nonmatched": {
+        "candidate_rows": 156,
+        "peak_candidate_rows": 35,
+        "projected_peak_candidates_at_zbb_weight": 79621.06862348056
+      }
+    },
+    "post_bdt_armenteros_pi0": {
+      "direct_signal": {
+        "candidate_rows": 315,
+        "peak_candidate_rows": 306,
+        "projected_peak_candidates_at_zbb_weight": 696115.6285367158
+      },
+      "eta_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "pi0_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "other_nonmatched": {
+        "candidate_rows": 154,
+        "peak_candidate_rows": 35,
+        "projected_peak_candidates_at_zbb_weight": 79621.06862348056
+      }
+    },
+    "post_bdt_armenteros_pi0_eta": {
+      "direct_signal": {
+        "candidate_rows": 269,
+        "peak_candidate_rows": 263,
+        "projected_peak_candidates_at_zbb_weight": 598295.4585135825
+      },
+      "eta_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "pi0_direct_partial": {
+        "candidate_rows": 0,
+        "peak_candidate_rows": 0,
+        "projected_peak_candidates_at_zbb_weight": 0.0
+      },
+      "other_nonmatched": {
+        "candidate_rows": 127,
+        "peak_candidate_rows": 27,
+        "projected_peak_candidates_at_zbb_weight": 61421.967223827865
+      }
+    }
+  },
+  "scope": "Post-selection truth composition only; no truth field used by the BDT or vetoes"
+}

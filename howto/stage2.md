@@ -673,3 +673,13 @@ report signal loss, Zbb reduction, candidate/event counts, and fixed-score
 expectations; they do not silently change the training selection. A change
 to the pre-BDT reference belongs in a new named JSON scenario and a new
 training/output directory.
+
+## Current v3 light-flavour and veto extension
+
+For the frozen 1,091-chunk score, use
+[`v3_zcc_zss_full_processing.md`](v3_zcc_zss_full_processing.md) to reproduce
+the full 1,200-chunk Zcc and Zss preparation and scoring. Then use
+[`v3_post_bdt_veto_sequence.md`](v3_post_bdt_veto_sequence.md) to make the
+physically weighted, linear mass and cos θp plots for the BDT, Armenteros,
+π⁰ veto and η veto stages. The [PI review](../docs/STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md)
+lists the frozen counts, branching assumptions, figures and limitations.

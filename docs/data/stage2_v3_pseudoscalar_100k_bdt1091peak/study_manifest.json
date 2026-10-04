@@ -347,5 +347,18 @@
       "bytes": 5497
     }
   ],
-  "analysis_note": "Generation/reconstruction used the parent repository revision and scenario files recorded above; study and comparison scripts were added for this snapshot. Frozen outputs and their SHA256 values identify the run."
+  "analysis_note": "Generation/reconstruction used the parent repository revision and scenario files recorded above; study and comparison scripts were added for this snapshot. Frozen outputs and their SHA256 values identify the run.",
+  "recovered_stage1_full_vector_validation": [
+    {
+      "path": "docs/data/stage2_v3_pseudoscalar_100k_bdt1091peak/eta_physics_stage1_full_vector_validation.json",
+      "sha256": "85f7614304e36e28a499f0dac056ed4bbd4afd02d88c83e9dd6f498b26fe9f4c",
+      "bytes": 575
+    },
+    {
+      "path": "docs/data/stage2_v3_pseudoscalar_100k_bdt1091peak/pi0_physics_stage1_full_vector_validation.json",
+      "sha256": "bd89df450c3e8c2328ac46453666efb923c9381576f14f09f507f7bfdb13f5e3",
+      "bytes": 575
+    }
+  ],
+  "recovered_validation_note": "The previously interrupted validator was fixed to use Uproot MemmapSource, matching Stage 2 preparation; both full 100k tuples passed 338 candidate-vector length checks."
 }

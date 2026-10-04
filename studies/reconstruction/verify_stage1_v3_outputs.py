@@ -31,7 +31,9 @@ def main():
     if args.max_output_events is not None and args.max_output_events <= 0:
         ap.error("--max-output-events must be positive")
     events = candidates = direct = 0
-    with uproot.open(args.input) as root:
+    # The default file source can stall while reading baskets on this host;
+    # Stage 2 preparation uses the same local-memory-mapped source below.
+    with uproot.open(args.input, handler=uproot.source.file.MemmapSource) as root:
         processed = int(root["eventsProcessed"].value)
         selected = int(root["eventsSelected"].value)
         tree = root["events"]

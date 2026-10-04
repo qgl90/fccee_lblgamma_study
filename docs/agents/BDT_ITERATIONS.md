@@ -63,3 +63,12 @@ training loss, the yield projection, or both; keep unweighted per-process
 validation/test counts and intervals so a mixture cannot hide a poorly
 measured tail. Review genuine direct decays inside inclusive samples and
 forced η/π⁰ feed-down separately.
+
+The full 1,200-chunk v3 Zcc and Zss catalogs have now been prepared and
+scored with the frozen 1,091-chunk Zbb model. The separate candidate rates,
+physical projections, four-step reconstructed veto plots, and finite-sample
+intervals are in the [light-flavour PI review](../STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md).
+Zss dominates the current expected peak under the explicit down-type-average
+branching scenario. A future mixture model therefore needs a frozen
+light-flavour training/test split and new score optimization against all
+three inclusive backgrounds; the present BDT and veto cuts remain proposals.

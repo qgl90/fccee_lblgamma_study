@@ -2,6 +2,7 @@
 """Catalog native FCCAnalyses Z-flavour Condor chunks and their input files."""
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import re
@@ -87,9 +88,13 @@ def main():
                     help="Reuse previously validated headers when path and byte size match")
     ap.add_argument("--eos-cli", action="store_true",
                     help="List EOS with its CLI and open new ROOT files through XRootD")
+    ap.add_argument("--workers", type=int, default=1,
+                    help="Concurrent ROOT header checks; records remain sorted by chunk ID")
     args = ap.parse_args()
     if args.max_chunks is not None and args.max_chunks <= 0:
         ap.error("--max-chunks must be positive")
+    if args.workers < 1:
+        ap.error("--workers must be positive")
     sample_name = args.sample_name or args.job_dir.name
     if not re.fullmatch(r"p8_ee_Z[a-z]+_ecm91", sample_name):
         ap.error(f"Unsupported sample name: {sample_name}")
@@ -122,23 +127,20 @@ def main():
     records = []
     errors = []
     reused = 0
-    for index in selected:
+    def check_chunk(index):
         path = roots[index]
         prior = previous.get(index)
         if prior and prior["root"] == str(path) and prior["root_bytes"] == root_sizes[index] \
                 and prior["job_script"] == str(jobs[index]) and \
                 prior["input_files"] == job_inputs(jobs[index]):
-            records.append(prior)
-            reused += 1
-            continue
+            return prior, None, True
         try:
             access_path = ("root://eoslhcb.cern.ch//" + str(path).lstrip("/")) \
                           if args.eos_cli else path
             processed, kept, schema_sha256, branches = root_counts(access_path)
         except Exception as exc:
-            errors.append({"chunk_id": index, "path": str(path), "error": str(exc)})
-            continue
-        records.append({
+            return None, {"chunk_id": index, "path": str(path), "error": str(exc)}, False
+        return {
             "chunk_id": index,
             "root": str(path),
             "root_bytes": root_sizes[index],
@@ -148,7 +150,14 @@ def main():
             "candidate_bearing_output_events": kept,
             "schema_sha256": schema_sha256,
             "root_branches": branches,
-        })
+        }, None, False
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        for record, error, was_reused in pool.map(check_chunk, selected):
+            if error is not None:
+                errors.append(error)
+            else:
+                records.append(record)
+                reused += int(was_reused)
     result = {
         "sample_name": sample_name,
         "job_dir": str(args.job_dir), "root_dir": str(args.root_dir),
