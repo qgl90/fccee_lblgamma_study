@@ -81,9 +81,10 @@ def scan(scores, weights, thresholds):
     with np.errstate(divide="ignore", invalid="ignore"):
         fom = np.divide(s, np.sqrt(s+b), out=np.zeros_like(s, dtype=float), where=(s+b) > 0)
         purity = np.divide(s, s+b, out=np.zeros_like(s, dtype=float), where=(s+b) > 0)
+        significance = np.divide(s, np.sqrt(b), out=np.full_like(s, np.nan, dtype=float), where=b > 0)
     return {"thresholds": thresholds, "counts": counts, "signal": s,
             "background_components": b_components, "background": b,
-            "fom": fom, "purity": purity}
+            "fom": fom, "significance": significance, "purity": purity}
 
 
 def point(result, idx, weights):
@@ -103,26 +104,33 @@ def point(result, idx, weights):
             "expected_background": float(result["background"][idx]),
             "central_purity": float(result["purity"][idx]),
             "S_over_sqrt_S_plus_B": float(result["fom"][idx]),
+            "S_over_sqrt_B": float(result["significance"][idx]) if
+                np.isfinite(result["significance"][idx]) else None,
             "background_candidate_poisson_95pct_intervals": b_intervals,
             "S_over_sqrt_S_plus_B_with_background_upper":
                 float(result["signal"][idx] / np.sqrt(result["signal"][idx] + upper_b))
-                if result["signal"][idx] + upper_b else 0.}
+                if result["signal"][idx] + upper_b else 0.,
+            "S_over_sqrt_B_with_background_upper":
+                float(result["signal"][idx] / np.sqrt(upper_b)) if upper_b else None}
 
 
-def plot_fom(curves, choices, fixed, output):
+def plot_fom(curves, choices, fixed, objective, output):
+    metric = "significance" if objective == "s_over_sqrt_b" else "fom"
+    key = "S_over_sqrt_B" if objective == "s_over_sqrt_b" else "S_over_sqrt_S_plus_B"
     fig, axes = plt.subplots(1, 3, figsize=(17.2, 4.8))
     for part, ax in zip(PARTITIONS, axes):
         for stage in STAGES:
             row = curves[part][stage]
-            ax.plot(row["thresholds"], row["fom"], color=COLORS[stage],
+            ax.plot(row["thresholds"], row[metric], color=COLORS[stage],
                     label=LABELS[stage], linewidth=1.5)
             chosen = (choices[stage]["test_at_validation_choice"] if part == "test" else
                       choices[stage]["validation_maximum"] if part == "validation" else
                       choices[stage]["all_maximum"])
-            ax.scatter(chosen["score"], chosen["S_over_sqrt_S_plus_B"],
+            ax.scatter(chosen["score"], chosen[key],
                        color=COLORS[stage], s=26, zorder=3)
         ax.axvline(fixed, color="#555555", linestyle="--", linewidth=1.1)
-        ax.set(xlabel="Minimum frozen BDT score", ylabel=r"Peak $S/\sqrt{S+B}$",
+        ax.set(xlabel="Minimum frozen BDT score",
+               ylabel=r"Peak $S/\sqrt{B}$" if objective == "s_over_sqrt_b" else r"Peak $S/\sqrt{S+B}$",
                title=("All archived candidates (descriptive)" if part == "all" else
                       "Validation partitions (choice sample)" if part == "validation" else
                       "Test at validation-selected score"), xlim=(.8, 1), ylim=(0, None))
@@ -165,6 +173,8 @@ def main():
     ap.add_argument("--zss-catalog", type=Path, default=Path("docs/data/stage2_v3_zcc_zss_1200/zss_1200_v3.json"))
     ap.add_argument("--projection", type=Path, default=BASE / "stage2_v3_incremental/projections/20261004_1091chunks_peak_5p4_5p9/projection.json")
     ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--objective", choices=("s_over_sqrt_s_plus_b", "s_over_sqrt_b"),
+                    default="s_over_sqrt_s_plus_b")
     ap.add_argument("--output-dir", type=Path, required=True)
     args = ap.parse_args()
     if args.workers < 1:
@@ -254,7 +264,10 @@ def main():
             scores = sorted_scores[part][stage]
             exact_grid = np.unique(np.concatenate(list(scores.values())))
             exact = scan(scores, weights[part], exact_grid)
-            idx = int(np.argmax(exact["fom"]))
+            metric = exact["significance"] if args.objective == "s_over_sqrt_b" else exact["fom"]
+            if not np.isfinite(metric).any():
+                raise ValueError(f"No finite {args.objective} point for {stage}/{part}")
+            idx = int(np.nanargmax(metric))
             choices[stage][part + "_maximum"] = point(exact, idx, weights[part])
             near = scan(scores, weights[part], np.array([fixed]))
             choices[stage][part + "_fixed"] = point(near, 0, weights[part])
@@ -264,9 +277,10 @@ def main():
             checked = scan(sorted_scores[part][stage], weights[part], np.array([val_score]))
             choices[stage][part + "_at_validation_choice"] = point(checked, 0, weights[part])
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    plot_fom(curves, choices, fixed, args.output_dir / "three_flavour_fom_score_scan.png")
+    plot_fom(curves, choices, fixed, args.objective,
+             args.output_dir / "three_flavour_fom_score_scan.png")
     plot_yields(curves, fixed, args.output_dir / "three_flavour_peak_yields_score_scan.png")
-    output = {"question": "Maximize peak S/sqrt(S+B), B=Zbb+Zcc+Zss, with reconstructed veto choices",
+    output = {"question": f"Maximize peak {args.objective}, B=Zbb+Zcc+Zss, with reconstructed veto choices",
               "script_sha256": sha(Path(__file__)), "config": str(args.config), "config_sha256": sha(args.config),
               "projection": str(args.projection), "projection_sha256": sha(args.projection),
               "model_sha256": projection["model_sha256"], "fixed_previous_score": fixed,
@@ -277,18 +291,23 @@ def main():
               "peak_window_gev": cfg["mass_window_gev"], "scenario_labels": LABELS,
               "processed_or_generated_denominators": split_events, "weights": weights,
               "selected_rows_all_truth": row_counts,
-              "optimization": "exact unique observed score thresholds; central S/sqrt(S+B); no minimum raw-background condition",
+              "optimization": "exact unique observed score thresholds; central " + args.objective +
+                              "; no minimum raw-background condition; B=0 has undefined S/sqrt(B) and is excluded",
+              "objective": args.objective,
               "validation_split": "signal event hash as frozen training; whole chunk ID modulo 10 for each inclusive flavour; Zcc/Zss chunks were not used in model training",
               "candidate_count_95pct_intervals": "Garwood intervals per inclusive component; summed upper endpoints for conservative diagnostic",
               "choices": choices,
               "plot_grid": plot_grid.tolist(),
               "plot_curves": {part: {stage: {"fom": curves[part][stage]["fom"].tolist(),
+                                               "significance": [float(v) if np.isfinite(v) else None
+                                                                for v in curves[part][stage]["significance"]],
                                                "signal": curves[part][stage]["signal"].tolist(),
                                                "backgrounds": {name: curves[part][stage]["background_components"][name].tolist()
                                                                for name in ("zbb", "zcc", "zss")}}
                                     for stage in STAGES} for part in PARTITIONS},
               "limitations": "Existing Zbb model; all-sample maxima include its training chunks. Validation choice uses finite-sample score tails and post-hoc veto scenarios. Test check is not a fresh veto-blind study. Forced eta/pi0 and wrong signal combinations excluded from B."}
-    (args.output_dir / "three_flavour_score_scan.json").write_text(json.dumps(output, indent=2) + "\n")
+    (args.output_dir / "three_flavour_score_scan.json").write_text(
+        json.dumps(output, indent=2, allow_nan=False) + "\n")
     for stage in STAGES:
         print(stage, "validation", choices[stage]["validation_maximum"],
               "test", choices[stage]["test_at_validation_choice"])

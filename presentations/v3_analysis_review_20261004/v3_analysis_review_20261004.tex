@@ -138,18 +138,18 @@ Expected after both photon vetoes & 61,422 & 363,943 & 962,511\\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Reoptimize the unchanged BDT for a glued background}
+\begin{frame}{First score scan: the unchanged BDT and three backgrounds}
 \small\begin{enumerate}
 \item Keep the Zbb-trained model and score for each scored row. Apply reconstructed Armenteros alone, Armenteros+$\eta$, and $\pi^0$ controls on the same rows.
 \item In the 5.4--5.9 GeV peak, scale direct signal by generated direct decays; scale Zbb, Zcc and Zss separately by $N_Z\mathcal B_q/N_{\rm processed,q}$.
-\item Scan every observed validation score, maximize $S/\sqrt{S+B_{bb}+B_{cc}+B_{ss}}$, then evaluate that fixed score on held-out test partitions. No MC ancestry is an input cut.
+\item First scan every observed validation score for $S/\sqrt{S+B_{bb}+B_{cc}+B_{ss}}$, then evaluate that fixed score on held-out test partitions. The PI subsequently requested a separate $S/\sqrt{B}$ scan at tighter scores. No MC ancestry is an input cut.
 \end{enumerate}
 \scriptsize $N_Z=6\times10^{12}$, $\mathcal B_{bb}=0.15$, $\mathcal B_{cc}=0.1203$, $\mathcal B_{ss}=0.156$. Forced modes and wrong signal combinations are shown separately, not included in this exact objective.
 \end{frame}
 
-\fig{Three-flavour peak FoM versus score}{three_flavour_fom_score_scan.png}
+\fig{Earlier objective: three-flavour $S/\sqrt{S+B}$ versus score}{three_flavour_fom_score_scan.png}
 
-\begin{frame}{Validation choice and held-out test}
+\begin{frame}{Earlier $S/\sqrt{S+B}$ validation choice and held-out test}
 \small\begin{tabular}{lrrrr}
 \toprule
 Selection & Score & Validation FoM & Test FoM & Test $S/(S+B)$\\\midrule
@@ -168,20 +168,56 @@ Armenteros+$\pi^0$, exploratory & .984588 & 193.2 & 182.4 & 21.8\%\\
 
 \fig{Peak signal and each inclusive flavour versus score}{three_flavour_peak_yields_score_scan.png}
 
-\begin{frame}{Candidate fit view: proposed score + Armenteros}
+\begin{frame}{Earlier 0.985562 score: candidate fit view + Armenteros}
 \centering\includegraphics[width=.96\textwidth,height=.75\textheight,keepaspectratio]{figures/reoptimized_arm_only_stack.png}
 \scriptsize Linear expected candidate yields: direct signal 152,080; Zbb 20,474; Zcc 66,434; Zss 460,657 in 5.4--5.9 GeV. Wrong combinations 629. Forced $\eta$ 3,347 and $\pi^0$ 39 are plotted separately and excluded from the inclusive stack.
 \end{frame}
 
-\begin{frame}{PHSP generated-to-selected angular acceptance}
+\begin{frame}{Earlier 0.985562 score: PHSP angular acceptance}
 \centering\includegraphics[width=.91\textwidth,height=.68\textheight,keepaspectratio]{figures/phsp_reoptimized_acceptance.png}
 \scriptsize Denominator: 100,007 generated direct PHSP decays before any selection. Old score+Armenteros: 26,321 (26.32\%); proposed score+Armenteros: 16,050 (16.05\%). The strong $\ct$ variation requires binned efficiency in an angular fit.
 \end{frame}
 
+\begin{frame}{Updated PI objective: high-score $S/\sqrt{B}$}
+\begin{itemize}
+\item Apply Armenteros to all candidates, then scan the \emph{same Zbb-trained BDT} at high score. Set $B=B_{bb}+B_{cc}+B_{ss}$ with each inclusive flavour physically scaled by its own processed-event count and Z branching scenario.
+\item Maximize central $S/\sqrt{B}$ using validation peak rows only. Zero-observed-background points have undefined central $S/\sqrt{B}$; do not call them infinite-significance optima.
+\item The Armenteros-only finite validation maximum is \textbf{0.9918887019}; hold that point fixed in the test sample. The precision of the threshold is limited by sparse high-score background MC.
+\end{itemize}
+\end{frame}
+
+\fig{High-score scan: peak $S/\sqrt{B}$ after Armenteros}{sqrtb_tight_scan.png}
+
+\begin{frame}{Updated high-score expectation in the peak}
+\small\begin{tabular}{lrrrrrr}
+\toprule
+Partition, score & $S$ & Zbb & Zcc & Zss & $B$ & $S/\sqrt B$\\\midrule
+Validation, old .953827 & 230,595 & 46,907 & 547,130 & 1,610,856 & 2,204,892 & 155.3\\
+Validation, \textbf{.991889} & 108,352 & 23,453 & 14,398 & 206,040 & 243,891 & \textbf{219.4}\\
+Test, old .953827 & 229,215 & 78,558 & 404,982 & 1,406,415 & 1,889,954 & 166.7\\
+Test at .991889 & 106,504 & 0 & 28,927 & 178,146 & 207,073 & \textbf{234.0}\\
+\bottomrule\end{tabular}
+\vspace{.7em}
+
+\small Test central $S/\sqrt B$ rises 40.4\% over the old cut. Full-archive descriptive expectation at .991889: $S=108{,}170$, $B=246{,}967$; $S/(S+B)=30.5\%$. Armenteros+$\eta$ test gives 218.8; Armenteros+$\pi^0$ gives 206.3 under this objective.
+
+\scriptsize Validation has only 1 Zbb, 1 Zcc and 11 Zss peak rows at the new point; test has 0, 4 and 19. The test background-upper diagnostic gives $S/\sqrt{B_{\rm upper}}=169.7$ versus 149.9 at the old cut. Branching and detector systematics are not included.
+\end{frame}
+
+\begin{frame}{Updated high-score candidate fit view}
+\centering\includegraphics[width=.96\textwidth,height=.75\textheight,keepaspectratio]{figures/sqrtb_stack.png}
+\scriptsize Linear expected candidate yields at score .991889 + Armenteros: peak signal 108,170; Zbb 9,100; Zcc 18,775; Zss 219,093. Wrong combinations 425. Forced $\eta$ 1,945 and $\pi^0$ 23 are separate from the inclusive stack.
+\end{frame}
+
+\begin{frame}{Updated high-score PHSP acceptance}
+\centering\includegraphics[width=.91\textwidth,height=.68\textheight,keepaspectratio]{figures/sqrtb_phsp_acceptance.png}
+\scriptsize Score .991889 + Armenteros selects 10,960 of 100,007 generated direct PHSP decays (10.96\%), versus 16.05\% at .985562 and 26.32\% at .953827. Central 68\% residual half-width is 0.0128; the angular fit requires the binned acceptance and response.
+\end{frame}
+
 \begin{frame}{Conclusion and PI decision}
 \begin{itemize}
-\item The current Zbb-trained BDT can be improved \emph{at the score-selection stage}: with Zbb+Zcc+Zss in peak $B$, a threshold near 0.9856 improves held-out central FoM, while costing signal acceptance.
-\item An explicit $\eta$ veto reduces the optimized FoM in this scenario. Armenteros removes most $K_S^0$ fakes, but genuine $\Lambda$ plus photon dominates Zss survivors. A $\pi^0$ veto remains an exploratory alternative.
+\item The current Zbb-trained BDT can be improved \emph{at the score-selection stage}: the PI-requested peak $S/\sqrt{B_{bb}+B_{cc}+B_{ss}}$ favours score $\geq0.991889$ after Armenteros. Held-out central FoM rises 166.7$\to$234.0; PHSP acceptance falls to 10.96\%.
+\item Explicit $\eta$ and $\pi^0$ veto alternatives do not surpass Armenteros alone on the current held-out $S/\sqrt B$ comparison. Armenteros removes most $K_S^0$ fakes, but genuine $\Lambda$ plus photon dominates Zss survivors.
 \item The proposed stacked mass/angle distribution is a fit-template starting point. The high-score background tail, branching scenario, possible forced-mode overlap and angular response need further review.
 \item Next: compare this score-only result with a weighted Zbb/Zcc/Zss BDT and a named $\Lambda$-displacement feature ablation, using fresh held-out tails and matched signal efficiency. PI to decide the reference selection.
 \end{itemize}

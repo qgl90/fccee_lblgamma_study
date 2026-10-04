@@ -5,6 +5,8 @@ scans the unchanged 1,091-chunk Zbb-trained BDT against physically weighted
 Zbb+Zcc+Zss in the peak, with Armenteros and photon-veto alternatives. Its
 validation-derived score remains a proposal and has a separate PHSP angular
 acceptance and stacked mass/angle fit-view check.
+The updated PI objective S/√(Bbb+Bcc+Bss) yields the tighter Armenteros-only
+study point 0.991889, distinct from the earlier S/√(S+B) point 0.985562.
 
 For the frozen **v3** Physics versus available Zbb candidate reference and
 normalized plots, see [`v3_reference_plots.md`](v3_reference_plots.md).
