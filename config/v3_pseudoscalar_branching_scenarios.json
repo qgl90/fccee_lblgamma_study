@@ -1,0 +1,36 @@
+{
+  "N_Z": 6000000000000.0,
+  "BR_Zbb": 0.15,
+  "f_Lambdab_per_b": 0.10,
+  "BR_Lambda_to_p_pi": 0.639,
+  "signal_mass_window_gev": [5.4, 5.9],
+  "modes": {
+    "eta_phsp": {
+      "meson_pdg": 221,
+      "BR_Lambdab_to_Lambda_meson": 9.3e-6,
+      "BR_Lambdab_to_Lambda_meson_range": [4.0e-6, 16.6e-6],
+      "BR_meson_to_gamma_gamma": 0.3936,
+      "parent_br_kind": "LHCb 2015 evidence central value; PHSP generation shape diagnostic only; asymmetric uncertainty +7.3/-5.3e-6",
+      "parent_br_source": "https://arxiv.org/abs/1505.03295",
+      "daughter_br_source": "https://pdg.lbl.gov/2025/listings/rpp2025-list-eta.pdf"
+    },
+    "eta_physics": {
+      "meson_pdg": 221,
+      "BR_Lambdab_to_Lambda_meson": 9.3e-6,
+      "BR_Lambdab_to_Lambda_meson_range": [4.0e-6, 16.6e-6],
+      "BR_meson_to_gamma_gamma": 0.3936,
+      "parent_br_kind": "LHCb 2015 evidence central value; asymmetric uncertainty +7.3/-5.3e-6",
+      "parent_br_source": "https://arxiv.org/abs/1505.03295",
+      "daughter_br_source": "https://pdg.lbl.gov/2025/listings/rpp2025-list-eta.pdf"
+    },
+    "pi0_physics": {
+      "meson_pdg": 111,
+      "BR_Lambdab_to_Lambda_meson": 1.58e-8,
+      "BR_Lambdab_to_Lambda_meson_range": [1.2e-8, 3.22e-8],
+      "BR_meson_to_gamma_gamma": 0.98823,
+      "parent_br_kind": "Mohanta-Giri-Khanna 2000 generalized-factorization benchmark, effective N_c=3; not a measurement; variants 1.2e-8 and 3.22e-8",
+      "parent_br_source": "https://arxiv.org/pdf/hep-ph/0006109",
+      "daughter_br_source": "https://pdg.lbl.gov/2025/listings/rpp2025-list-pi-zero.pdf"
+    }
+  }
+}

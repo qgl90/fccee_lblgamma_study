@@ -53,3 +53,39 @@ multithreaded snapshot. The final JSON also gives reconstructed-minus-truth
 resolution, tails, and a truth-row/reconstructed-column response matrix.
 Changing the BDT score, model, Stage 1 config, detector card, or offline
 scenario requires a new named run and new response for the fit.
+
+## Refreshed 1,091-chunk model and optional Armenteros box
+
+The [separate PI review](../docs/STAGE2_V3_PHSP_ANGLE_BDT1091_REVIEW_2026-10-04.md)
+and its results-list figures preserve this later score scenario. Use the
+same Stage 1 and generator paths above, but set:
+
+```bash
+MODEL="$RUN/stage2_v3_incremental/models/20261004_1091chunks"
+PROJECTION="$RUN/stage2_v3_incremental/projections/20261004_1091chunks_peak_5p4_5p9/projection.json"
+OUT="$RUN/stage2_v3_phsp_100k_bdt1091peak"
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/score_stage1_v3_dataset.py \
+  --input "$STAGE1" --model-dir "$MODEL" --projection "$PROJECTION" \
+  --output-dir "$OUT/stage2" --sample signal_phsp_v3 --source-id -2
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/study_v3_phsp_angle_acceptance.py \
+  --generator "$GEN" --generated-events 100000 --stage1 "$STAGE1" \
+  --stage2-manifest "$OUT/stage2/manifest.json" --output-dir "$OUT/angle"
+
+env -u PYTHONPATH -u PYTHONHOME "$PY" \
+  studies/reconstruction/study_v3_phsp_armenteros_acceptance.py \
+  --baseline-angle-dir "$OUT/angle" \
+  --bdt-candidates "$OUT/stage2/bdt_selected/signal_phsp_v3_-2.parquet" \
+  --box 0.67 0.78 0.075 0.120 \
+  --output-dir "$OUT/angle_armenteros_broad"
+```
+
+The recorded calculation used `/tmp/v3_phsp_100k_stage2_bdt1091peak/`,
+`/tmp/v3_phsp_100k_angle_bdt1091peak/`, and
+`/tmp/v3_phsp_100k_angle_bdt1091peak_armenteros/` as distinct trial
+locations. The fit JSONs, CSVs and plots are copied to the named
+`docs/data/` and `docs/figures/` directories. The box remains a proposal;
+keep both fit responses rather than overwriting either one.

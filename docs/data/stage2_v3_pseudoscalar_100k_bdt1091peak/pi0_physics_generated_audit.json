@@ -1,0 +1,17 @@
+{
+  "input": "outputs/delphes/Lb2LambdaPi0Physics_nev100000_IDEA_edm4hep.root",
+  "mode": "pi0",
+  "input_events": 100000,
+  "processed_events": 100000,
+  "generated_direct_decays": 100005,
+  "generated_lambda_b": 49965,
+  "generated_anti_lambda_b": 50040,
+  "events_with_complete_chain": 100000,
+  "events_with_multiple_complete_chains": 4,
+  "lambda_b_parents": 101959,
+  "generated_cos_theta_p_mean": -0.19259642340783517,
+  "generated_cos_theta_p_mean_se": 0.0017195090325497317,
+  "expected_parent_alpha": -0.89,
+  "angle_definition": "(anti)proton versus negative Lambda_b momentum in Lambda rest frame",
+  "definition": "Direct Lambda_b/anti-Lambda_b -> Lambda0(p pi) + pi0(gamma gamma); both charges; MC truth only"
+}

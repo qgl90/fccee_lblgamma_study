@@ -2,7 +2,7 @@
 
 For the frozen **v3** Physics versus available Zbb candidate reference and
 normalized plots, see [`v3_reference_plots.md`](v3_reference_plots.md).
-The latest **1,028-chunk v3 XGBoost scan** and its PI decision evidence are
+The earlier **1,028-chunk v3 XGBoost scan** and its PI decision evidence are
 in [the Stage 2 review](../docs/STAGE2_V3_BDT_REVIEW_2026-10-03.md); the
 frozen catalog, model, summaries, scan rows and plots are copied into
 `docs/data/stage2_v3_bdt_1028/` and `docs/figures/stage2_v3_bdt_1028/`.
@@ -17,7 +17,10 @@ review](../docs/STAGE2_V3_PHSP_ARMENTEROS_ANGLE_REVIEW_2026-10-04.md)
 and [reproduction guide](v3_phsp_armenteros_acceptance.md).
 The refreshed [1,091-chunk signal-peak scan](../docs/STAGE2_V3_BDT_PEAK_REVIEW_2026-10-04.md)
 uses the same offline scenario with a newly trained model. Its proposed score
-is a separate snapshot; the PHSP response above belongs to the older score.
+is a separate snapshot. Its matching [100k PHSP angular response](../docs/STAGE2_V3_PHSP_ANGLE_BDT1091_REVIEW_2026-10-04.md)
+and [100k Λη/Λπ⁰ physics-background study](../docs/STAGE2_V3_PSEUDOSCALAR_BACKGROUNDS_2026-10-04.md)
+have separate figure lists and [reproduction steps](v3_pseudoscalar_backgrounds_100k.md).
+The earlier PHSP response belongs to the older 1,028-chunk score.
 The historical v2 workflow starts below the v3 recipe.
 
 ## Current v3 recipe: Physics + inclusive Zbb → Stage 2 → scored Stage 2
