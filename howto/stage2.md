@@ -12,6 +12,9 @@ The separate fixed-score K⁰S ancestry and Armenteros study is in
 The 100k v3 PHSP angular acceptance through this frozen score, including the
 fit response and figures, is in [its PI review](../docs/STAGE2_V3_PHSP_ANGLE_REVIEW_2026-10-04.md)
 and [reproduction guide](v3_phsp_angle_acceptance.md).
+The proposed post-BDT Armenteros veto has a separate [PHSP angular-response
+review](../docs/STAGE2_V3_PHSP_ARMENTEROS_ANGLE_REVIEW_2026-10-04.md)
+and [reproduction guide](v3_phsp_armenteros_acceptance.md).
 The refreshed [1,091-chunk signal-peak scan](../docs/STAGE2_V3_BDT_PEAK_REVIEW_2026-10-04.md)
 uses the same offline scenario with a newly trained model. Its proposed score
 is a separate snapshot; the PHSP response above belongs to the older score.
