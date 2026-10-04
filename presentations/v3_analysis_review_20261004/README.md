@@ -1,0 +1,23 @@
+# v3 analysis review, 4 October 2026
+
+Build with `bash build.sh` in this directory. The Beamer PDF is the PI review of the frozen 1,091-Zbb/1,200-Zcc/1,200-Zss snapshot and a provisional validation-derived BDT score. The current source study, exact commands and numerical JSON/CSV are [the PI review](../../docs/STAGE2_V3_THREE_FLAVOUR_SCORE_REOPTIMIZATION_2026-10-04.md) and [how-to](../../howto/v3_three_flavour_score_reoptimization.md). Earlier studies are indexed in [STUDY_INDEX](../../docs/agents/STUDY_INDEX.md).
+
+Current score manifest: `docs/data/stage2_v3_three_flavour_score_1091peak/three_flavour_score_scan.json`, SHA-256 `1eb06b848c04c5407c8aeebe19057cbcfae0de723a972b31a215b26d2446b908`. This records the config, 1,091 Zbb catalog/model/projection hashes, 1,200 Zcc/Zss catalogs, processed denominators, exact validation/test partitions and branching scenario. The new PHSP response and stack JSON record this manifest hash. Previous figures retain their own source review and snapshot labels: BDT and feature plots use the 1,091-Zbb model; Armenteros and forced-mode plots use its old 0.953827 score. The 3D topology figure is a schematic. Backup Delphes track numbers are taken from `studies/resolutions/FINDINGS.md` (500k Gamma response audit); numerical resolution plots from that older audit are unavailable in this checkout, so no widths are quoted.
+
+| Deck figure | Frozen source | SHA-256 |
+|---|---|---|
+| `candidate_3d_view_a.png` | `docs/figures/v3_candidate_event_display/candidate_3d_view_a.png` | `eb2edecb1216b72f8d40032570d83d3f14a9c80e3d75da71c2b447f9ba07a72c` |
+| `eta_physics_mass_cutflow.png` | `docs/figures/stage2_v3_pseudoscalar_100k_bdt1091peak/eta_physics_mass_cutflow.png` | `7b6e7d45773351d7dd2f3dcb09ea9b8c0fca1990f2d3aabc303f94aabfd2072f` |
+| `feature_importance.png` | `docs/figures/stage2_v3_bdt_1091_peak/feature_importance.png` | `960fbae33c913d09b88b5adea36fb652c4343f481f40bd74dacab667f91ccd4d` |
+| `phsp_reoptimized_acceptance.png` | `docs/figures/stage2_v3_three_flavour_score_1091peak/phsp_reoptimized_acceptance.png` | `86df87a9939577148d17fa5ec5e3c586be22edfee9852e434c33fff0552c3e95` |
+| `phsp_reoptimized_response.png` | `docs/figures/stage2_v3_three_flavour_score_1091peak/phsp_reoptimized_response.png` | `326e63b6409445f4904f164ecf0520572120d0da266b74fd3f2785289a98723d` |
+| `pi0_physics_mass_cutflow.png` | `docs/figures/stage2_v3_pseudoscalar_100k_bdt1091peak/pi0_physics_mass_cutflow.png` | `14a783e7a1333108efd73f39299ad346018bd370591bd01572214a9b1207ee6b` |
+| `pre_bdt_peak_activity.png` | `docs/figures/stage2_v3_flavour_features_1091peak/pre_bdt_peak_activity.png` | `186f8f22270448a3839855b9b02409ac7340dd881a60e9f96e9b81755343eb80` |
+| `pre_bdt_peak_kinematics.png` | `docs/figures/stage2_v3_flavour_features_1091peak/pre_bdt_peak_kinematics.png` | `a3df135cec0b7b8a662eeb945ab1c502cfef0a4571bd801afa3bb4ef30b5687f` |
+| `pre_bdt_peak_topology.png` | `docs/figures/stage2_v3_flavour_features_1091peak/pre_bdt_peak_topology.png` | `03a4f389a474654fe4343d5097b8bacf85ae0367015ecddae9a482b615101c8d` |
+| `reoptimized_arm_only_stack.png` | `docs/figures/stage2_v3_three_flavour_score_1091peak/reoptimized_arm_only_stack.png` | `b47cca452033002fe3092bd39e13753c09d591b321384518f5784da1582a5b52` |
+| `test_roc.png` | `docs/figures/stage2_v3_bdt_1091_peak/test_roc.png` | `aa53253267e0616f95c526fda516bedf5fecf082eacbdfdb4ad2bf17853b1937` |
+| `three_flavour_fom_score_scan.png` | `docs/figures/stage2_v3_three_flavour_score_1091peak/three_flavour_fom_score_scan.png` | `ebf620b01c5213dadb900b3d5e147a18d68f245058c6b59796b39953474f3d2d` |
+| `three_flavour_peak_yields_score_scan.png` | `docs/figures/stage2_v3_three_flavour_score_1091peak/three_flavour_peak_yields_score_scan.png` | `6749d0ef81f74a2a293db728e3cb1bd57e045cf772787dfea51c2a43afc3dd21` |
+| `zss_peak_pair_origin.png` | `docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_pair_origin.png` | `c04d6967f9cabe3f8a61b31afab12b815913e3723345bdbeb37e03871a09e22b` |
+| `zss_peak_photon_source.png` | `docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_photon_source.png` | `a95c80526a9b8c7a541f4da6c35f84faf4002a281d12272583ee27130cef03ba` |

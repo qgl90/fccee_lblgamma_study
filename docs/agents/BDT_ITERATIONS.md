@@ -90,3 +90,15 @@ specific additional feature candidate. The next named ablation is Zbb-only
 20 features versus physical-flavour-mixture 20 features versus mixture plus
 Λ d0, using frozen per-flavour held-out chunks and the same signal sample.
 Do not infer a trained-model gain from the marginal feature plots alone.
+
+The [three-flavour peak-score scan](../STAGE2_V3_THREE_FLAVOUR_SCORE_REOPTIMIZATION_2026-10-04.md)
+now fixes a **provisional** Armenteros-only validation point at 0.985562 on
+this unchanged Zbb-trained model. Its independent test central FoM increases
+from 157.5 to 174.5 relative to the old 0.953827 score when inclusive
+Zbb+Zcc+Zss are weighted into the 5.4–5.9 GeV peak. Validation has only
+1/5/21 Zbb/Zcc/Zss rows at the optimum, so the tail is statistically fragile.
+The explicit η veto lowers test FoM; a π⁰-only veto is a separate exploratory
+control. The PHSP generated-decay acceptance is 16.05% after the provisional
+score and Armenteros versus 26.32% at the old score. Preserve these as named
+scenarios and compare a newly trained flavour-mixture model at matched signal
+efficiency with a fresh held-out tail and angular response before adoption.
