@@ -25,8 +25,11 @@ env -u PYTHONPATH -u PYTHONHOME MPLCONFIGDIR=/tmp/rquaglia_mplconfig \
 
 The script checks the complete archived summary, all 1,200 BDT tables,
 candidate row count, unique source/event/slot keys, score and model identity.
-It writes `zss_ancestry.json` and two linear-scale raw-count PNGs. Its
+It writes `zss_ancestry.json` and three linear-scale raw-count PNGs. Its
 truth classes follow the existing
 `study_v3_post_bdt_armenteros.py` ancestry definition. The output figures
 and JSON are frozen under `docs/figures/` and `docs/data/` with the same
-`stage2_v3_zss_ancestry_1200_bdt1091peak` label. No selection uses truth.
+`stage2_v3_zss_ancestry_1200_bdt1091peak` label. The JSON includes the
+matched photon's recorded parent through fourth ancestor, immediate-parent
+count, and whether the s-parent branch reaches a Z within that depth. These
+are first-parent chains, not a full generator graph. No selection uses truth.

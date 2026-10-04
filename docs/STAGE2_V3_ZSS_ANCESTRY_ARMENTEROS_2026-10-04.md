@@ -51,12 +51,43 @@ pair with a photon in the other/unmatched category. The MC parent of the
 selected photon is recorded as |PDG|=3 (s quark) in **352/514** final rows;
 45 photons have no MC match. For the true-Λ pairs, the Λ parent ancestry is
 often recorded as |PDG|=3 (**285/483**), with substantial hyperon feed-down.
-These are generator-record labels; a parent s-quark link alone does not
-establish a specific photon-production mechanism. This audit supports a
+These are generator-record labels. The recorded parent→grandparent→third→
+fourth-ancestor chain provides a more specific check below. This audit supports a
 dominant **real Λ plus non-signal photon combination**, not a dominant
 K⁰S mass-hypothesis mistake. The photon and Λ can have distinct origins;
 the [machine-readable cross-tab](data/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_ancestry.json)
 keeps them separate.
+
+### What the stored photon chain resolves
+
+The v3 table stores the unique MC match and the **first parent at each of
+four ancestor generations**, including both PDG ID and event-local MC index.
+The final 514 peak candidates break down as follows:
+
+| Selected photon record after all cuts | Candidate rows |
+|---|---:|
+| Immediate parent abs(PDG)=3 (s quark) | 352 |
+| Immediate π⁰ parent | 41 |
+| Immediate η parent | 17 |
+| Other matched parent | 59 |
+| No unique stable MC association | 45 |
+
+Among the **352 s-parent photons**, **347** have a Z (|PDG|=23) somewhere
+within the stored grandparent through fourth-ancestor fields. Their common
+recorded chains include γ←s←s←Z and γ←s←Z, sometimes with additional s or
+Z copies. The remaining five have γ←s←s←s←s at the four-generation limit.
+All **469 matched** final photons have one recorded immediate parent; the
+other 45 are unmatched. The 59 other matched parents are mainly electrons
+(26), photons (15) and ω mesons (9), with smaller categories retained in the
+JSON. This is strong evidence that the dominant matched
+photon component is associated with the strange parton line in the
+generator record, consistent with quark-line radiation. That last physical
+description is an inference from the stored chain. The table lacks
+generator status, vertices and the complete graph; it cannot by itself
+distinguish a particular shower step, photon-production setting, or all
+possible ancestor branches of earlier particles. Inspect the source EDM4hep
+`Particle` graph for representative event keys before naming the mechanism
+more narrowly. The 45 unmatched photons have no usable chain in this table.
 
 Under the [named scaling scenario](../config/v3_post_bdt_veto_sequence.json),
 each nonmatched Zss candidate carries weight
@@ -91,5 +122,6 @@ signal and independent light-flavour events. No new cut is adopted here.
 
 - [Raw peak track-pair ancestry through the four cuts](figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_pair_origin.png)
 - [Selected-photon ancestry through the four cuts](figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_photon_origin.png)
+- [Immediate photon-parent source, separating the s-quark branch from meson and unmatched photons](figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_photon_source.png)
 - [Exact per-stage counts, photon cross-tabs, top parent PDGs, input and config hashes](data/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_ancestry.json)
 - [Reproduction guide](../howto/v3_zss_ancestry_armenteros.md)

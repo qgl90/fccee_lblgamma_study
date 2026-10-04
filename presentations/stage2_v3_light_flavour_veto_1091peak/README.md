@@ -2,7 +2,7 @@
 
 Build with `bash presentations/stage2_v3_light_flavour_veto_1091peak/build.sh`
 from the repository root. The output is
-`stage2_v3_light_flavour_veto_1091peak.pdf` (12 pages). The deck presents
+`stage2_v3_light_flavour_veto_1091peak.pdf` (13 pages). The deck presents
 expected candidate rows on a **linear scale**. Its source review is
 [`docs/STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md`](../../docs/STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md);
 reproduce all plots via [`howto/v3_post_bdt_veto_sequence.md`](../../howto/v3_post_bdt_veto_sequence.md).
@@ -25,10 +25,11 @@ the six-component summary SHA-256 is
 | `sequence_mass_pi0_linear.png` | [`docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/`](../../docs/figures/stage2_v3_post_bdt_veto_sequence_1091peak_four/sequence_mass_pi0_linear.png) | `0f216a0370ee8e337099944ecb3ad374b8025e03d91d2d01b817704ab0fc94ed` |
 | `zss_peak_pair_origin.png` | [Zss pair-origin result](../../docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_pair_origin.png) | `c04d6967f9cabe3f8a61b31afab12b815913e3723345bdbeb37e03871a09e22b` |
 | `zss_peak_photon_origin.png` | [Zss photon-origin result](../../docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_photon_origin.png) | `e77fb1e2bbca7d2b27e134df7124b50df5d30b36153d62501694add54a3b773e` |
+| `zss_peak_photon_source.png` | [Zss photon-parent result](../../docs/figures/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_peak_photon_source.png) | `a95c80526a9b8c7a541f4da6c35f84faf4002a281d12272583ee27130cef03ba` |
 
 The all-component curves include Zcc and Zss. The smaller-component slides
 use the four-component plot snapshot to make the forced modes and signal
 visible under the same physical weights. Forced b-mode projections are never
 summed with inclusive Zbb.
 The Zss ancestry slides use the [separate frozen truth audit](../../docs/data/stage2_v3_zss_ancestry_1200_bdt1091peak/zss_ancestry.json),
-SHA-256 `735e87ac5474ad0c8e3fda181bbba0ec7e83b45e174945a79833bb5c03e5947f`.
+SHA-256 `5f3df8bc0a2ce7b1ca3a03d5729a9955e51e1743ca0f61a95e099c7f09f6973f`.

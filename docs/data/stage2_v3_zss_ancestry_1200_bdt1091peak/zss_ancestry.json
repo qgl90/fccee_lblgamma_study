@@ -31,6 +31,13 @@
         "direct Lambda_b photon": 0,
         "Other or unmatched photon": 879
       },
+      "photon_source": {
+        "s-quark parent": 680,
+        "pi0 parent": 195,
+        "eta parent": 147,
+        "other matched parent": 135,
+        "unmatched photon": 64
+      },
       "kshort_pair_by_photon_origin": {
         "pi0 photon": 31,
         "eta photon": 26,
@@ -83,6 +90,301 @@
         "20213": 1
       },
       "other_photon_no_mc_match": 64,
+      "photon_n_parents": {
+        "0": 64,
+        "1": 1157
+      },
+      "photon_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 173
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 138
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 117
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 109
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 101
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 94
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 88
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "candidate_rows": 64
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            11,
+            11,
+            0,
+            0
+          ],
+          "candidate_rows": 61
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            213,
+            3,
+            3
+          ],
+          "candidate_rows": 40
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 35
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            11,
+            11,
+            11
+          ],
+          "candidate_rows": 31
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            223,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 13
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 13
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            2,
+            2,
+            2
+          ],
+          "candidate_rows": 11
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            2,
+            2,
+            2
+          ],
+          "candidate_rows": 10
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            1
+          ],
+          "candidate_rows": 9
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            22,
+            11,
+            11
+          ],
+          "candidate_rows": 8
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            21
+          ],
+          "candidate_rows": 8
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            2,
+            2,
+            21
+          ],
+          "candidate_rows": 7
+        }
+      ],
+      "photon_parent_s_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 173
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 138
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 117
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 109
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 94
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 35
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 13
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            21,
+            3,
+            3
+          ],
+          "candidate_rows": 1
+        }
+      ],
+      "photon_parent_s_grandparent_abs_pdg_top12": {
+        "3": 418,
+        "23": 261,
+        "21": 1
+      },
+      "photon_parent_s_has_Z_within_stored_chain": 666,
+      "same_mc_s_parent_index_for_true_lambda_and_photon": 0,
       "pair_by_photon_origin": {
         "Kshort pi/pi assigned p/pi": {
           "pi0 photon": 31,
@@ -125,6 +427,13 @@
         "eta photon": 115,
         "direct Lambda_b photon": 0,
         "Other or unmatched photon": 525
+      },
+      "photon_source": {
+        "s-quark parent": 392,
+        "pi0 parent": 154,
+        "eta parent": 115,
+        "other matched parent": 88,
+        "unmatched photon": 45
       },
       "kshort_pair_by_photon_origin": {
         "pi0 photon": 5,
@@ -176,6 +485,301 @@
         "20213": 1
       },
       "other_photon_no_mc_match": 45,
+      "photon_n_parents": {
+        "0": 45,
+        "1": 749
+      },
+      "photon_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 112
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 81
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 80
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 67
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 64
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 59
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 56
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "candidate_rows": 45
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            11,
+            11,
+            0,
+            0
+          ],
+          "candidate_rows": 44
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            213,
+            3,
+            3
+          ],
+          "candidate_rows": 34
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 14
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            11,
+            11,
+            11
+          ],
+          "candidate_rows": 13
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            223,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 11
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            1
+          ],
+          "candidate_rows": 8
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            2,
+            2,
+            2
+          ],
+          "candidate_rows": 8
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            2,
+            2,
+            2
+          ],
+          "candidate_rows": 7
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            213,
+            2,
+            2
+          ],
+          "candidate_rows": 6
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            22,
+            11,
+            11
+          ],
+          "candidate_rows": 6
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            1,
+            1,
+            21
+          ],
+          "candidate_rows": 6
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            21
+          ],
+          "candidate_rows": 6
+        }
+      ],
+      "photon_parent_s_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 112
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 81
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 64
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 59
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 56
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 14
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 5
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            21,
+            3,
+            3
+          ],
+          "candidate_rows": 1
+        }
+      ],
+      "photon_parent_s_grandparent_abs_pdg_top12": {
+        "3": 257,
+        "23": 134,
+        "21": 1
+      },
+      "photon_parent_s_has_Z_within_stored_chain": 386,
+      "same_mc_s_parent_index_for_true_lambda_and_photon": 0,
       "pair_by_photon_origin": {
         "Kshort pi/pi assigned p/pi": {
           "pi0 photon": 5,
@@ -218,6 +822,13 @@
         "eta photon": 112,
         "direct Lambda_b photon": 0,
         "Other or unmatched photon": 524
+      },
+      "photon_source": {
+        "s-quark parent": 391,
+        "pi0 parent": 63,
+        "eta parent": 112,
+        "other matched parent": 88,
+        "unmatched photon": 45
       },
       "kshort_pair_by_photon_origin": {
         "pi0 photon": 1,
@@ -269,6 +880,301 @@
         "20213": 1
       },
       "other_photon_no_mc_match": 45,
+      "photon_n_parents": {
+        "0": 45,
+        "1": 654
+      },
+      "photon_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 112
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 81
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 77
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 64
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 58
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 56
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "candidate_rows": 45
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            11,
+            11,
+            0,
+            0
+          ],
+          "candidate_rows": 44
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 25
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 14
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            213,
+            3,
+            3
+          ],
+          "candidate_rows": 13
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            11,
+            11,
+            11
+          ],
+          "candidate_rows": 13
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            223,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 11
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            2,
+            2,
+            2
+          ],
+          "candidate_rows": 7
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            22,
+            11,
+            11
+          ],
+          "candidate_rows": 6
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            1,
+            1,
+            21
+          ],
+          "candidate_rows": 6
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 5
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            1
+          ],
+          "candidate_rows": 5
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            21
+          ],
+          "candidate_rows": 5
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            1,
+            1,
+            1
+          ],
+          "candidate_rows": 4
+        }
+      ],
+      "photon_parent_s_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 112
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 81
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 64
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 58
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 56
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 14
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 5
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            21,
+            3,
+            3
+          ],
+          "candidate_rows": 1
+        }
+      ],
+      "photon_parent_s_grandparent_abs_pdg_top12": {
+        "3": 256,
+        "23": 134,
+        "21": 1
+      },
+      "photon_parent_s_has_Z_within_stored_chain": 385,
+      "same_mc_s_parent_index_for_true_lambda_and_photon": 0,
       "pair_by_photon_origin": {
         "Kshort pi/pi assigned p/pi": {
           "pi0 photon": 1,
@@ -311,6 +1217,13 @@
         "eta photon": 17,
         "direct Lambda_b photon": 0,
         "Other or unmatched photon": 456
+      },
+      "photon_source": {
+        "s-quark parent": 352,
+        "pi0 parent": 41,
+        "eta parent": 17,
+        "other matched parent": 59,
+        "unmatched photon": 45
       },
       "kshort_pair_by_photon_origin": {
         "pi0 photon": 1,
@@ -362,6 +1275,290 @@
         "20213": 1
       },
       "other_photon_no_mc_match": 45,
+      "photon_n_parents": {
+        "0": 45,
+        "1": 469
+      },
+      "photon_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 101
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 72
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 60
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 53
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 49
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "candidate_rows": 45
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            11,
+            11,
+            0,
+            0
+          ],
+          "candidate_rows": 26
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 19
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 12
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            11,
+            11,
+            11
+          ],
+          "candidate_rows": 11
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            221,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 11
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            223,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 7
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            213,
+            3,
+            3
+          ],
+          "candidate_rows": 6
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 5
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            22,
+            22,
+            11,
+            11
+          ],
+          "candidate_rows": 4
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            1
+          ],
+          "candidate_rows": 3
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            1,
+            1,
+            21
+          ],
+          "candidate_rows": 3
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            111,
+            310,
+            311,
+            3
+          ],
+          "candidate_rows": 2
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            331,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 2
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            223,
+            2,
+            2,
+            2
+          ],
+          "candidate_rows": 2
+        }
+      ],
+      "photon_parent_s_abs_pdg_chain_top20": [
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            23
+          ],
+          "candidate_rows": 101
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            23,
+            11
+          ],
+          "candidate_rows": 72
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            11
+          ],
+          "candidate_rows": 60
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            11,
+            11
+          ],
+          "candidate_rows": 53
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            23
+          ],
+          "candidate_rows": 49
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            23,
+            23,
+            23
+          ],
+          "candidate_rows": 12
+        },
+        {
+          "abs_pdg_chain_photon_to_generation4": [
+            22,
+            3,
+            3,
+            3,
+            3
+          ],
+          "candidate_rows": 5
+        }
+      ],
+      "photon_parent_s_grandparent_abs_pdg_top12": {
+        "3": 227,
+        "23": 125
+      },
+      "photon_parent_s_has_Z_within_stored_chain": 347,
+      "same_mc_s_parent_index_for_true_lambda_and_photon": 0,
       "pair_by_photon_origin": {
         "Kshort pi/pi assigned p/pi": {
           "pi0 photon": 1,

@@ -28,13 +28,19 @@ COLUMNS = ("source_id", "event_entry", "candidate_slot", "truth_matched",
            "pass_eta", "proton_mc_pdg", "pion_mc_pdg", "photon_mc_pdg",
            "proton_mc_parent_pdg", "pion_mc_parent_pdg",
            "proton_mc_parent_index", "pion_mc_parent_index",
-           "proton_mc_grandparent_pdg", "photon_mc_index",
+           "proton_mc_grandparent_index", "proton_mc_grandparent_pdg",
+           "photon_mc_index", "photon_mc_n_parents",
            "photon_mc_parent_index", "photon_mc_parent_pdg",
-           "photon_mc_grandparent_pdg")
+           "photon_mc_grandparent_index", "photon_mc_grandparent_pdg",
+           "photon_mc_greatgrandparent_index", "photon_mc_greatgrandparent_pdg",
+           "photon_mc_greatgreatgrandparent_index",
+           "photon_mc_greatgreatgrandparent_pdg")
 PAIR_ORDER = ("Kshort pi/pi assigned p/pi", "True Lambda pair",
               "p/pi identities, other ancestry", "Other or unmatched pair")
 PHOTON_ORDER = ("pi0 photon", "eta photon", "direct Lambda_b photon",
                 "Other or unmatched photon")
+PHOTON_SOURCE_ORDER = ("s-quark parent", "pi0 parent", "eta parent",
+                       "other matched parent", "unmatched photon")
 
 
 def digest(path):
@@ -59,26 +65,40 @@ def top_abs_pdg(frame, column, limit=12):
             frame[column].abs().value_counts().head(limit).items()}
 
 
+def top_photon_chains(frame, limit=20):
+    cols = ("photon_mc_pdg", "photon_mc_parent_pdg",
+            "photon_mc_grandparent_pdg", "photon_mc_greatgrandparent_pdg",
+            "photon_mc_greatgreatgrandparent_pdg")
+    chains = frame.loc[:, cols].abs().astype("int64").value_counts().head(limit)
+    return [{"abs_pdg_chain_photon_to_generation4": [int(x) for x in keys],
+             "candidate_rows": int(n)} for keys, n in chains.items()]
+
+
 def figure(result, key, order, outpath):
     labels = ("BDT", "+ Arm.", "+ pi0", "+ eta")
     values = np.array([[result[stage][key][label] for label in order]
                        for stage in STAGES], dtype=int)
     fig, ax = plt.subplots(figsize=(9, 5.2))
     bottom = np.zeros(len(STAGES), dtype=int)
-    colors = ("#bb4e50", "#3175a8", "#c99b45", "#777777")
+    colors = ("#bb4e50", "#3175a8", "#c99b45", "#777777", "#48a986")
     display = {"Kshort pi/pi assigned p/pi": r"$K^0_S\to\pi\pi$ assigned $p\pi$",
                "True Lambda pair": r"True $\Lambda\to p\pi$ pair",
                "p/pi identities, other ancestry": r"$p/\pi$ identities, other ancestry",
                "Other or unmatched pair": "Other or unmatched pair",
                "pi0 photon": r"$\pi^0$ photon", "eta photon": r"$\eta$ photon",
                "direct Lambda_b photon": r"Direct $\Lambda_b$ photon",
-               "Other or unmatched photon": "Other or unmatched photon"}
+               "Other or unmatched photon": "Other or unmatched photon",
+               "s-quark parent": r"$s$-quark parent", "pi0 parent": r"$\pi^0$ parent",
+               "eta parent": r"$\eta$ parent",
+               "other matched parent": "Other matched parent",
+               "unmatched photon": "Unmatched photon"}
     for j, label in enumerate(order):
         ax.bar(labels, values[:, j], bottom=bottom, label=display[label],
                color=colors[j], width=.65)
         bottom += values[:, j]
     ax.set(ylabel="Raw nonmatched Zss candidate rows, 5.4–5.9 GeV",
            title=("Track-pair truth origin" if key == "pair_origin" else
+                  "Selected-photon generator parent" if key == "photon_source" else
                   "Selected-photon truth origin") + " after reconstructed cuts")
     ax.tick_params(axis="x", length=0)
     ax.set_axisbelow(True)
@@ -120,6 +140,13 @@ def main():
     if (frame.bdt_score < score).any():
         raise ValueError("BDT table has a score below the frozen cut")
     frame = ancestry(frame.loc[frame.truth_matched != 1].copy())
+    parent_abs = frame.photon_mc_parent_pdg.abs()
+    source = np.full(len(frame), "other matched parent", dtype=object)
+    source[frame.photon_mc_index.lt(0)] = "unmatched photon"
+    source[parent_abs.eq(3)] = "s-quark parent"
+    source[parent_abs.eq(111)] = "pi0 parent"
+    source[parent_abs.eq(221)] = "eta parent"
+    frame["photon_source"] = source
     mask_by_stage = stages(frame, cfg["armenteros_reject_box"])
     peak = frame.lb_mass.between(*cfg["mass_window_gev"])
     weight = cfg["N_Z"] * cfg["branching_fractions"]["Zss"] / summary["processed_input_events"]
@@ -139,6 +166,8 @@ def main():
             "expected_candidates": float(len(subset) * weight),
             "pair_origin": categories(subset, "pair_origin", PAIR_ORDER),
             "photon_origin": categories(subset, "photon_origin", PHOTON_ORDER),
+            "photon_source": categories(subset, "photon_source",
+                                         PHOTON_SOURCE_ORDER),
             "kshort_pair_by_photon_origin": categories(subset.loc[ks],
                                                          "photon_origin", PHOTON_ORDER),
             "same_parent_track_pair_abs_pdg_top12": {
@@ -151,6 +180,26 @@ def main():
                 subset.loc[other_gamma], "photon_mc_parent_pdg"),
             "other_photon_no_mc_match": int((subset.loc[other_gamma,
                                                         "photon_mc_index"] < 0).sum()),
+            "photon_n_parents": {
+                str(int(k)): int(v) for k, v in
+                subset.photon_mc_n_parents.value_counts().sort_index().items()},
+            "photon_abs_pdg_chain_top20": top_photon_chains(subset),
+            "photon_parent_s_abs_pdg_chain_top20": top_photon_chains(
+                subset.loc[subset.photon_mc_parent_pdg.abs().eq(3)]),
+            "photon_parent_s_grandparent_abs_pdg_top12": top_abs_pdg(
+                subset.loc[subset.photon_mc_parent_pdg.abs().eq(3)],
+                "photon_mc_grandparent_pdg"),
+            "photon_parent_s_has_Z_within_stored_chain": int((
+                subset.photon_mc_parent_pdg.abs().eq(3) &
+                (subset.photon_mc_grandparent_pdg.abs().eq(23) |
+                 subset.photon_mc_greatgrandparent_pdg.abs().eq(23) |
+                 subset.photon_mc_greatgreatgrandparent_pdg.abs().eq(23))).sum()),
+            "same_mc_s_parent_index_for_true_lambda_and_photon": int((
+                lam & subset.proton_mc_grandparent_pdg.abs().eq(3) &
+                subset.photon_mc_parent_pdg.abs().eq(3) &
+                subset.proton_mc_grandparent_index.ge(0) &
+                subset.proton_mc_grandparent_index.eq(
+                    subset.photon_mc_parent_index)).sum()),
             "pair_by_photon_origin": {
                 pair: categories(subset.loc[subset.pair_origin.eq(pair)],
                                  "photon_origin", PHOTON_ORDER)
@@ -173,6 +222,8 @@ def main():
            args.output_dir / "zss_peak_pair_origin.png")
     figure(results, "photon_origin", PHOTON_ORDER,
            args.output_dir / "zss_peak_photon_origin.png")
+    figure(results, "photon_source", PHOTON_SOURCE_ORDER,
+           args.output_dir / "zss_peak_photon_source.png")
     print(json.dumps({stage: {"candidate_rows": row["candidate_rows"],
                               "pair_origin": row["pair_origin"]}
                       for stage, row in results.items()}, indent=2))
