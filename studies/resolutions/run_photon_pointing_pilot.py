@@ -5,6 +5,7 @@ This is an object-response diagnostic with PV fixed at the origin. It does
 not process Stage 1, apply the BDT, or estimate analysis rejection.
 """
 import argparse
+import csv
 import hashlib
 import json
 from pathlib import Path
@@ -159,6 +160,43 @@ def main():
     fig.tight_layout()
     fig.savefig(args.output_dir / "pointing_pilot.png", dpi=180)
     plt.close(fig)
+
+    scan_rows = []
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.4), sharey=True)
+    for ax, label, key in zip(axes, ["Direct Λb photons", "Other matched photons"],
+                              ["direct_lb_photons", "other_matched_photons"]):
+        available_sigmas, q16, q50, q84 = [], [], [], []
+        for sigma, values in zip(cfg["pointing_sigma_mrad"], scenarios.values()):
+            group = values[key]
+            if not group["photons"]:
+                continue
+            quantiles = group["ip3d_quantiles_mm"]
+            scan_rows.append({"sigma_mrad_per_component": sigma, "category": key,
+                              "photons": group["photons"], **quantiles,
+                              "truth_ip3d_median_mm": group["truth_ip3d_median_mm"]})
+            available_sigmas.append(sigma)
+            q16.append(quantiles["q16"])
+            q50.append(quantiles["q50"])
+            q84.append(quantiles["q84"])
+        ax.fill_between(available_sigmas, q16, q84, alpha=.2,
+                        label="Central 68% of IP distribution")
+        ax.plot(available_sigmas, q50, marker="o", label="Median IP")
+        ax.set(xlabel="Pointing sigma per angular component [mrad]",
+               title=label, ylim=(0, None))
+        ax.set_xticks(cfg["pointing_sigma_mrad"])
+        ax.legend(fontsize=8, loc="lower left")
+    axes[0].set_ylabel("Photon line IP to origin [mm]")
+    if scan_rows:
+        axes[0].set_ylim(0, 1.1 * max(row["q84"] for row in scan_rows))
+    fig.suptitle(f"Paired resolution scan: {args.events} Stage 0 events")
+    fig.tight_layout()
+    fig.savefig(args.output_dir / "pointing_resolution_scan.png", dpi=180)
+    plt.close(fig)
+    with (args.output_dir / "pointing_resolution_scan.csv").open("w") as output:
+        writer = csv.DictWriter(output, fieldnames=["sigma_mrad_per_component", "category",
+            "photons", "q16", "q50", "q84", "q95", "truth_ip3d_median_mm"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(scan_rows)
     print(json.dumps(summary, indent=2))
 
 

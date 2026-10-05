@@ -111,6 +111,7 @@ The pilot above has not yet performed those post-BDT joins or rejection scans.
 
 ## Results and reproduction
 
+- [Six-point 0.5–1.5 mrad scan](data/v3_photon_pointing_scan_0p5_1p5_200events/pointing_resolution_scan.png), [IP distributions](data/v3_photon_pointing_scan_0p5_1p5_200events/pointing_pilot.png), [CSV](data/v3_photon_pointing_scan_0p5_1p5_200events/pointing_resolution_scan.csv) and [frozen configuration/provenance](data/v3_photon_pointing_scan_0p5_1p5_200events/pointing_pilot.json).
 - [Displacement comparison figure](data/v3_photon_pointing_200events/pointing_pilot.png)
 - [Numerical summary and provenance](data/v3_photon_pointing_200events/pointing_pilot.json)
 - [Per-photon vectors, predicted hits and impact parameters](data/v3_photon_pointing_200events/photon_pointing_pilot.parquet)
@@ -118,3 +119,28 @@ The pilot above has not yet performed those post-BDT joins or rejection scans.
 - [Reusable geometry and pointing implementation](../studies/resolutions/photon_pointing.py)
 
 ![Pointing resolution hypotheses on 200 Stage 0 events](data/v3_photon_pointing_200events/pointing_pilot.png)
+
+## Six-point differential resolution scan
+
+The named config `photon_pointing_scan_0p5_1p5_v3.json` uses six equally spaced
+values: **0.5, 0.7, 0.9, 1.1, 1.3 and 1.5 mrad per tangent-plane component**.
+The same 200 events, hit proxy, geometry, photons and seed are used at every
+point. This pairs the stochastic fluctuations across the hypotheses. The
+original broad-resolution pilot is retained separately.
+
+| Sigma [mrad/component] | Direct-photon median IP [mm] | Other matched-photon median IP [mm] |
+|---|---:|---:|
+| 0.5 | 18.136 | 19.831 |
+| 0.7 | 18.285 | 19.847 |
+| 0.9 | 18.159 | 19.966 |
+| 1.1 | 18.197 | 20.060 |
+| 1.3 | 18.306 | 20.218 |
+| 1.5 | 18.197 | 20.340 |
+
+The plot's shaded interval is the 16th–84th percentile of the photon IP
+distribution, **not an uncertainty on its median**. The variation over this
+range remains small compared with the displacement caused by the current hit
+proxy. These are the same pre-Stage-1 object diagnostics; the post-BDT
+signal/Zbb/Zcc/Zss comparison still needs the source joins described above.
+
+![Six-point resolution comparison](data/v3_photon_pointing_scan_0p5_1p5_200events/pointing_resolution_scan.png)

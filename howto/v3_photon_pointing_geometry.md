@@ -1,5 +1,8 @@
 # Offline photon-pointing geometry: 200-event audit
 
+Start from the [checkpoint and resume procedure](../docs/PHOTON_POINTING_CHECKPOINT_2026-10-05.md)
+for the complete geometry, tuple-recovery and post-BDT application contract.
+
 Run from the repository root using the existing Stage 0 Λη Physics chunk.
 This reads 200 events and does not invoke Stage 1 or change a selection.
 
@@ -61,3 +64,19 @@ under every resolution hypothesis. JSON accounts for the unmatched objects.
 The [pilot review and figure](../docs/STAGE2_V3_PHOTON_POINTING_PILOT_2026-10-05.md)
 show the substantial zero-smearing IP induced by the reconstructed-direction
 hit proxy. This is not a post-BDT rejection estimate.
+
+For the requested six-point scan over 0.5–1.5 mrad, run the same pilot with
+the named scan config and a distinct output directory:
+
+```bash
+MPLCONFIGDIR=/tmp/lblgamma_mpl_pointing XDG_CACHE_HOME=/tmp/lblgamma_cache_pointing \
+  myenv/bin/python studies/resolutions/run_photon_pointing_pilot.py \
+  --input /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root \
+  --config config/photon_pointing_scan_0p5_1p5_v3.json \
+  --events 200 --output-dir docs/data/v3_photon_pointing_scan_0p5_1p5_200events
+```
+
+This produces IP-distribution overlays, a median/central-68%-interval plot
+versus resolution, a CSV of quantiles and the per-photon Parquet. The six
+values are 0.5, 0.7, 0.9, 1.1, 1.3 and 1.5 mrad per local angular component.
+They share the same standard-normal draws, so each comparison is paired.

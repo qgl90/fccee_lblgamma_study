@@ -4,6 +4,10 @@ This index distinguishes the active v3 path from historical studies. Detailed
 commands remain in the linked stage guides; counts below are snapshot counts,
 not final physics yields.
 
+Current photon-pointing handoff: [2026-10-05 checkpoint](../PHOTON_POINTING_CHECKPOINT_2026-10-05.md)
+records the geometry derivation, six-point emulation, existing-tuple joins,
+post-BDT four-sample application and remaining work. Stage 1 must not be rerun.
+
 | Stage | Active scenario and output | Evidence and next action |
 |---|---|---|
 | 0: forced generation | Named PHSP and HELAMP decay files in `evtgen/`; EDM4hep inputs under `outputs/delphes/` or the recorded EOS paths | `howto/delphes_production.md`; validate a new decay chain before full production. |
