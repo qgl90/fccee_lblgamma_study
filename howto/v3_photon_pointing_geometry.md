@@ -29,3 +29,35 @@ The geometry is a surface model for that approximation. True photon vectors
 still need a validated join to existing Stage 0 records; Stage 1 will not be
 rerun. Do not use the absence of a truth association to silently drop a
 background candidate when estimating rejection.
+
+## Pointing resolution pilot
+
+The [four-parameter geometry config](../config/photon_pointing_idealized_v3.json)
+includes an effective 249.554 mm endcap opening derived from |eta|<=3.
+The [reusable module](../studies/resolutions/photon_pointing.py) projects
+origin-based reconstructed rays, applies tangent-plane angular smearing and
+computes 3D/transverse photon line impact parameters. It accepts arrays for
+subsequent use on joined post-selection rows, including a fitted PV.
+
+Run the analytic checks, then the 200-event object-response pilot:
+
+```bash
+myenv/bin/python studies/resolutions/test_photon_pointing.py
+MPLCONFIGDIR=/tmp/lblgamma_mpl_pointing XDG_CACHE_HOME=/tmp/lblgamma_cache_pointing \
+  myenv/bin/python studies/resolutions/run_photon_pointing_pilot.py \
+  --input /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root \
+  --config config/photon_pointing_idealized_v3.json \
+  --events 200 --output-dir docs/data/v3_photon_pointing_200events
+```
+
+The seed and sigma convention are in the config. This pilot uses all uniquely
+associated stable photons among reconstructed type-22 objects in the first
+200 signal events, before Stage 1 selection, with PV fixed to (0,0,0).
+Its photon categories are diagnostic truth labels. The saved Parquet retains
+one row per matched photon, true/reconstructed vectors, production vertex,
+predicted hit, aperture status, hypothetical momentum and both IP measures
+under every resolution hypothesis. JSON accounts for the unmatched objects.
+
+The [pilot review and figure](../docs/STAGE2_V3_PHOTON_POINTING_PILOT_2026-10-05.md)
+show the substantial zero-smearing IP induced by the reconstructed-direction
+hit proxy. This is not a post-BDT rejection estimate.

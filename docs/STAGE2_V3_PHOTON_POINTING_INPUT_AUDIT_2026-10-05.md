@@ -123,6 +123,7 @@ yet quantify Zss rejection or signal loss.
 
 ## Results and reproduction
 
+- [Implemented annular geometry and pointing-resolution pilot](STAGE2_V3_PHOTON_POINTING_PILOT_2026-10-05.md): includes the effective endcap inner radius and the zero-smearing position-response check.
 - [Calorimeter surface figure](figures/v3_photon_pointing_geometry_200events.png)
 - [Frozen geometry counts and input/card hashes](data/v3_photon_pointing_geometry_200events/geometry_audit.json)
 - [Exact 200-event command](../howto/v3_photon_pointing_geometry.md)

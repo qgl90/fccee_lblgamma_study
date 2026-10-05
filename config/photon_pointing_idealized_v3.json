@@ -1,0 +1,16 @@
+{
+  "scenario": "v3_offline_photon_pointing_idealized",
+  "geometry": {
+    "barrel_radius_mm": 2250.0,
+    "endcap_abs_z_mm": 2500.0,
+    "endcap_inner_radius_mm": 249.55392417205682,
+    "endcap_outer_radius_mm": 2250.0
+  },
+  "geometry_basis": "200-event hit audit plus eta_max=3: endcap inner radius = 2500/sinh(3). Effective fast-simulation surface, not a detailed ECAL layout.",
+  "pointing_sigma_mrad": [0.0, 0.1, 0.5, 1.0, 2.0, 5.0],
+  "sigma_definition": "Gaussian standard deviation per orthogonal tangent-plane angular component; small-angle radial RMS = sqrt(2)*sigma",
+  "seed": 20261005,
+  "hit_anchor": "intersection of origin-based reconstructed photon direction with the active surface",
+  "position_response": "Inherited from existing reconstructed direction; no additional position smearing",
+  "selection": "Diagnostic only; existing Stage 1 and BDT selections are not recomputed"
+}
