@@ -69,14 +69,18 @@ unset LB_RECO_CONFIG
 SAMPLE=Zss  # repeat with Zbb and Zcc
 fccanalysis run analysis/studies/analysis_preselection_v4.py \
  --input-glob "/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_${SAMPLE}_ecm91/events_*.root" \
- --chunks 1200 --comp-group group_u_LHCBT3.e_lhcb_lbd \
+ --chunks 1200 --comp-group group_u_FCC.local_gen \
  --queue workday --ncpus 4 \
  --output-eos "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/${SAMPLE}_pointing_stage1_v4" \
  --eos-type eoslhcb --check-only
 ```
 
-Inspect the sample, output destination and configs, then remove `--check-only`
-for submission. Native FCCAnalyses creates `chunk_N.root` within the explicit
+The requested value is the Condor accounting group (`--comp-group`);
+`--queue` remains the CERN job flavour (`workday`). The prepared campaign script
+checks all three samples by default and submits only when explicitly invoked as
+`scripts/submit_stage1_v4_zflavours.sh --submit`. Keep its default
+`--check-only` for review. Inspect the sample, output destination and configs
+before submission. Native FCCAnalyses creates `chunk_N.root` within the explicit
 v4 campaign directory; retain this naming for its job/catalog consistency.
 Catalog those outputs as in [stage1.md](stage1.md), with fresh v4 catalog names.
 No inclusive production has been submitted as part of this development check.
@@ -159,3 +163,41 @@ env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
 
 Stage 2 also retains the fitted Lambda momentum and SV coordinates for future
 photon–Lambda geometric studies. No new vertex fit is performed by this change.
+
+## Prepared campaigns and the existing 100k forced modes
+
+The v4 Z flavour campaign was checked against the live input directories:
+4,398 Zbb, 5,018 Zcc, and 5,015 Zss EDM4hep files, configured as 1,200 chunks
+per flavour with four CPUs per job. Check output and exact inputs in
+[`docs/data/stage1_v4_pointing_jobs_20261005/condor_check_only.log`](../docs/data/stage1_v4_pointing_jobs_20261005/condor_check_only.log).
+No jobs were submitted. To repeat the checks, or to submit after reviewing the
+three destinations, use:
+
+```bash
+scripts/submit_stage1_v4_zflavours.sh --check-only
+scripts/submit_stage1_v4_zflavours.sh --submit
+```
+
+The forced-sample runner defaults to inventory only. It found these five
+merged 100k files: Lambda gamma PHSP, Lambda gamma HELAMP, Lambda eta PHSP,
+Lambda eta HELAMP, and Lambda pi0 HELAMP. It did not find the Lambda pi0 PHSP
+merged file at either the repository output or the expected EOS directory.
+The full input/output inventory is in
+[`forced_100k_inventory.log`](../docs/data/stage1_v4_pointing_jobs_20261005/forced_100k_inventory.log).
+The configured pi0 PHSP mode uses seed base 72001 and ten 10k chunks. Generate
+and merge it using the [production guide](delphes_production.md) if it is
+needed; the v4 runner will then include it automatically.
+
+Review the command list first, then run the existing merged modes with:
+
+```bash
+scripts/run_stage1_v4_forced_100k.sh --check-only
+V4_DIRECT_CPUS=8 scripts/run_stage1_v4_forced_100k.sh --run
+```
+
+This writes fresh outputs below
+`/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v4_pointing_forced_100k_20261005/`.
+It processes up to four available samples concurrently, with eight ROOT workers each (32 CPU workers total by default), writing separate per-sample logs. Set `V4_DIRECT_JOBS` and `V4_DIRECT_CPUS` to change this bounded allocation. Each output is checked with `validate_stage1_v4_tuple.py` and gets a validation JSON before use.
+Re-run the inventory after generation/merge to include the missing PHSP pi0.
+Each output basename contains `_stage1_v4`; its matching validation JSON records candidate counts and valid hit/PV fractions. Review these before flattening. The pilot figure and counts are in
+the [2026-10-05 review deck](../presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf).

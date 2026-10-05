@@ -44,3 +44,12 @@ The current XGBoost scan and later Zcc/Zss mixture gates are in
 
 - [Reprocessing and offline hypotheses](../../howto/stage1_v4_photon_pointing.md).
 - [Paired validation review](../STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+
+## v4 photon pointing reprocessing preparation (2026-10-05)
+
+- v4 Stage 1 logic, point resolution emulation and signal pilot: [howto](../../howto/stage1_v4_photon_pointing.md), [review](../STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+- Zbb/Zcc/Zss v4 job set passes check-only with `group_u_FCC.local_gen` (no submission yet).
+- Five merged 100k forced inputs are ready; Lambda pi0 PHSP merged file remains missing. Inventory and rerun commands are in the v4 howto.
+- [PI slide deck](../../presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf).
+
+- [v4 job preparation and 100k mode inventory](../STAGE1_V4_POINTING_JOBS_2026-10-05.md).
