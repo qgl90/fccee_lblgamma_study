@@ -703,3 +703,35 @@ For the three-flavour feature distributions that precede a mixed-background
 BDT training decision, use
 [`v3_flavour_feature_comparison.md`](v3_flavour_feature_comparison.md)
 and its [PI review](../docs/STAGE2_V3_FLAVOUR_FEATURES_2026-10-04.md).
+
+## Photon pointing input audit
+
+The [2026-10-05 field audit](../docs/STAGE2_V3_PHOTON_POINTING_INPUT_AUDIT_2026-10-05.md)
+records which photon vectors survive each stage. Inspect schemas without
+loading the full EOS sample:
+
+```bash
+env -u PYTHONPATH -u PYTHONHOME myenv/bin/python - <<'PYCODE'
+import pyarrow.parquet as pq
+import uproot
+
+stage0 = '/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root'
+stage1 = '/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v3_my_run/signal_physics.root'
+selected = 'outputs/analysis/studies/stage2_v3_incremental_20261002/prepared/signal_-1_selected.parquet'
+for label, path, tokens in (
+    ('Stage 0', stage0, ('Particle/Particle.momentum', 'Particle/Particle.vertex', 'EFlowPhoton/EFlowPhoton.position')),
+    ('Stage 1', stage1, ('lb_photon_', 'reco_mc_')),
+):
+    tree = uproot.open(path)['events']
+    print(label, tree.num_entries)
+    print([name for name in tree.keys() if any(token in name for token in tokens)])
+table = pq.ParquetFile(selected)
+print('Offline candidate rows', table.metadata.num_rows)
+print([name for name in table.schema_arrow.names
+       if name.startswith(('gamma_', 'photon_'))])
+PYCODE
+```
+
+Stage 1 keeps reconstructed photon components; the offline prepared table
+keeps only their magnitude, transverse momentum, pseudorapidity and energy.
+The MC `px/py/pz` and full production vertex require a Stage 0 join.
