@@ -28,7 +28,7 @@ and writes a candidate-vector validation JSON beside each v4 ROOT output.
 
 ## PI presentation
 
-The [four-slide Beamer PDF](../presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf)
+The [five-slide Beamer PDF](../presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf)
 shows the v4 stored fields and offline smear calculation, paired 200-event
 signal comparison, prepared Condor jobs, and 100k mode inventory. Its source,
 build script, figure, and source hashes are in the presentation directory.

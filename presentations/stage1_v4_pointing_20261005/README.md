@@ -1,6 +1,6 @@
 # v4 pointing and Stage 1 reprocessing deck
 
-Build with `bash build.sh`. The PDF contains four slides on the saved v4 photon
+Build with `bash build.sh`. The PDF contains five slides on the saved v4 photon
 information, six offline angular smearing points, the paired 200-event signal
 check, Zbb/Zcc/Zss Condor preparation, and the available 100k forced modes.
 
@@ -15,12 +15,13 @@ sample inventory logs are frozen under
 SHA-256 source record:
 
 ```text
-35f3b15c6678911509da067c3ba88506fe6ea797ceda3bed3f10b53b529fcec4  presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.tex
+79c18d6527d7aceab4591d3342b21c146dd8d05625186b66870ff7859fed6ee1  presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.tex
+488b2fa05d1539d1f0198c5e68c6105a0ef11f68c1456420bc60a7a7e3853928  presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf
 ec4bbd0495a45685bac6973e1ef4c03941e08dd4b89f73b2176b8f8419b7e902  presentations/stage1_v4_pointing_20261005/build.sh
 68d2f961029432ca257cd800f34ceeaa246eebdab3f9258051917c1603a67599  presentations/stage1_v4_pointing_20261005/figures/stage1_v4_pointing_validation.png
 68d2f961029432ca257cd800f34ceeaa246eebdab3f9258051917c1603a67599  docs/figures/stage1_v4_pointing_validation.png
 39279d35b3638b04c971b9837cf536712d4c0e9e4c605dc9d4ca89c18afacf84  docs/data/stage1_v4_pointing_validation/validation.json
-150e2744f390a70b0b25d40cb1b68bc417c8af33eff93b09142093d461db4e65  docs/data/stage1_v4_pointing_jobs_20261005/condor_check_only.log
+6bbaa93d0ef58d39e616cb3964e0cfcd3b730800eb78e58929c848d4a0016807  docs/data/stage1_v4_pointing_jobs_20261005/condor_check_only.log
 495746bb0c57366c7326f7c530b512c5eb83b976d3999ab81d0046bca2121aa1  docs/data/stage1_v4_pointing_jobs_20261005/forced_100k_inventory.log
 d12de046f6ac1c32eff4fe2bd3ce7cd05606cb71c6b2106c06e3aa6ca5939e3a  analysis/studies/analysis_preselection_v4.py
 ab84f63cb65d96aa6aa03b831233f731a5c0f7fb71127ecd2983167ad8426635  analysis/studies/photon_pointing_v4.h
