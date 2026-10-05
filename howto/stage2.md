@@ -706,6 +706,10 @@ and its [PI review](../docs/STAGE2_V3_FLAVOUR_FEATURES_2026-10-04.md).
 
 ## Photon pointing input audit
 
+The completed [200-event calorimeter geometry audit](v3_photon_pointing_geometry.md)
+provides a 2,250 mm barrel radius and endcaps at ±2,500 mm for the proposed
+offline pointing approximation, without rerunning Stage 1.
+
 The [2026-10-05 field audit](../docs/STAGE2_V3_PHOTON_POINTING_INPUT_AUDIT_2026-10-05.md)
 records which photon vectors survive each stage. Inspect schemas without
 loading the full EOS sample:

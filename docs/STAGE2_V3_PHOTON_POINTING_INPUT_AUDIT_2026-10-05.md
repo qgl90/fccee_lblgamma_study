@@ -31,10 +31,11 @@ azimuth is absent.
 The Stage 0 EDM4hep `events` schema retains `Particle/Particle.momentum.x/y/z`
 and `Particle/Particle.vertex.x/y/z`, plus reconstructed-particle momentum
 and `EFlowPhoton/EFlowPhoton.position.x/y/z` and `directionError.x/y/z`.
-The values and meaning of the latter calorimeter fields have **not yet been
-validated** as independent photon pointing measurements. A read of even one
-EFlowPhoton entry from the EOS file stalled during this audit; schema presence
-alone is insufficient evidence of usable pointing resolution.
+In the subsequent 200-event geometry check below, all `EFlowPhoton` position
+and direction-error values were zero. Usable geometric information is instead
+stored in `CalorimeterHits.position`. The read stalls were resolved by using
+the synchronous `uproot.source.file.MemmapSource` already used by the
+repository's resolution tools.
 
 The existing `dca_Lam_gamma` and `Lxyz_implied` are geometric proxies that
 back-project the reconstructed photon momentum from the fitted PV. They are
@@ -71,12 +72,62 @@ change candidate mass, angular observables, isolation and potentially the
 BDT. Such a reference detector scenario would require regeneration or a
 validated reconstruction rerun.
 
-Next, validate the Stage 0 `EFlowPhoton` position and direction fields and the
-candidate-to-cluster relation on at most 1,000 events. Check whether the
-post-selected Zss photons are truth displaced before interpreting the reach
-of a pointing cut. A Λ–γ closest-approach/vertex fit must propagate the Λ
-trajectory and photon-line uncertainties, especially for nearly parallel
-lines. The PI should review the assumed detector resolution before any
-displacement cut is interpreted physically.
+The PI has explicitly requested **no Stage 1 rerun**. The next input step is
+to recover the MC photon vector for selected candidates from existing Stage 0
+files and the reconstructed vector/PV/SV from existing Stage 1 files. Native
+Condor chunk entries must be mapped through their original input-file lists;
+an event index from one chunk is not a global Stage 0 event index. Validate
+that mapping before making a background-rejection claim. A Λ–γ closest-approach
+fit must propagate the Λ trajectory and photon-line uncertainties, especially
+for nearly parallel lines.
+
+## Completed 200-event calorimeter geometry check
+
+The first 200 events of the existing Λη Physics generator chunk
+`outputs/delphes/chunks/Lb2LambdaEtaPhysics_nev100000_chunk0_IDEA_edm4hep.root`
+were inspected directly. The input SHA256 and IDEA card SHA256 are frozen in
+the [geometry JSON](data/v3_photon_pointing_geometry_200events/geometry_audit.json).
+This chunk is part of the existing 100k production; no new simulation or
+Stage 1 processing was performed. The generator input retains its generator
+scenario name rather than being relabelled as a v3 reconstructed tuple.
+
+The most populated 10 mm-rounded radius and absolute-z bins identify:
+
+| Geometric quantity | Observed surface |
+|---|---:|
+| Barrel radius | **2,250 mm** |
+| Endcap planes | **z = ±2,500 mm** |
+| Nominal barrel length between endcaps | **5,000 mm** |
+
+These independently observed surfaces match `set R 2.25` and `set HL 2.5`
+in `cards/card_IDEA.tcl`, which define the fast-simulation propagation
+cylinder in metres. They provide an effective surface for this approximation;
+the hit check does not measure shower depth or a detailed ECAL layout.
+
+Of 4,472 hit records, 3,188 lie within 1 mm of the barrel and 1,286 within
+1 mm of an endcap; two meet both conditions at the seam. **All 4,472** meet
+at least one surface condition. Small extensions at the seam are consistent
+with using this as an approximate surface rather than a detailed geometry.
+The sample contains 4,052 EFlow photons. Their cluster positions and direction
+errors are zero, and all calorimeter-hit energies are zero. Thus these records
+support a surface assumption, not a resolved shower or measured pointing model.
+
+For the offline approximation, intersect the origin-based reconstructed
+photon ray with this finite cylinder to obtain an approximate impact point.
+Use a separate synthetic incidence direction smeared around the matched true
+direction. A 1 mrad angular error corresponds to about 2.25 mm over a 2.25 m
+lever arm, **before** impact-position uncertainty. Existing tower granularity
+and position smearing must be included or explicitly idealized; the current
+card has `EtaPhiRes = 0.02` and `SmearTowerCenter = true`. This audit does not
+yet quantify Zss rejection or signal loss.
+
+## Results and reproduction
+
+- [Calorimeter surface figure](figures/v3_photon_pointing_geometry_200events.png)
+- [Frozen geometry counts and input/card hashes](data/v3_photon_pointing_geometry_200events/geometry_audit.json)
+- [Exact 200-event command](../howto/v3_photon_pointing_geometry.md)
+- [Audit script](../studies/resolutions/audit_calorimeter_geometry.py)
+
+![Calorimeter hit positions in 200 events](figures/v3_photon_pointing_geometry_200events.png)
 
 Reproduction commands and field lists: [howto/stage2.md](../howto/stage2.md#photon-pointing-input-audit).
