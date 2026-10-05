@@ -236,3 +236,6 @@ The candidate columns and downstream steps are described in
 [`studies/reconstruction/README.md`](../studies/reconstruction/README.md).
 Continue with the copyable offline-selection and BDT commands in
 [stage2.md](stage2.md).
+
+For the new v4 photon-pointing tuple extension and reprocessing commands, see
+[stage1_v4_photon_pointing.md](stage1_v4_photon_pointing.md).

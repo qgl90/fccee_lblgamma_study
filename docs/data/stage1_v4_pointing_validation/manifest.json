@@ -1,0 +1,20 @@
+{
+  "scenario": "stage1_v4_photon_pointing_tuple_extension",
+  "input": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+  "input_sha256_previously_audited": "f483c59cc2fc1274d439c76a2232f272d1c6d54737ddeece6889fb4edb8740dc",
+  "input_events_requested": 200,
+  "generator_scenario": "Lb2LambdaGammaPhysics; both charge conjugates",
+  "detector_response": "existing IDEA Stage0; no regeneration",
+  "geometry_basis": "docs/data/v3_photon_pointing_geometry_200events/geometry_audit.json",
+  "baseline_command": "scripts/run_reco_preselection.sh signal_physics /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root outputs/analysis/studies/pointing_trial_v4/signal_200_baseline_v3.root 200 config/lb_reco_preselection_15mev_45_65_3d.json 1",
+  "v4_command": "LB_RECO_ANALYSIS=analysis/studies/lb2lambda_gamma_reco_v4.py scripts/run_reco_preselection.sh signal_physics /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root outputs/analysis/studies/pointing_trial_v4/signal_200_validated_stage1_v4.root 200 config/lb_reco_preselection_15mev_45_65_3d.json 1",
+  "source_hashes": {
+    "analysis/studies/photon_pointing_v4.h": "ab84f63cb65d96aa6aa03b831233f731a5c0f7fb71127ecd2983167ad8426635",
+    "analysis/studies/lb2lambda_gamma_reco_v4.py": "9657795a0267166dd83cb3464dcffbf4be35591e944567c0660cf777a750c845",
+    "analysis/studies/photon_pointing_stage1.py": "2a2017b709c02b62021bd6345e568461004d36190e81c1b7c03b091f0a1bf8e6",
+    "studies/reconstruction/prepare_offline_bdt.py": "eb50e606319da93979a9958da0237f92ebcdcefcd484143b57e24d15e82a1395",
+    "studies/resolutions/smear_stage1_v4_pointing.py": "5dddd224ee76ff56cfdc25fdc1ac1a2f5c2721f6e36bc4169efcf009f1d6dfae"
+  },
+  "local_edits": "v4 implementation committed together with this manifest; unrelated pre-existing work excluded",
+  "fccanalyses_local_edit": "examples/FCCee/flavour/Bc2TauNu/analysis_B2TauNu_truth.py (unrelated example)"
+}

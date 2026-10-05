@@ -258,3 +258,12 @@ and matched-photon availability must be demonstrated before a four-sample
 rejection scan. Keep processing bounded by selected source chunks and project
 only necessary columns; use independent shard workers once the join is
 validated. **Do not launch a new Stage 1 production.**
+
+## Superseding handoff: v4 tuple extension (2026-10-05)
+
+The PI subsequently requested a v4 Stage 1 reprocessing with all offline
+pointing inputs retained. The earlier no-reprocessing constraint in this
+checkpoint describes the v3 investigation. The current route is documented
+in [the v4 howto](../howto/stage1_v4_photon_pointing.md): save true photon
+production vertex/momentum, both predicted hit anchors, measured energy and
+momentum, PV and geometry metadata; apply resolution hypotheses offline.

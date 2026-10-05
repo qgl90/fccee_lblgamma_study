@@ -62,7 +62,8 @@ LAMBDA_BRANCHES = {"lambda_energy", "lambda_proton_d0sig", "lambda_pion_d0sig",
                    "lambda_d0_sig", "lambda_flight_rxy", "lambda_flight_rxy_sig",
                    "lambda_vertex_chi2"}
 OPTIONAL_LAMBDA_BRANCHES = ("lambda_flight_xyz", "lambda_flight_xyz_sigma",
-                            "lambda_flight_xyz_sig")
+                            "lambda_flight_xyz_sig", "lambda_vertex_x", "lambda_vertex_y",
+                            "lambda_vertex_z", "lambda_vertex_valid")
 EXTRAS = {"proton_d0sig": "lambda_proton_d0sig",
           "pion_d0sig": "lambda_pion_d0sig", "lambda_d0_sig": "lambda_d0_sig",
           "lambda_flight_rxy": "lambda_flight_rxy",
@@ -89,6 +90,13 @@ PRESERVE_BRANCHES = (
     for center in ("iso", "lambda0_iso")
     for cone in ("R02", "R03", "R05", "R07", "R10", "R20", "R70")
     for metric in ("d0_min", "d0_max", "absd0_min", "absd0_max", "n_d0"))
+# Preserve v4 diagnostics through selection/scoring; never add to BDT features.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "analysis/studies"))
+from photon_pointing_stage1 import BRANCHES as POINTING_BRANCHES
+PRESERVE_BRANCHES += POINTING_BRANCHES + tuple(
+    "lb_photon_" + x for x in ("px", "py", "pz", "energy")) + tuple(
+    "lb_lambda_" + x for x in ("px", "py", "pz"))
+
 ANCESTRY_BRANCHES = (
     "reco_mc_index", "reco_mc_pdg", "reco_mc_n_parents",
     "reco_mc_parent_index", "reco_mc_parent_pdg",
@@ -277,6 +285,8 @@ def rows_for(block, source_id, sample, flags, selected):
     for name in PRESERVE_BRANCHES:
         if name in block.fields:
             dtype = "int32" if name.endswith(("_n", "_n_d0")) else "float32"
+            if name in POINTING_BRANCHES:
+                dtype = "float64"
             rows[name] = flat(block[name][selected]).astype(dtype)
     for name in OPTIONAL_LAMBDA_BRANCHES:
         if name in block.fields:

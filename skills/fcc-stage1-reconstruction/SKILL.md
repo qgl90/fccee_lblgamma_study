@@ -29,3 +29,13 @@ catalog contributes only its own processed-event denominator.
 
 Compare a changed Stage 1 scenario to the unchanged baseline on the same
 input events and present the difference to the PI before promoting it.
+
+## v4 photon-pointing extension
+
+For the PI-requested v4 reprocessing, use the opt-in v4 entry points and
+`howto/stage1_v4_photon_pointing.md`. This is a tuple-schema extension of the
+v3 selection. Keep v3 outputs and use distinct v4 campaigns. Attach true
+photon momentum/vertex and geometric projections after candidate building;
+keep stochastic detector hypotheses offline. Validate unchanged common
+branches on the same bounded input and retain the fields through Stage 2
+and frozen BDT scoring. Do not infer Zss rejection from the signal pilot.

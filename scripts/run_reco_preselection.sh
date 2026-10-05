@@ -108,7 +108,7 @@ if [[ "$event_limit" != all ]]; then
 fi
 LB_RECO_CONFIG="$reco_config" "$framework_python" \
   external/FCCAnalyses/install/bin/fccanalysis run \
-  analysis/studies/lb2lambda_gamma_reco.py "${fcc_args[@]}"
+  "${LB_RECO_ANALYSIS:-analysis/studies/lb2lambda_gamma_reco.py}" "${fcc_args[@]}"
 if [[ "$raw_output" != "$output" ]]; then
   mv "$raw_output" "$output"
 fi

@@ -39,3 +39,8 @@ valid for their frozen subsets.
 
 The current XGBoost scan and later Zcc/Zss mixture gates are in
 `docs/agents/BDT_ITERATIONS.md`.
+
+## v4 photon pointing reprocessing
+
+- [Reprocessing and offline hypotheses](../../howto/stage1_v4_photon_pointing.md).
+- [Paired validation review](../STAGE1_V4_POINTING_REVIEW_2026-10-05.md).

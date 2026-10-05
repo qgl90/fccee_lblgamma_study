@@ -176,3 +176,13 @@ events. Keep MC ancestry as an evaluation label, never a veto input.
    beneath resolution fits, signal/background comparison, statistical limits.
 5. **Recommendation for PI review:** keep, reject, or test further; record the
    PI's decision and the next named scenario without overwriting the baseline.
+
+### v4 photon-pointing tuple extension
+
+The PI requested a new Stage 1 campaign carrying the inputs for offline
+pointing hypotheses. This preserves the v3 candidate selection and attaches
+truth/geometry diagnostics afterward. Follow
+[the v4 handoff](../howto/stage1_v4_photon_pointing.md) and
+[paired validation](STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+Detector-hypothesis scans remain a separate offline stage; adopting a cut
+requires signal acceptance and separately normalized Zbb/Zcc/Zss studies.
