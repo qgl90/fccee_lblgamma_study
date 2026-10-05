@@ -36,6 +36,23 @@ class PointingTests(unittest.TestCase):
         ip, _ = photon_impact_parameters([[2250, 0, 0]], smeared, [0, 0, 0])
         np.testing.assert_allclose(ip, [2250 * np.sin(.001)], rtol=1e-12)
 
+    def test_displaced_photon_closure(self):
+        # A photon travels along +x from (2,3,4) mm. The origin-based
+        # reconstructed direction points at its ideal barrel impact point.
+        vertex = np.array([[2., 3., 4.]])
+        truth = np.array([[1., 0., 0.]])
+        impact = np.array([[np.sqrt(2250.**2 - 3.**2), 3., 4.]])
+        hit, region = self.geometry.intersect_from_origin(impact)
+        np.testing.assert_array_equal(region, [1])
+        np.testing.assert_allclose(hit, impact)
+        reco_ip, _ = photon_impact_parameters(hit, impact, [0, 0, 0])
+        np.testing.assert_allclose(reco_ip, [0], atol=1e-12)
+        direction = smear_direction(truth, 0, [[.7, -.2]])
+        measured = photon_impact_parameters(hit, direction, [0, 0, 0])
+        expected = photon_impact_parameters(vertex, truth, [0, 0, 0])
+        np.testing.assert_allclose(measured, expected, atol=1e-12)
+        np.testing.assert_allclose(measured, [[5.], [3.]])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -112,6 +112,34 @@ selection variable. The truth production vertex is used for closure checks.
 The current hit model inherits the reconstructed direction's position response;
 it introduces no extra position smearing.
 
+### Displacement information and the Zss hypothesis
+
+The intended mechanism is that an origin-based reconstructed direction
+locates a photon impact point, while the true momentum specifies the actual
+flight direction from its possibly displaced production point. Keeping the
+impact point fixed and replacing the direction with a smeared true direction
+therefore creates a photon line that need not pass through the origin.
+The pointing direction must not be reset to the vector from PV to that hit.
+True momentum alone does not encode a vertex: the displacement is recovered
+from the combination of the impact point and independently measured direction.
+
+For an exact impact point `h_true=v_true+t*n_true`, zero angular smearing
+must satisfy `(h_true-PV) cross n_true = (v_true-PV) cross n_true`.
+The analytic displaced-photon test verifies this: a photon from (2,3,4) mm
+travelling along +x has IP_3D=5 mm and IP_xy=3 mm; the origin-based direction
+has zero IP, while the fixed-hit true direction recovers both nonzero values.
+This check establishes the geometry logic. The existing reconstructed-hit
+pilot separately measures the effect of an imperfect impact-position proxy.
+
+The physics hypothesis is improved rejection of selected Zss relative to
+signal if their photon-line displacement or Λ–γ compatibility distributions
+differ sufficiently at the assumed resolution. Signal photons originate at
+the Λb decay; the selected Zss photon composition and displacement must be
+measured rather than assumed to be uniformly prompt. The current pilot
+does not confirm or exclude improved Zss rejection, because it contains no
+post-BDT Zss sample. Its impact-position limitation does not change this
+intended mechanism.
+
 ## 5. Photon displacement variable
 
 For the fitted PV v and predicted impact point h, define d=h-v. The model
@@ -217,7 +245,7 @@ and [its command guide](../howto/v3_three_flavour_score_reoptimization.md).
 
 - Geometry audit: `studies/resolutions/audit_calorimeter_geometry.py`.
 - Geometry/smearing/IP functions: `studies/resolutions/photon_pointing.py`.
-- Analytic checks: `studies/resolutions/test_photon_pointing.py` (four checks passed).
+- Analytic checks: `studies/resolutions/test_photon_pointing.py` (five checks, including displaced-photon closure).
 - Object pilot: `studies/resolutions/run_photon_pointing_pilot.py`.
 - Requested scan config: `config/photon_pointing_scan_0p5_1p5_v3.json`.
 - Broad pilot/control config: `config/photon_pointing_idealized_v3.json`.
