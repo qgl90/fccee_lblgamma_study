@@ -74,7 +74,8 @@ _TRUTH = [
 
 
 def build_dataframe(df, config_expression="", with_vertices=False,
-                    filter_min_photons=0, filter_empty_candidates=False):
+                    filter_min_photons=0, filter_empty_candidates=False,
+                    filter_min_lb_energy_gev=-1.):
     """Attach candidates and post-build truth labels.
 
     The configured path applies event prerequisites before snapshotting, so
@@ -169,11 +170,18 @@ def build_dataframe(df, config_expression="", with_vertices=False,
             .Alias("MCParents", "Particle#0.index")
             .Define("event_entry", "static_cast<unsigned long long>(rdfentry_)")
             .Define("candidates",
-                    "FCCAnalyses::LbCandidateBuilder::build(" + arguments + ")")
-            .Define("candidate_truth",
+                    "FCCAnalyses::LbCandidateBuilder::build(" + arguments + ")"))
+    if filter_min_lb_energy_gev >= 0.:
+        df = (df.Define(
+                  "flavtag_v5_n_candidate_energy_pass",
+                  "FCCAnalyses::FlavourTaggingV5::count_candidates_above_energy("
+                  f"candidates.lb_energy, {filter_min_lb_energy_gev!r}f)")
+                .Filter("flavtag_v5_n_candidate_energy_pass > 0",
+                        "at least one candidate passes v5 training energy"))
+    df = df.Define("candidate_truth",
                     "FCCAnalyses::LbCandidateTruth::label("
                     "candidates, ReconstructedParticles, Particle, "
-                    "AssocReco, AssocMC, MCParents)"))
+                    "AssocReco, AssocMC, MCParents)")
     for name in _COUNTS + _LAMBDA + _LB:
         df = df.Define(name, "candidates." + name)
     for name in _TRUTH:

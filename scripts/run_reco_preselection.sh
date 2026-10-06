@@ -11,7 +11,8 @@ Usage:
 
 Arguments:
   SAMPLE       Trace label: signal_phsp, signal_physics, lbgamma_eta,
-               lbgamma_eta_physics, lbgamma_pi0_phsp, lbgamma_pi0, or zbb
+               lbgamma_eta_physics, lbgamma_pi0_phsp, lbgamma_pi0, zbb,
+               zcc, or zss
   INPUT_ROOT   Input EDM4hep ROOT file, or .txt/.list containing ROOT paths
   OUTPUT_ROOT  Destination ROOT file path
   EVENT_LIMIT  Total entries (1..1000), or 'all' for all listed files
@@ -42,8 +43,9 @@ reco_config=$5
 ncpus=${6:-4}
 repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo_dir"
+analysis_script=${LB_RECO_ANALYSIS:-analysis/studies/lb2lambda_gamma_reco.py}
 case "$sample" in
-  signal_phsp|signal_physics|lbgamma_eta|lbgamma_eta_physics|lbgamma_pi0_phsp|lbgamma_pi0|zbb) ;;
+  signal_phsp|signal_physics|lbgamma_eta|lbgamma_eta_physics|lbgamma_pi0_phsp|lbgamma_pi0|zbb|zcc|zss) ;;
   *) echo "Unknown sample label: $sample" >&2; exit 2 ;;
 esac
 inputs=()
@@ -100,15 +102,21 @@ echo "ncpus=$ncpus"
 echo "config=$reco_config"
 echo "output=$output"
 mkdir -p "$(dirname "$output")"
-raw_output="outputs/analysis/studies/$(basename "$output")"
+raw_output_dir=outputs/analysis/studies
+if [[ "$analysis_script" == *lb2lambda_gamma_reco_v5.py &&
+      "$output" == /tmp/rquaglia/* ]]; then
+  raw_output_dir=$(dirname "$output")
+fi
+mkdir -p "$raw_output_dir"
+raw_output="$raw_output_dir/$(basename "$output")"
 [[ ! -e "$raw_output" ]] || { echo "Output already exists: $raw_output" >&2; exit 1; }
 fcc_args=(--files-list "${inputs[@]}" --output "$(basename "$raw_output")" --ncpus "$ncpus")
 if [[ "$event_limit" != all ]]; then
   fcc_args+=(--nevents "$event_limit")
 fi
-LB_RECO_CONFIG="$reco_config" "$framework_python" \
+LB_RECO_CONFIG="$reco_config" LB_STAGE1_OUTPUT_DIR="$raw_output_dir" "$framework_python" \
   external/FCCAnalyses/install/bin/fccanalysis run \
-  "${LB_RECO_ANALYSIS:-analysis/studies/lb2lambda_gamma_reco.py}" "${fcc_args[@]}"
+  "$analysis_script" "${fcc_args[@]}"
 if [[ "$raw_output" != "$output" ]]; then
   mv "$raw_output" "$output"
 fi

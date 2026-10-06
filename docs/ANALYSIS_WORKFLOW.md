@@ -186,3 +186,24 @@ truth/geometry diagnostics afterward. Follow
 [paired validation](STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
 Detector-hypothesis scans remain a separate offline stage; adopting a cut
 requires signal acceptance and separately normalized Zbb/Zcc/Zss studies.
+
+### v5 event-jet flavour-tagging extension
+
+The v5 Stage 1 study starts from the v4 candidate selection and adds Weaver
+scores for two exclusive event jets. It applies the existing training energy
+gate before truth annotation and tagger inference. The first iteration uses a
+reconstructed PV for tagger impact-parameter features, stores per-jet outputs
+and candidate-aligned nearest-jet/other-jet scores, and does not apply a tag
+cut. The pretrained model's PV input differs from its published training
+setup, so its score calibration must be validated. Candidate daughters are not
+yet removed before clustering. See
+[the v5 handoff](../howto/stage1_v5_flavour_tagging.md); only a paired,
+normalized signal/Zbb/Zcc/Zss study can motivate a later rejection scenario.
+The 1,000-event signal pilot and Condor check-only inventory are recorded in
+the [v5 pilot review](STAGE1_V5_FLAVTAG_SIGNAL_PILOT_2026-10-05.md); exact
+saved FT branch names and meanings are in the
+[v5 variable dictionary](STAGE1_V5_FLAVTAG_VARIABLES.md).
+The six-file Zbb/Zcc/Zss opposite-jet pilot is documented in
+[the v5 Z-flavour review](STAGE1_V5_ZFLAVOUR_PILOT_2026-10-06.md); it observed
+zero of 36 selected Zss events passing a trial B-score threshold, which is too
+small a denominator to establish the inclusive rejection.

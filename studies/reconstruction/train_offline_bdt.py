@@ -73,6 +73,18 @@ FEATURE_LABELS = {
     "d_pi0": "Nearest same-hemisphere π⁰ mass distance [GeV]",
     "d_eta": "Nearest same-hemisphere η mass distance [GeV]",
     "min_pair": "Minimum same-hemisphere γγ mass [GeV]",
+    "lb_flavtag_v5_recojet_isB_flavtag_v5_associated":
+        "Candidate-associated jet b score",
+    "lb_flavtag_v5_recojet_isS_flavtag_v5_associated":
+        "Candidate-associated jet s score",
+    "lb_flavtag_v5_recojet_isC_flavtag_v5_associated":
+        "Candidate-associated jet c score",
+    "lb_flavtag_v5_recojet_isB_flavtag_v5_otherjet_max":
+        "Other jet maximum b score",
+    "lb_flavtag_v5_recojet_isS_flavtag_v5_otherjet_max":
+        "Other jet maximum s score",
+    "lb_flavtag_v5_recojet_isC_flavtag_v5_otherjet_max":
+        "Other jet maximum c score",
 }
 
 

@@ -401,7 +401,8 @@ def main():
         # Keep Parquet column order reproducible across Python hash seeds.
         event_branches = tuple(sorted(
             name for name in available if "/" not in name and
-            "vector" not in tree[name].typename.lower()))
+            not any(kind in tree[name].typename.lower()
+                    for kind in ("vector", "rvec"))))
         candidate_branches = {name: branch for name, branch in
                               CANDIDATE_BRANCHES.items() if branch in available}
         lambda_branches = {name: branch for name, branch in
