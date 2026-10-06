@@ -47,10 +47,12 @@ done
 stack=${GEN_SETUP:-/cvmfs/sw.hsf.org/spackages7/key4hep-stack/2023-04-08/x86_64-centos7-gcc11.2.0-opt/urwcv/setup.sh}
 stem="${sample}_nev${total_events}_chunk${chunk}"
 card="work/cards/${stem}.cmd"
-output="outputs/delphes/chunks/${stem}_IDEA_edm4hep.root"
+delphes_out_dir=${LB_DELPHES_OUTPUT_DIR:-outputs/delphes}
+production_log_dir=${LB_PRODUCTION_LOG_DIR:-outputs/logs}
+output="$delphes_out_dir/chunks/${stem}_IDEA_edm4hep.root"
 partial="${output}.partial.root"
-log="outputs/logs/${stem}.production.log"
-mkdir -p work/cards outputs/delphes/chunks outputs/logs
+log="$production_log_dir/${stem}.production.log"
+mkdir -p work/cards "$delphes_out_dir/chunks" "$production_log_dir"
 
 if [[ -e "$output" ]]; then
     [[ -f "$log" ]] || { echo "Existing chunk has no provenance log: $log" >&2; exit 1; }
