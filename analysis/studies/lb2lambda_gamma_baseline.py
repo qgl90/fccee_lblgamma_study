@@ -1,6 +1,5 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """
-Author: Renato Quagliani (rquaglia@cern.ch), main stage-1 analysis for 
-
 Shared Lambda_b candidate dataframe and uncut Gamma baseline builder
 
 The baseline writes every event and uses all type-22 reconstructed photons.
@@ -34,6 +33,7 @@ _LAMBDA = [
     "lambda_vertex_z", "lambda_vertex_chi2", "lambda_flight_rxy",
     "lambda_flight_xyz", "lambda_proton_d0sig", "lambda_pion_d0sig",
     "lambda_flight_rxy_sigma", "lambda_flight_rxy_sig",
+    "lambda_flight_xyz_sigma", "lambda_flight_xyz_sig",
     "lambda_d0", "lambda_d0_sigma", "lambda_d0_sig",
 ]
 _INPUT = [
@@ -53,11 +53,14 @@ _LB = [
     "lb_photon_energy",
     "lb_photon2_energy", "lb_neutral_mass", "lb_neutral_energy",
     "lb_same_hemisphere", "lb_lambda_thrust_cos", "lb_neutral_thrust_cos",
+    "lb_thrust_cos",
 ]
 _TRUTH = [
     "reco_mc_index", "reco_mc_pdg", "reco_mc_n_parents",
     "reco_mc_parent_index", "reco_mc_parent_pdg",
     "reco_mc_grandparent_index", "reco_mc_grandparent_pdg",
+    "reco_mc_greatgrandparent_index", "reco_mc_greatgrandparent_pdg",
+    "reco_mc_greatgreatgrandparent_index", "reco_mc_greatgreatgrandparent_pdg",
     "reco_p", "reco_energy", "reco_mc_p", "reco_mc_energy",
     "reco_mc_pt", "reco_mc_eta", "reco_mc_vertex_rxy",
     "reco_mc_cos_opening",
@@ -71,7 +74,8 @@ _TRUTH = [
 
 
 def build_dataframe(df, config_expression="", with_vertices=False,
-                    filter_min_photons=0, filter_empty_candidates=False):
+                    filter_min_photons=0, filter_empty_candidates=False,
+                    filter_min_lb_energy_gev=-1.):
     """Attach candidates and post-build truth labels.
 
     The configured path applies event prerequisites before snapshotting, so
@@ -166,11 +170,18 @@ def build_dataframe(df, config_expression="", with_vertices=False,
             .Alias("MCParents", "Particle#0.index")
             .Define("event_entry", "static_cast<unsigned long long>(rdfentry_)")
             .Define("candidates",
-                    "FCCAnalyses::LbCandidateBuilder::build(" + arguments + ")")
-            .Define("candidate_truth",
+                    "FCCAnalyses::LbCandidateBuilder::build(" + arguments + ")"))
+    if filter_min_lb_energy_gev >= 0.:
+        df = (df.Define(
+                  "flavtag_v5_n_candidate_energy_pass",
+                  "FCCAnalyses::FlavourTaggingV5::count_candidates_above_energy("
+                  f"candidates.lb_energy, {filter_min_lb_energy_gev!r}f)")
+                .Filter("flavtag_v5_n_candidate_energy_pass > 0",
+                        "at least one candidate passes v5 training energy"))
+    df = df.Define("candidate_truth",
                     "FCCAnalyses::LbCandidateTruth::label("
                     "candidates, ReconstructedParticles, Particle, "
-                    "AssocReco, AssocMC, MCParents)"))
+                    "AssocReco, AssocMC, MCParents)")
     for name in _COUNTS + _LAMBDA + _LB:
         df = df.Define(name, "candidates." + name)
     for name in _TRUTH:

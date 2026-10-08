@@ -1,0 +1,15 @@
+{
+  "stage1_scenario": "v3",
+  "input": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v3_my_run/signal_physics.root",
+  "root_bytes": 328113771,
+  "processed_input_events": 100000,
+  "candidate_bearing_output_events": 56871,
+  "validated_output_events": 100,
+  "complete_validation": false,
+  "candidate_rows_validated": 109,
+  "direct_truth_matched_candidates_validated": 98,
+  "checked_candidate_vector_branches": 10,
+  "validation_scope": "required_v3_vectors",
+  "branch_schema_sha256": "8be4dbee92339c54fba50c760b61bb1e045a3f2bf246f524516cbfbe359d1eb7",
+  "candidate_vector_lengths": "passed"
+}

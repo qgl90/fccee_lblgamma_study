@@ -1,0 +1,55 @@
+# Study and artifact index
+
+This index distinguishes the active v3 path from historical studies. Detailed
+commands remain in the linked stage guides; counts below are snapshot counts,
+not final physics yields.
+
+Current photon-pointing handoff: [2026-10-05 checkpoint](../PHOTON_POINTING_CHECKPOINT_2026-10-05.md)
+records the geometry derivation, six-point emulation, existing-tuple joins,
+post-BDT four-sample application and remaining work. Stage 1 must not be rerun.
+
+| Stage | Active scenario and output | Evidence and next action |
+|---|---|---|
+| 0: forced generation | Named PHSP and HELAMP decay files in `evtgen/`; EDM4hep inputs under `outputs/delphes/` or the recorded EOS paths | `howto/delphes_production.md`; validate a new decay chain before full production. |
+| 1: direct v3 | `/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v3_my_run/` | `howto/stage1.md`; three existing ROOT basenames lack `_v3`, so use full paths and do not rename inputs used by Stage 2. New outputs use `_stage1_v3.root`. |
+| 1: inclusive Zbb v3 | `.../zbb_full_condor/native_batch_3d_activity_v3/p8_ee_Zbb_ecm91/` | `studies/reconstruction/catalog_condor_zbb_chunks.py`; frozen 1,028/1,200 valid chunk snapshot at `outputs/analysis/studies/stage2_v3_incremental_20261002/catalogs/20261003_1028chunks.json`. Refresh as jobs finish. |
+| 2: active v3 | `/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/` | `howto/stage2.md`; default is Λ⁰ ±12.5 MeV, Λb energy ≥10.5 GeV, no photon veto. Preparation, training, test projection and the PI plots cover all 1,028 frozen chunks; see `docs/STAGE2_V3_BDT_REVIEW_2026-10-03.md`. No BDT score is adopted yet. |
+| 2: refreshed peak scan v3 | 1,091/1,200 validated Zbb chunks, new model and provisional 5.4–5.9 GeV peak objective | [PI review](../STAGE2_V3_BDT_PEAK_REVIEW_2026-10-04.md), figures and frozen scan data. The independent-test central purity is 32.3% in the peak at the validation-fixed score; no new score is adopted yet. |
+| 0–2: Λη and Λπ⁰ physics backgrounds v3 | 100k events per HELAMP mode, one-photon Stage 1 v3 and frozen 1,091-chunk BDT score | [PI review](../STAGE2_V3_PSEUDOSCALAR_BACKGROUNDS_2026-10-04.md), [reproduction guide](../../howto/v3_pseudoscalar_backgrounds_100k.md), figures and [study manifest](../data/stage2_v3_pseudoscalar_100k_bdt1091peak/study_manifest.json). The forced-mode peak estimates are separate from inclusive Zbb pending overlap review. |
+| 1–2: inclusive Zcc/Zss v3 | 1,200/1,200 valid chunks per flavour; 499,786,495 Zcc and 499,842,440 Zss processed input events; fixed 1,091-chunk BDT | [PI review and linear mass/angle plots](../STAGE2_V3_ZCC_ZSS_AND_VETO_REVIEW_2026-10-04.md), [full processing recipe](../../howto/v3_zcc_zss_full_processing.md), [veto plot recipe](../../howto/v3_post_bdt_veto_sequence.md), [Zcc and Zss summaries](../data/stage2_v3_zcc_zss_1200/). Zss uses the 15.6% down-type average as a named branching scenario. |
+| 2: Zss ancestry after v3 BDT | Same full 1,200-chunk Zss score and paired Armenteros/π⁰/η sequence | [Truth-origin PI review](../STAGE2_V3_ZSS_ANCESTRY_ARMENTEROS_2026-10-04.md), [reproduction guide](../../howto/v3_zss_ancestry_armenteros.md), raw-count figures and JSON. The broad box removes 242/273 K⁰S fakes, while true Λ pairs dominate the survivors. |
+| 2: Zss displacement scan after v3 BDT | Same frozen signal/Zbb/Zcc/Zss and veto sequence; reconstructed Λ impact-parameter significance | [Paired PI review and figures](../STAGE2_V3_DISPLACEMENT_ZSS_2026-10-04.md), [reproduction guide](../../howto/v3_displacement_zss.md), [frozen scan](../data/stage2_v3_displacement_zss_1091peak/displacement_scan.json). Threshold 5 retains 65.8% of signal and 25.7% of Zss peak rows; exploratory only. |
+| 2: three-flavour BDT feature comparison | Same v3 offline selection and frozen 1,091-chunk BDT; 1,091 Zbb, 1,200 Zcc and 1,200 Zss shards | [PI review and 12 figures](../STAGE2_V3_FLAVOUR_FEATURES_2026-10-04.md), [streaming recipe](../../howto/v3_flavour_feature_comparison.md), [raw histogram JSON](../data/stage2_v3_flavour_features_1091peak/flavour_feature_comparison.json). Final projected peak is 69.4% Zss among inclusive backgrounds; compare a mixed model and Λ-d0 feature by held-out ablation. |
+| 2: three-flavour BDT score and Λ-IP alternative | Same Zbb-trained v3 model; corrected S/√(S+Zbb+Zcc+Zss) peak objective after Armenteros. Validation scores: 0.985562 without IP; 0.981096 with reconstructed Λ IP significance ≥5 added offline | [Corrected PI review and figures](../STAGE2_V3_THREE_FLAVOUR_SCORE_REOPTIMIZATION_2026-10-04.md), [PI deck](../../presentations/v3_analysis_review_20261004/v3_analysis_review_20261004.pdf), [reproduction guide](../../howto/v3_three_flavour_score_reoptimization.md), [new scan/PHSP/stack outputs](../data/stage2_v3_three_flavour_splusb_d0sig5_1091peak/). Held-out central FoM 174.5→217.1 for the added-IP alternative; PHSP acceptance 16.05%→11.88%. Both scores remain proposals; historical S/√B scan is superseded. |
+| 0–2: photon pointing input and geometry audit | Existing Physics signal schemas and first 200 Λη Physics Stage 0 events; no Stage 1 rerun | [Field audit, geometry results and figure](../STAGE2_V3_PHOTON_POINTING_INPUT_AUDIT_2026-10-05.md), [200-event recipe](../../howto/v3_photon_pointing_geometry.md). All 4,472 hit positions support a 2,250 mm barrel radius and endcaps at ±2,500 mm. True photon vectors need a Stage 0 join before a conditional 1 mrad rejection study. |
+| 0: offline photon pointing response pilot | First 200 Physics signal Stage 0 events, effective annular ECAL, six angular resolutions, no Stage 1 rerun | [Pilot review and figure](../STAGE2_V3_PHOTON_POINTING_PILOT_2026-10-05.md), [commands](../../howto/v3_photon_pointing_geometry.md#pointing-resolution-pilot). Effective endcap inner radius 249.554 mm. Direct-photon median IP is already 18.3 mm at zero angular smearing with the current predicted-hit method, versus 0.42 mm for truth lines; position response requires review before interpreting a 1 mrad Zss-rejection study. |
+| 2–3: PHSP angle response at refreshed score | 100k PHSP events, existing Stage 1 v3 tuple, 1,091-chunk BDT with optional post-BDT Armenteros proposal | [PI review](../STAGE2_V3_PHSP_ANGLE_BDT1091_REVIEW_2026-10-04.md), [guide](../../howto/v3_phsp_angle_acceptance.md), response JSON/CSV and figures. The BDT-only direct efficiency is 35.99% of generated decays; the box proposal gives 26.32%. |
+| 2: post-BDT K⁰S study | Same frozen 1,028-chunk model and score ≥0.9787055254 | `docs/STAGE2_V3_ARMENTEROS_REVIEW_2026-10-03.md` and `howto/v3_post_bdt_armenteros.md`; a proposed Armenteros box suppresses K⁰S pairs with about 20% signal loss. It is not an adopted reference cut. |
+| 2–3: PHSP angle response v3 | 100k PHSP events, existing Stage 1 v3 tuple, frozen 1,028-chunk BDT score | [PI review](../STAGE2_V3_PHSP_ANGLE_REVIEW_2026-10-04.md), [reproduction guide](../../howto/v3_phsp_angle_acceptance.md), and linked plots/fit response; 100,007 generated direct decays, 26,429 unique direct decays after the BDT. This response applies to this fixed-score scenario. |
+| 2–3: PHSP angle after Armenteros proposal | Same 100k PHSP sample and frozen BDT plus the reconstructed broad box | [PI review](../STAGE2_V3_PHSP_ARMENTEROS_ANGLE_REVIEW_2026-10-04.md) and [reproduction guide](../../howto/v3_phsp_armenteros_acceptance.md); 20,149 unique direct decays survive and the angular retention varies strongly. The veto remains a proposal. |
+| Historical v2 | `config/lb_stage1_v2_samples.json`, v2 ROOT and Parquet outputs | `docs/STAGE1_V2_FULL_REPROCESS_REVIEW_2026-10-01.md`; retain for paired historical comparison. |
+| Historical BDT/NN | `docs/BDT_WORKFLOW.md`, `docs/NN_REVIEW_2026-09-29.md` | Separate older reconstruction and feature scenarios; do not mix with v3 yields. |
+
+The 1,028-chunk catalog covers 376,723,929 processed Zbb input events and
+4,710,435 candidate-bearing Stage 1 output events. It has one ROOT schema,
+no invalid chunks, and 172 missing job IDs. The Stage 2 summary records
+1,060,544 selected nonmatched Zbb candidates and 54,872 selected direct
+signal candidates from 100,000 forced Physics events. Earlier catalog reviews remain
+valid for their frozen subsets.
+
+The current XGBoost scan and later Zcc/Zss mixture gates are in
+`docs/agents/BDT_ITERATIONS.md`.
+
+## v4 photon pointing reprocessing
+
+- [Reprocessing and offline hypotheses](../../howto/stage1_v4_photon_pointing.md).
+- [Paired validation review](../STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+
+## v4 photon pointing reprocessing preparation (2026-10-05)
+
+- v4 Stage 1 logic, point resolution emulation and signal pilot: [howto](../../howto/stage1_v4_photon_pointing.md), [review](../STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+- Zbb/Zcc/Zss v4 job set passes check-only with `group_u_FCC.local_gen` (no submission yet).
+- Five merged 100k forced inputs are ready; Lambda pi0 PHSP merged file remains missing. Inventory and rerun commands are in the v4 howto.
+- [PI slide deck](../../presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf).
+
+- [v4 job preparation and 100k mode inventory](../STAGE1_V4_POINTING_JOBS_2026-10-05.md).

@@ -1,0 +1,37 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
+# Forced Lambda_b0 -> Lambda0(p+ pi-) pi0(gamma gamma), and charge conjugate.
+# HELAMP benchmark: alpha(Lambda_b -> Lambda pi0) = -0.89 from
+# Mohanta, Giri, Khanna, Phys. Rev. D 63, 074001 (2001), Table 4,
+# https://arxiv.org/pdf/hep-ph/0006109 . With H+ then H- and unit norm,
+# |H+| = sqrt((1+alpha)/2) and |H-| = sqrt((1-alpha)/2).
+# The paper does not fix the relative phase; zero is an explicit scenario
+# choice. This is a theory benchmark, not a measured decay amplitude.
+# The Lambda0 daughter HELAMP is copied from Lb2LambdaGamma_trpol.dec.
+# Unit fractions force this chain; they are not physical branching fractions.
+
+Alias Lambdab0_SIGNAL Lambda_b0
+Alias aLambdab0_SIGNAL anti-Lambda_b0
+ChargeConj Lambdab0_SIGNAL aLambdab0_SIGNAL
+
+Alias Lambda0_SIGNAL Lambda0
+Alias aLambda0_SIGNAL anti-Lambda0
+ChargeConj Lambda0_SIGNAL aLambda0_SIGNAL
+
+Alias pi0_SIGNAL pi0
+ChargeConj pi0_SIGNAL pi0_SIGNAL
+
+Decay Lambdab0_SIGNAL
+  1.0 Lambda0_SIGNAL pi0_SIGNAL HELAMP 0.23452079 0.0 0.97211110 0.0;
+Enddecay
+CDecay aLambdab0_SIGNAL
+
+Decay Lambda0_SIGNAL
+  1.0 p+ pi- HELAMP .906 0. .423 0.;
+Enddecay
+CDecay aLambda0_SIGNAL
+
+Decay pi0_SIGNAL
+  1.0 gamma gamma PHSP;
+Enddecay
+
+End

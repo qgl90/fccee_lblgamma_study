@@ -12,7 +12,9 @@ Produce and validate one independent Pythia8/EvtGen/Delphes chunk.
 Usage:
   bash scripts/produce_chunk.sh SAMPLE CHUNK SEED CHUNK_EVENTS TOTAL_EVENTS
 
-Samples: Lb2LambdaGamma, Lb2LambdaGammaPhysics, Lb2LambdaEta
+Samples: Lb2LambdaGamma, Lb2LambdaGammaPhysics,
+         Lb2LambdaEta, Lb2LambdaEtaPhysics,
+         Lb2LambdaPi0, Lb2LambdaPi0Physics
 Outputs: outputs/delphes/chunks/ and outputs/logs/.
 Set GEN_SETUP to choose the Key4hep generation setup script.
 EOF
@@ -31,6 +33,9 @@ case "$sample" in
     Lb2LambdaGamma) decay_file=evtgen/Lb2LambdaGamma.dec ;;
     Lb2LambdaGammaPhysics) decay_file=evtgen/Lb2LambdaGamma_trpol.dec ;;
     Lb2LambdaEta) decay_file=evtgen/Lb2LambdaEta.dec ;;
+    Lb2LambdaEtaPhysics) decay_file=evtgen/Lb2LambdaEtaPhysics.dec ;;
+    Lb2LambdaPi0) decay_file=evtgen/Lb2LambdaPi0PHSP.dec ;;
+    Lb2LambdaPi0Physics) decay_file=evtgen/Lb2LambdaPi0.dec ;;
     *) echo "Unknown sample: $sample" >&2; exit 2 ;;
 esac
 for value in "$chunk" "$seed" "$chunk_events" "$total_events"; do
@@ -42,10 +47,12 @@ done
 stack=${GEN_SETUP:-/cvmfs/sw.hsf.org/spackages7/key4hep-stack/2023-04-08/x86_64-centos7-gcc11.2.0-opt/urwcv/setup.sh}
 stem="${sample}_nev${total_events}_chunk${chunk}"
 card="work/cards/${stem}.cmd"
-output="outputs/delphes/chunks/${stem}_IDEA_edm4hep.root"
+delphes_out_dir=${LB_DELPHES_OUTPUT_DIR:-outputs/delphes}
+production_log_dir=${LB_PRODUCTION_LOG_DIR:-outputs/logs}
+output="$delphes_out_dir/chunks/${stem}_IDEA_edm4hep.root"
 partial="${output}.partial.root"
-log="outputs/logs/${stem}.production.log"
-mkdir -p work/cards outputs/delphes/chunks outputs/logs
+log="$production_log_dir/${stem}.production.log"
+mkdir -p work/cards "$delphes_out_dir/chunks" "$production_log_dir"
 
 if [[ -e "$output" ]]; then
     [[ -f "$log" ]] || { echo "Existing chunk has no provenance log: $log" >&2; exit 1; }

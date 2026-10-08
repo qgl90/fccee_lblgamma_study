@@ -1,0 +1,14 @@
+# Queue is written for only the requested chunk IDs by run_lbgamma_physics_1m.sh.
+REPO_DIR = /afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study
+
+universe = vanilla
+initialdir = $(REPO_DIR)
+executable = /usr/bin/bash
+arguments = scripts/produce_chunk.sh $(sample) $(chunk) $(seed) $(chunk_events) $(total_events)
+request_cpus = 1
+should_transfer_files = NO
+getenv = True
+output = $(REPO_DIR)/outputs/logs/condor/lbgamma_physics_1m_$(sample)_chunk$(chunk).out
+error = $(REPO_DIR)/outputs/logs/condor/lbgamma_physics_1m_$(sample)_chunk$(chunk).err
+log = $(REPO_DIR)/outputs/logs/condor/lbgamma_physics_1m.log
+queue sample, chunk, seed, chunk_events, total_events from work/condor/lbgamma_physics_1m.queue

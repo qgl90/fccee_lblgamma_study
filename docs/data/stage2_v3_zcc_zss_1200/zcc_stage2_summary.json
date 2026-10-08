@@ -1,0 +1,56 @@
+{
+  "sample": "zcc",
+  "catalog": "outputs/analysis/studies/stage2_v3_zcc_zss_20261004/catalogs/zcc_1200_v3.json",
+  "run_identity": {
+    "catalog_sha256": "d725275fdf52322c6dcbfbe11f6934bc36c346e9f1de130a8419fa4fc60b0dc9",
+    "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66",
+    "projection_sha256": "48736dce351ddb0c3c66e0d8b566e6f1de0bacb4013d85f75f4a55784c8c3a5c",
+    "config_sha256": "c26d246adb0f4e2ddb3ecc4b41b1be10db38b687541989cdd7c7148bf20a1779",
+    "runner_sha256": "3c4c0d585f06e94767a55c1b25fddd9c5c73c56ee79ea7288d36843065741ef9",
+    "preparation_sha256": "5eb2a517239d0005e1e3b6701338016585fcb868ab2dce6913c7b9dd84a8fd7d",
+    "scenario": "lambda12p5_lbE10p5_same_hemi_all",
+    "score_cut": 0.9538269639015198,
+    "mass_window_gev": [
+      5.4,
+      5.9
+    ],
+    "max_output_events": null
+  },
+  "input_chunks": 1200,
+  "processed_input_events": 499786495,
+  "candidate_bearing_stage1_events_in_root": 5803372,
+  "read_stage1_output_events": 5803372,
+  "stage_counts": {
+    "audit": {
+      "candidate_rows": 7087378,
+      "candidate_bearing_events": 5803372,
+      "direct_signal_rows": 3,
+      "nonmatched_rows": 7087375,
+      "peak_candidate_rows": 1436976,
+      "peak_direct_signal_rows": 3,
+      "peak_nonmatched_rows": 1436973,
+      "peak_candidate_bearing_events": 1357672
+    },
+    "offline_selected": {
+      "candidate_rows": 1834610,
+      "candidate_bearing_events": 1721658,
+      "direct_signal_rows": 2,
+      "nonmatched_rows": 1834608,
+      "peak_candidate_rows": 489186,
+      "peak_direct_signal_rows": 2,
+      "peak_nonmatched_rows": 489184,
+      "peak_candidate_bearing_events": 478385
+    },
+    "bdt_selected": {
+      "candidate_rows": 1720,
+      "candidate_bearing_events": 1720,
+      "direct_signal_rows": 0,
+      "nonmatched_rows": 1720,
+      "peak_candidate_rows": 469,
+      "peak_direct_signal_rows": 0,
+      "peak_nonmatched_rows": 469,
+      "peak_candidate_bearing_events": 469
+    }
+  },
+  "complete_catalog": true
+}

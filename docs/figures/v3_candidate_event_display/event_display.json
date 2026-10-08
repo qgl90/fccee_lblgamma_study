@@ -1,0 +1,482 @@
+{
+  "purpose": "single-event explanatory display; no efficiency or yield inference",
+  "stage1": {
+    "path": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v3_my_run/signal_physics.root",
+    "bytes": 328113771,
+    "mtime_ns": 1790921680756093003
+  },
+  "edm4hep": {
+    "path": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+    "bytes": 686453206,
+    "mtime_ns": 1790742402416212717
+  },
+  "tuple_row": 0,
+  "event_entry": 4438,
+  "source_entry": 38885,
+  "source_entry_matches_stage1_event_entry": false,
+  "candidate_slot": 0,
+  "candidate_count_in_output_event": 1,
+  "truth_matched_annotation_only": 1,
+  "candidate_mass_gev": 5.648186683654785,
+  "same_hemisphere": true,
+  "thrust_axis": [
+    -0.5066080093383789,
+    0.5466590523719788,
+    -0.6667174696922302
+  ],
+  "candidate_momenta_gev": {
+    "proton": [
+      -3.409862518310547,
+      2.5984630584716797,
+      -1.978021502494812
+    ],
+    "pion": [
+      -0.494935005903244,
+      0.3292125463485718,
+      -0.16889335215091705
+    ],
+    "photon": [
+      -6.929386615753174,
+      1.6052542924880981,
+      -10.728950500488281
+    ],
+    "lambda": [
+      -3.9047975540161133,
+      2.927675724029541,
+      -2.1469149589538574
+    ]
+  },
+  "primary_vertex_mm": [
+    -0.006154415663331747,
+    5.2844647768779396e-08,
+    -0.37916114926338196
+  ],
+  "lambda_secondary_vertex_mm": [
+    -148.57505798339844,
+    111.46760559082031,
+    -82.06794738769531
+  ],
+  "lambda_flight_xyz_mm": 202.90589904785156,
+  "lambda_slot": 0,
+  "candidate_reco_indices": {
+    "proton": 9,
+    "pion": 3,
+    "photon": 20
+  },
+  "radii_delta_r": [
+    0.3,
+    0.5
+  ],
+  "other_objects": [
+    {
+      "index": 0,
+      "momentum_gev": [
+        -0.16663934290409088,
+        0.002297354396432638,
+        -0.33634868264198303
+      ],
+      "energy_gev": 0.40047991275787354,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.3307850793764803,
+      "dr_lambda": 1.2028485202884538
+    },
+    {
+      "index": 1,
+      "momentum_gev": [
+        -0.18944884836673737,
+        0.046380478888750076,
+        -0.6156920194625854
+      ],
+      "energy_gev": 0.66075599193573,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.6675777286017683,
+      "dr_lambda": 1.4954373742294835
+    },
+    {
+      "index": 2,
+      "momentum_gev": [
+        -0.21195416152477264,
+        1.0473661422729492,
+        -1.6418157815933228
+      ],
+      "energy_gev": 2.1720521450042725,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.1435844046420771,
+      "dr_lambda": 1.0726411436732024
+    },
+    {
+      "index": 3,
+      "momentum_gev": [
+        -0.42476755380630493,
+        0.41576409339904785,
+        -0.16884852945804596
+      ],
+      "energy_gev": 0.6334642171859741,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.069508036148151,
+      "dr_lambda": 0.19670555818181218
+    },
+    {
+      "index": 4,
+      "momentum_gev": [
+        -0.8086336255073547,
+        1.534919023513794,
+        -1.7816039323806763
+      ],
+      "energy_gev": 2.6578803062438965,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.9089065310285325,
+      "dr_lambda": 0.648098917844859
+    },
+    {
+      "index": 5,
+      "momentum_gev": [
+        -0.789317786693573,
+        0.7585161328315735,
+        -0.9999357461929321
+      ],
+      "energy_gev": 1.489201307296753,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.6588895398294282,
+      "dr_lambda": 0.4105861322185751
+    },
+    {
+      "index": 6,
+      "momentum_gev": [
+        -1.2782045602798462,
+        2.6851046085357666,
+        -2.2706992626190186
+      ],
+      "energy_gev": 3.744215250015259,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.026358024326113,
+      "dr_lambda": 0.5569952904707114
+    },
+    {
+      "index": 7,
+      "momentum_gev": [
+        -0.07544609159231186,
+        1.6722673177719116,
+        -1.179428219795227
+      ],
+      "energy_gev": 2.2524590492248535,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.4070622907652173,
+      "dr_lambda": 0.9117397071259487
+    },
+    {
+      "index": 8,
+      "momentum_gev": [
+        -0.8157123923301697,
+        1.5213301181793213,
+        -0.9257181286811829
+      ],
+      "energy_gev": 1.9637377262115479,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.093044231235449,
+      "dr_lambda": 0.4438020449146693
+    },
+    {
+      "index": 9,
+      "momentum_gev": [
+        -3.476226568222046,
+        2.5088999271392822,
+        -1.9780082702636719
+      ],
+      "energy_gev": 4.8136887550354,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.8514752501390164,
+      "dr_lambda": 0.026733533522939636
+    },
+    {
+      "index": 10,
+      "momentum_gev": [
+        -1.1594330072402954,
+        2.132018566131592,
+        -1.0668781995773315
+      ],
+      "energy_gev": 2.654712200164795,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.145178717473559,
+      "dr_lambda": 0.4293608789370113
+    },
+    {
+      "index": 11,
+      "momentum_gev": [
+        -2.1544570922851562,
+        3.6422951221466064,
+        -1.4139320850372314
+      ],
+      "energy_gev": 4.559337139129639,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.1888973938318101,
+      "dr_lambda": 0.40546982692551065
+    },
+    {
+      "index": 12,
+      "momentum_gev": [
+        1.958495020866394,
+        -0.8974093794822693,
+        1.47765052318573
+      ],
+      "energy_gev": 2.6160995960235596,
+      "charge": -1.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 3.468208282658104,
+      "dr_lambda": 3.116577392027543
+    },
+    {
+      "index": 13,
+      "momentum_gev": [
+        15.510984420776367,
+        -17.222471237182617,
+        19.598814010620117
+      ],
+      "energy_gev": 30.35353660583496,
+      "charge": -1.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 3.2061156038289003,
+      "dr_lambda": 3.180238511576856
+    },
+    {
+      "index": 14,
+      "momentum_gev": [
+        1.9916191101074219,
+        -1.9233510494232178,
+        3.9457762241363525
+      ],
+      "energy_gev": 4.820267200469971,
+      "charge": 1.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 3.506860538928446,
+      "dr_lambda": 3.4053532606327734
+    },
+    {
+      "index": 15,
+      "momentum_gev": [
+        -0.10098408907651901,
+        0.4049554169178009,
+        0.0616380013525486
+      ],
+      "energy_gev": 0.44437113404273987,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.7379603527656007,
+      "dr_lambda": 0.8922006609787945
+    },
+    {
+      "index": 16,
+      "momentum_gev": [
+        0.10324408859014511,
+        -0.03528910130262375,
+        0.16295085847377777
+      ],
+      "energy_gev": 0.24070195853710175,
+      "charge": 1.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 3.867243955493494,
+      "dr_lambda": 3.2577755355695244
+    },
+    {
+      "index": 17,
+      "momentum_gev": [
+        -0.064080148935318,
+        0.1914331018924713,
+        0.2539587914943695
+      ],
+      "energy_gev": 0.35316815972328186,
+      "charge": 1.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 2.4722742067622616,
+      "dr_lambda": 1.5981213586350675
+    },
+    {
+      "index": 18,
+      "momentum_gev": [
+        -0.48688432574272156,
+        0.23172670602798462,
+        -0.12029627710580826
+      ],
+      "energy_gev": 1.0888413190841675,
+      "charge": -1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.001807569594726,
+      "dr_lambda": 0.2861845703840327
+    },
+    {
+      "index": 19,
+      "momentum_gev": [
+        -0.1346643567085266,
+        0.18805630505084991,
+        -0.25499603152275085
+      ],
+      "energy_gev": 0.3714867830276489,
+      "charge": 1.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.7629426749287062,
+      "dr_lambda": 0.6078175854667694
+    },
+    {
+      "index": 20,
+      "momentum_gev": [
+        -6.929386615753174,
+        1.6052542924880981,
+        -10.728950500488281
+      ],
+      "energy_gev": 12.872591018676758,
+      "charge": 0.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.0,
+      "dr_lambda": 0.8773205002985894
+    },
+    {
+      "index": 21,
+      "momentum_gev": [
+        -1.025871992111206,
+        1.8998569250106812,
+        -1.7958674430847168
+      ],
+      "energy_gev": 2.808382034301758,
+      "charge": 0.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 0.9563748549919884,
+      "dr_lambda": 0.5441584533752827
+    },
+    {
+      "index": 22,
+      "momentum_gev": [
+        -0.3419787883758545,
+        0.751220166683197,
+        -0.6128048300743103
+      ],
+      "energy_gev": 1.0280131101608276,
+      "charge": 0.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.0494988011135853,
+      "dr_lambda": 0.5639033210123208
+    },
+    {
+      "index": 23,
+      "momentum_gev": [
+        0.06603526324033737,
+        0.06463205814361572,
+        -0.0175387691706419
+      ],
+      "energy_gev": 0.09405087679624557,
+      "charge": 0.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 2.3660306340134345,
+      "dr_lambda": 1.7399556954056947
+    },
+    {
+      "index": 24,
+      "momentum_gev": [
+        0.06513615697622299,
+        -0.0460548922419548,
+        0.06782889366149902
+      ],
+      "energy_gev": 0.10471165925264359,
+      "charge": 0.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 3.386384451065264,
+      "dr_lambda": 3.3363003890509924
+    },
+    {
+      "index": 25,
+      "momentum_gev": [
+        -0.0575258731842041,
+        0.07514894008636475,
+        0.5645715594291687
+      ],
+      "energy_gev": 0.5724488496780396,
+      "charge": 0.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 3.7494969945325938,
+      "dr_lambda": 2.925785534501679
+    },
+    {
+      "index": 26,
+      "momentum_gev": [
+        0.4638291001319885,
+        -1.1828534603118896,
+        0.5981143712997437
+      ],
+      "energy_gev": 1.489844799041748,
+      "charge": 0.0,
+      "same_lambda_hemisphere": false,
+      "dr_photon": 2.73037046037545,
+      "dr_lambda": 2.733933913418851
+    },
+    {
+      "index": 27,
+      "momentum_gev": [
+        -0.6555607914924622,
+        0.22924824059009552,
+        0.38695481419563293
+      ],
+      "energy_gev": 0.9379048347473145,
+      "charge": 0.0,
+      "same_lambda_hemisphere": true,
+      "dr_photon": 1.7345778108259557,
+      "dr_lambda": 1.0065286137222533
+    }
+  ],
+  "excluded_from_isolation": [
+    9,
+    3,
+    20
+  ],
+  "isolation_counts": {
+    "photon": {
+      "0.3": {
+        "all": 0,
+        "charged": 0,
+        "neutral": 0
+      },
+      "0.5": {
+        "all": 1,
+        "charged": 1,
+        "neutral": 0
+      }
+    },
+    "lambda": {
+      "0.3": {
+        "all": 1,
+        "charged": 1,
+        "neutral": 0
+      },
+      "0.5": {
+        "all": 5,
+        "charged": 5,
+        "neutral": 0
+      }
+    }
+  },
+  "note": "Activity cone membership additionally requires fitted-Lambda thrust hemisphere. The displayed 3D ring is the exact mapped eta-phi DeltaR boundary, not a constant opening-angle cone. All arrow lengths are normalized.",
+  "saved_stage1_isolation_counts": {
+    "iso_R03_all_n": 0,
+    "iso_R03_charged_n": 0,
+    "iso_R03_neutral_n": 0,
+    "iso_R05_all_n": 1,
+    "iso_R05_charged_n": 1,
+    "iso_R05_neutral_n": 0,
+    "lambda0_iso_R03_all_n": 1,
+    "lambda0_iso_R03_charged_n": 1,
+    "lambda0_iso_R03_neutral_n": 0,
+    "lambda0_iso_R05_all_n": 5,
+    "lambda0_iso_R05_charged_n": 5,
+    "lambda0_iso_R05_neutral_n": 0
+  }
+}

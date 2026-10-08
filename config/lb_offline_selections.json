@@ -1,0 +1,38 @@
+{
+  "lambda_reference_gev": 1.115683,
+  "lambda_scan_half_windows_mev": [5, 7.5, 10, 12.5, 15],
+  "lb_mass_range_gev": [4.7, 6.5],
+  "pi0_mass_gev": 0.1349768,
+  "eta_mass_gev": 0.547862,
+  "pi0_half_window_mev": 20,
+  "eta_half_window_mev": 50,
+  "low_diphoton_mass_max_gev": 1.0,
+  "kshort_veto_study": {
+    "mass_gev": 0.497611,
+    "scan_half_windows_mev": [5, 10, 15, 20, 30, 50],
+    "illustration_half_window_mev": 5
+  },
+  "default_prebdt_scenario": "lambda12p5_lbE10p5_same_hemi_all",
+  "scenarios": {
+    "stage1_fit_range": {"lambda_half_window_mev": 15, "veto": "none"},
+    "lambda5": {"lambda_half_window_mev": 5, "veto": "none"},
+    "lambda5_pi0": {"lambda_half_window_mev": 5, "veto": "pi0"},
+    "lambda5_pi0_eta": {"lambda_half_window_mev": 5, "veto": "pi0_eta"},
+    "lambda5_lowmass1": {"lambda_half_window_mev": 5, "veto": "low_mass", "diphoton_min_gev": 1.0},
+    "lambda5_lowmass1p5": {"lambda_half_window_mev": 5, "veto": "low_mass", "diphoton_min_gev": 1.5},
+    "lambda5_same_hemi_selected": {"lambda_half_window_mev": 5, "veto": "none", "partner_definition": "same_hemi_selected"},
+    "lambda5_same_hemi_all": {"lambda_half_window_mev": 5, "veto": "none", "partner_definition": "same_hemi_all"},
+    "lambda5_lbE9_same_hemi_all": {"lambda_half_window_mev": 5, "veto": "none", "partner_definition": "same_hemi_all", "reco_cuts": [{"column": "lb_E", "min": 9.0}]},
+    "lambda12p5_lbE10p5_same_hemi_all": {"lambda_half_window_mev": 12.5, "veto": "none", "partner_definition": "same_hemi_all", "reco_cuts": [{"column": "lb_E", "min": 10.5}]},
+    "lambda5_pi0_same_hemi_selected": {"lambda_half_window_mev": 5, "veto": "pi0", "partner_definition": "same_hemi_selected"},
+    "lambda5_pi0_eta_same_hemi_selected": {"lambda_half_window_mev": 5, "veto": "pi0_eta", "partner_definition": "same_hemi_selected"},
+    "lambda5_lowmass1_same_hemi_selected": {"lambda_half_window_mev": 5, "veto": "low_mass", "diphoton_min_gev": 1.0, "partner_definition": "same_hemi_selected"},
+    "lambda5_pi0_same_hemi_all": {"lambda_half_window_mev": 5, "veto": "pi0", "partner_definition": "same_hemi_all"},
+    "lambda5_pi0_eta_same_hemi_all": {"lambda_half_window_mev": 5, "veto": "pi0_eta", "partner_definition": "same_hemi_all"},
+    "lambda5_lowmass1_same_hemi_all": {"lambda_half_window_mev": 5, "veto": "low_mass", "diphoton_min_gev": 1.0, "partner_definition": "same_hemi_all"},
+    "lambda10": {"lambda_half_window_mev": 10, "veto": "none"},
+    "lambda10_pi0": {"lambda_half_window_mev": 10, "veto": "pi0"},
+    "lambda10_pi0_eta": {"lambda_half_window_mev": 10, "veto": "pi0_eta"},
+    "lambda10_lowmass": {"lambda_half_window_mev": 10, "veto": "low_mass"}
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "reference_projection": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/projections/20261004_1091chunks_peak_5p4_5p9/projection.json",
+  "reference_candidates": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/projections/20261004_1091chunks_peak_5p4_5p9/expected_test_candidates.parquet",
+  "reference_peak_projected_candidates": {
+    "signal": 300245.03424143966,
+    "zbb": 628461.1500280414
+  },
+  "forced_mode_peak_projected_candidates": {
+    "eta_physics": 13136.086379520002,
+    "pi0_physics": 106.6188070003216
+  },
+  "warning": "Forced-mode curves are separate estimates and may overlap inclusive Zbb; do not add them to Zbb without an overlap audit",
+  "window_gev": [
+    5.4,
+    5.9
+  ],
+  "bdt_score": 0.9538269639015198,
+  "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66"
+}

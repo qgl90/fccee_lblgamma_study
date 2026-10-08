@@ -41,6 +41,28 @@ the PI the exact command, config/card diff, input list, number of events,
 plots/tables, signal retained, background retained, and an interpretation with
 its limits. A proposed cut becomes a reference choice only after that review.
 
+### Current inclusive Zbb Stage 1 input check
+
+The v3 native Condor campaign is a separate reconstruction scenario from the
+older `native_batch` Zbb outputs. The latest frozen 2026-10-03 catalog of
+`native_batch_3d_activity_v3` checks 1,028 of 1,200 submitted chunks: all 1,028
+pass ROOT counter and branch/type checks and share one schema. They cover
+376,723,929 processed input events and contain 4,710,435 candidate-bearing
+output events. The earlier 629-chunk snapshot is documented in
+[the Stage 1 Zbb review](STAGE1_ZBB_CATALOG_REVIEW_2026-10-03.md); 172 jobs
+still have no ROOT output in the current snapshot. Its frozen path is in
+[the study index](agents/STUDY_INDEX.md). These are input-event and
+candidate-bearing-event counts, not candidate counts or a final inclusive
+background yield. Refresh and freeze a new catalog before each downstream
+comparison; the reproducible check is in [howto/stage1.md](../howto/stage1.md).
+
+The fixed 1,028-chunk v3 BDT scan is reviewed in
+[the Stage 2 note](STAGE2_V3_BDT_REVIEW_2026-10-03.md). A separate
+[post-BDT Armenteros review](STAGE2_V3_ARMENTEROS_REVIEW_2026-10-03.md)
+uses truth ancestry to diagnose K⁰S pair contamination and evaluates a
+reconstructed-only veto after the same fixed score. Both cuts remain
+proposals for PI review.
+
 ## Current data and code contracts
 
 - Generator truth and `MCRecoAssociations` are used to evaluate acceptance,
@@ -154,3 +176,34 @@ events. Keep MC ancestry as an evaluation label, never a veto input.
    beneath resolution fits, signal/background comparison, statistical limits.
 5. **Recommendation for PI review:** keep, reject, or test further; record the
    PI's decision and the next named scenario without overwriting the baseline.
+
+### v4 photon-pointing tuple extension
+
+The PI requested a new Stage 1 campaign carrying the inputs for offline
+pointing hypotheses. This preserves the v3 candidate selection and attaches
+truth/geometry diagnostics afterward. Follow
+[the v4 handoff](../howto/stage1_v4_photon_pointing.md) and
+[paired validation](STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+Detector-hypothesis scans remain a separate offline stage; adopting a cut
+requires signal acceptance and separately normalized Zbb/Zcc/Zss studies.
+
+### v5 event-jet flavour-tagging extension
+
+The v5 Stage 1 study starts from the v4 candidate selection and adds Weaver
+scores for two exclusive event jets. It applies the existing training energy
+gate before truth annotation and tagger inference. The first iteration uses a
+reconstructed PV for tagger impact-parameter features, stores per-jet outputs
+and candidate-aligned nearest-jet/other-jet scores, and does not apply a tag
+cut. The pretrained model's PV input differs from its published training
+setup, so its score calibration must be validated. Candidate daughters are not
+yet removed before clustering. See
+[the v5 handoff](../howto/stage1_v5_flavour_tagging.md); only a paired,
+normalized signal/Zbb/Zcc/Zss study can motivate a later rejection scenario.
+The 1,000-event signal pilot and Condor check-only inventory are recorded in
+the [v5 pilot review](STAGE1_V5_FLAVTAG_SIGNAL_PILOT_2026-10-05.md); exact
+saved FT branch names and meanings are in the
+[v5 variable dictionary](STAGE1_V5_FLAVTAG_VARIABLES.md).
+The six-file Zbb/Zcc/Zss opposite-jet pilot is documented in
+[the v5 Z-flavour review](STAGE1_V5_ZFLAVOUR_PILOT_2026-10-06.md); it observed
+zero of 36 selected Zss events passing a trial B-score threshold, which is too
+small a denominator to establish the inclusive rejection.
