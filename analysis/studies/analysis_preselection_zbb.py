@@ -133,7 +133,7 @@ class Analysis:
         self.input_dir = None
         # Keep temporary outputs in the FCCAnalyses checkout; completed chunks
         # are copied by the managed worker script to the requested EOS folder.
-        self.output_dir = f"outputs/{sample_name}_native_batch_3d_activity_v2_work"
+        self.output_dir = f"outputs/{sample_name}_native_batch_3d_activity_v3_work"
         self.run_batch = True
         self.batch_queue = self.options.queue
         self.batchQueue = self.options.queue        
