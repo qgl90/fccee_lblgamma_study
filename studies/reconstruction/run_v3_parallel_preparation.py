@@ -97,6 +97,9 @@ def main():
             if identity_path.exists() and json.loads(identity_path.read_text()) != expected:
                 raise ValueError(f"Worker preparation identity differs: {worker}")
             if not identity_path.exists():
+                if any(worker.glob("*.parquet")):
+                    raise ValueError(
+                        f"Worker has candidate Parquets without preparation identity: {worker}")
                 identity_path.write_text(json.dumps(expected, indent=2) + "\n")
         reused = 0
         for worker, _, records in workers:
