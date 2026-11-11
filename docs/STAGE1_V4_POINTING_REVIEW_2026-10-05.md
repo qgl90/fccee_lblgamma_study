@@ -46,16 +46,18 @@ branches; a complete inclusive campaign has not been launched or validated.
 - [Frozen post-BDT pointing table](data/stage1_v4_pointing_validation/signal_post_bdt_pointing_v4.parquet).
 - [Pilot hit-anchor comparison figure](figures/stage1_v4_pointing_validation.png), reproduced using [the howto](../howto/stage1_v4_photon_pointing.md).
 
-![Direct signal pilot: truth and reconstructed hit anchors](figures/stage1_v4_pointing_validation.png)
+![Direct signal pilot: reco-projected hit and displaced truth-ray comparison](figures/stage1_v4_pointing_validation.png)
 
-The plot uses the 118 direct signal candidates after Stage 1. The ideal truth-hit
-scenario responds to angular resolution; the reconstructed-hit scenario also
-contains the existing position uncertainty. Each panel has its own horizontal
-range and bin width. These are conditional pilot shapes, not expected yields.
+The plot uses the 118 direct signal candidates after Stage 1. The nominal scenario uses the hit projected from the origin along reconstructed
+photon momentum, then assigns the matched truth direction with angular
+smearing. The truth-ray projection from the displaced production point is
+shown only as a geometry comparison. Each panel has its own horizontal range
+and bin width. These are conditional pilot shapes, not expected yields.
 
-**Assumptions and limitations:** truth-hit anchoring assumes ideal hit position;
-the alternative inherits position smearing from the current reconstructed
-photon direction. Neither is a complete pointing-calorimeter response model.
+**Assumptions and limitations:** the nominal hit is a geometric projection of
+the measured ReconstructedParticle momentum from the origin. It is not a saved
+Delphes calorimeter hit. The truth-ray anchor is a geometry comparison, not a
+measured hit. Neither is a complete pointing-calorimeter response model.
 The inner endcap radius is inferred from |eta|≤3, and the surface is effective.
 All matches in this signal pilot are valid; inclusive samples must separately
 report unresolved fractions and may not count unresolved photons as rejected.
@@ -67,3 +69,39 @@ significance. Signal acceptance must be reevaluated for any adopted new cut.
 for signal/PHSP, Zbb, Zcc and Zss in fresh campaigns, catalog each campaign, then
 compare pointing-cut efficiencies and mass/angle distributions after the fixed
 BDT selection. The PI chooses the detector hypothesis and any reference cut.
+
+## Job and sample preparation update (2026-10-05)
+
+Native FCCAnalyses `--check-only` passed for Zbb (4,398 files), Zcc (5,018)
+and Zss (5,015), with 1,200 chunks each, four CPUs per job, accounting group
+`group_u_FCC.local_gen`, and job flavour `workday`. The requested string is the
+accounting group consumed by `--comp-group`; `--queue` is the separate Condor
+flavour setting. No jobs were submitted. The repeatable check and explicit
+submission wrapper are documented in the [v4 howto](../howto/stage1_v4_photon_pointing.md).
+
+The merged 100k inventory contains five available modes: signal PHSP and
+HELAMP, eta PHSP and HELAMP, and pi0 HELAMP. The configured pi0 PHSP file is
+not present at its expected merged path. The direct rerun wrapper lists all
+inputs by default, writes fresh `_stage1_v4` ROOT names, and performs a full v4
+vector validation after each run.
+
+## Nominal hit-anchor clarification (2026-10-05)
+
+A review of the sketch found that the code offered the requested reco-hit
+method, but its command-line default selected the truth-ray hit instead. The
+nominal offline procedure is now explicit and set as the default:
+
+1. Project the stored ReconstructedParticle photon momentum from the origin to
+the effective surface to define the hit position.
+2. Use the matched truth photon momentum as the direction, with the six angular
+smearing hypotheses around it.
+3. Scale the smeared direction by reconstructed photon energy and calculate
+$IP_{3D}$ and $|d_0|$ relative to the reconstructed PV after BDT selection.
+
+The truth vertex and truth-ray hit remain useful for geometry closure and the
+comparison panel. The updated offline validation uses the reco projected hit;
+its Parquet metadata identifies this anchor. A focused check sets reco and truth
+hits to different points and verifies that the nominal output uses the reco
+point. Reconstructed and truth momenta are key inputs, while reconstructed
+energy, hit position/effective geometry and PV are also required for the present
+calculation. No new Stage 1 production was needed for this correction.

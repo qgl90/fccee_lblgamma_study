@@ -6,7 +6,9 @@ from lb2lambda_gamma_reco import *
 from lb2lambda_gamma_reco import RDFanalysis as V3
 from photon_pointing_stage1 import attach, BRANCHES
 analysisName = "lb2lambda_gamma_reco_v4"
-includePaths = includePaths + ["photon_pointing_v4.h"]
+includePaths = includePaths + ["photon_pointing_v4.h"] + [ "lb_event_selection.h", "lb_candidate_builder.h",
+                                                           "lb_candidate_truth.h", "lb_candidate_observables.h",
+                                                           "photon_pointing_v4.h", "flavour_tagging_v5.h"]
 class RDFanalysis:
     @staticmethod
     def analysers(df):

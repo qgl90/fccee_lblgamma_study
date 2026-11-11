@@ -23,5 +23,6 @@ __pycache__/
 !config/lb_bdt_features.json
 !config/lb_armenteros_study.json
 !config/lb_stage1_v2_samples.json
+!config/stage1_v5_weighted_comparison.json
 *.yaml.bak
 *.cmd.bak

@@ -18,6 +18,11 @@ from prepare_offline_bdt import process_file
 from photon_pointing_stage1 import BRANCHES
 from smear_stage1_v4_pointing import augment
 
+def tag_anchor(table, anchor):
+  metadata=dict(table.schema.metadata or {})
+  metadata[b"pointing_scenario"]=json.dumps({"hit_anchor":anchor,"direction":"matched truth photon momentum","smearing":"two tangent Gaussian components, 0.5 to 1.5 mrad"}).encode()
+  return table.replace_schema_metadata(metadata)
+
 def main():
  ap=argparse.ArgumentParser(description=__doc__)
  ap.add_argument('--baseline',type=Path,required=True)
@@ -52,7 +57,7 @@ def main():
  for kind in ('audit','selected'):
   t=pq.read_table(args.output_dir/f'signal_-1_{kind}.parquet')
   assert all(k in t.column_names for k in BRANCHES)
-  u=augment(t,'v4_validation')
+  u=tag_anchor(augment(t,'v4_validation'),'reco')
   rev=np.arange(len(t)-1,-1,-1)
   w=augment(t.take(rev),'v4_validation').take(rev)
   for name in u.column_names[len(t.column_names):]:
@@ -71,14 +76,16 @@ def main():
   t=pq.read_table(args.output_dir/'scored/signal_-1_selected.parquet')
   assert all(k in t.column_names for k in BRANCHES)
   post=t.filter(t['bdt_score'].to_numpy()>=0.9855620861)
-  u=augment(post,'v4_validation')
+  u=tag_anchor(augment(post,'v4_validation'),'reco')
   pq.write_table(u,args.output_dir/'signal_post_bdt_pointing_v4.parquet')
   report['post_bdt_rows']=len(post)
+  report['pointing_hit_anchor']='reco: origin projection from saved ReconstructedParticle photon momentum'
+  report['pointing_direction']='matched truth photon momentum plus tangent-plane Gaussian angular smearing'
   report['validation_bdt_cut']=0.9855620861
   report['model_sha256']=hashlib.sha256((args.model_dir/'bdt_model.json').read_bytes()).hexdigest()
  report['repository_base']=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
  report['fccanalyses_revision']=subprocess.check_output(['git','-C','external/FCCAnalyses','rev-parse','HEAD'],text=True).strip()
- report['files_sha256']={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in [args.baseline,args.v4,ROOT/'config/lb_reco_preselection_15mev_45_65_3d.json',ROOT/'config/lb_observables.json',ROOT/'analysis/studies/photon_pointing_v4.h']}
+ report['files_sha256']={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in [args.baseline,args.v4,ROOT/'config/lb_reco_preselection_15mev_45_65_3d.json',ROOT/'config/lb_observables.json',ROOT/'analysis/studies/photon_pointing_v4.h',ROOT/'studies/resolutions/smear_stage1_v4_pointing.py']}
  report['baseline']=str(args.baseline);report['v4']=str(args.v4)
  (args.output_dir/'validation.json').write_text(json.dumps(report,indent=2)+'\n')
  print(json.dumps({k:v for k,v in report.items() if k!='stage2'},indent=2))

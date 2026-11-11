@@ -4,6 +4,9 @@ For the v2 Stage 1 tuples, same-hemisphere offline scenarios, the explicit
 `v2_3d` feature option, full candidate-column preservation, and copyable
 commands, use [howto/stage2.md](../../howto/stage2.md). The commands below
 also document historical all-raw-photon runs on the older Stage 1 tuples.
+The current v3 offline default is Λ⁰ ±12.5 MeV, Λb energy ≥10.5 GeV,
+and no photon veto; its runnable training and scored-table recipe is at the
+top of `howto/stage2.md`.
 
 ## Inputs and stage boundary
 
@@ -94,7 +97,7 @@ and cumulative retention, Lambda-window scans, and selected multiplicity.
 The plots compare fitted Lambda mass, scan retention, and multiplicity.
 
 `config/lb_offline_selections.json` names the tested windows and vetoes.
-`lambda5` is the default offline selection before BDT training: fitted
+`lambda5` was the default offline selection for this historical BDT training: fitted
 Lambda mass within 5 MeV and 4.7–6.5 GeV Lambda-gamma mass, with no photon
 veto. The `full679/` native scan was launched for the earlier
 `lambda10_pi0_eta` diagnostic and preserves every stage-1 candidate in its

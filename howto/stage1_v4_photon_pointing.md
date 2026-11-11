@@ -114,23 +114,27 @@ previous v3 Parquet tables cannot supply the new fields.
 env -u PYTHONPATH -u PYTHONHOME myenv/bin/python \
  studies/resolutions/smear_stage1_v4_pointing.py \
  --input path/to/scored_v4.parquet --output path/to/scored_pointing_v4.parquet \
- --namespace unique_frozen_sample_catalog_v4 --anchor truth
+ --namespace unique_frozen_sample_catalog_v4 --anchor reco
 ```
 
 The six resolutions are 0.5, 0.7, 0.9, 1.1, 1.3 and 1.5 mrad, each the Gaussian
 sigma per orthogonal tangent-plane angular component (radial RMS ≈ √2 sigma).
-The true direction is smeared around the stored hit. The hypothetical momentum
-is `E_reco * direction_smeared`; IDEA's existing energy response is retained.
+The matched truth momentum supplies the direction to smear. The default `reco`
+anchor is obtained by projecting the saved ReconstructedParticle momentum from
+the origin to the effective surface. The hypothetical momentum is
+`E_reco * direction_smeared`; IDEA's existing energy response is retained.
 The distance to the reconstructed PV is computed as
 `IP3D = |(hit − PV) × direction|` and
 `|d0| = |(hit_x−PV_x)n_y − (hit_y−PV_y)n_x| / sqrt(n_x²+n_y²)`.
 No photon vertex fit or displacement significance is inferred.
 
-`--anchor truth` assumes ideal hit position from the true displaced ray.
-`--anchor reco` retains the position uncertainty inherited from the current
-origin-based reconstructed direction. Compare these as two named detector
-hypotheses. Angular smearing alone does not specify realistic hit-position
-resolution/correlation. No extra position smearing is applied.
+`--anchor reco` is the nominal procedure: use the hit position projected from
+origin along the measured ReconstructedParticle momentum, then assign the
+matched truth direction with angular smearing. `--anchor truth` is an
+alternative hit projected along the true photon ray from its production vertex.
+Both use the same effective surface; the truth anchor is a geometry comparison,
+not a measured hit. Neither adds hit-position smearing or specifies a position
+resolution/correlation.
 
 A SHA256-derived random seed uses the catalog namespace, source/event/photon
 indices and seed. Candidates sharing a photon receive the same draw, independent

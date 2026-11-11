@@ -19,7 +19,12 @@ from lb2lambda_gamma_reco_v5 import RDFanalysis as _v5_RDFanalysis
 
 batch._RDFanalysis = _v5_RDFanalysis
 batch.include_paths = batch.include_paths + [
+    "lb_event_selection.h", "lb_candidate_builder.h",
+    "lb_candidate_truth.h", "lb_candidate_observables.h",    
     "photon_pointing_v4.h", "flavour_tagging_v5.h"]
+# FCCAnalyses' initializer reads custom headers from the top-level analysis
+# module (analysis_preselection_v5), not from the delegated batch module.
+include_paths = batch.include_paths
 batch.DEFAULT_OUTPUT_EOS = (
     "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/"
     "zbb_full_condor/stage1_v5_flavtag")

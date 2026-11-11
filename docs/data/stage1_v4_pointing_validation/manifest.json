@@ -13,8 +13,21 @@
     "analysis/studies/lb2lambda_gamma_reco_v4.py": "9657795a0267166dd83cb3464dcffbf4be35591e944567c0660cf777a750c845",
     "analysis/studies/photon_pointing_stage1.py": "2a2017b709c02b62021bd6345e568461004d36190e81c1b7c03b091f0a1bf8e6",
     "studies/reconstruction/prepare_offline_bdt.py": "eb50e606319da93979a9958da0237f92ebcdcefcd484143b57e24d15e82a1395",
-    "studies/resolutions/smear_stage1_v4_pointing.py": "5dddd224ee76ff56cfdc25fdc1ac1a2f5c2721f6e36bc4169efcf009f1d6dfae"
+    "studies/resolutions/smear_stage1_v4_pointing.py": "2ee4345da2d96c5e05399ab15cea5dcf96009afcbc46881cdc437765e2d7735b",
+    "studies/resolutions/validate_stage1_v4_pointing.py": "7fc7a280325a0dc80daa755ab0b3bc20937f72f674e00ed62e7acc3c118d4cab",
+    "studies/resolutions/plot_stage1_v4_pointing.py": "9ac2a7320272f9aa26b062ac1e9de266378d5c16d22dc7cd37461f40f1f71d88",
+    "studies/resolutions/test_stage1_v4_pointing.py": "86cb69b2896be0fe94f2ad2b9e64fe4b41855cfc4e085b9877b712ba921dc4c8"
   },
   "local_edits": "v4 implementation committed together with this manifest; unrelated pre-existing work excluded",
-  "fccanalyses_local_edit": "examples/FCCee/flavour/Bc2TauNu/analysis_B2TauNu_truth.py (unrelated example)"
+  "fccanalyses_local_edit": "examples/FCCee/flavour/Bc2TauNu/analysis_B2TauNu_truth.py (unrelated example)",
+  "nominal_hit_anchor": "project saved ReconstructedParticle photon momentum from origin to effective ECAL surface",
+  "nominal_direction": "matched MC truth photon momentum, with two-component tangent-plane angular smearing",
+  "required_offline_inputs": [
+    "reconstructed photon energy",
+    "reconstructed photon px,py,pz",
+    "matched truth photon px,py,pz",
+    "reconstructed PV",
+    "effective calorimeter geometry or stored reco-projected hit"
+  ],
+  "truth_vertex_role": "validation and optional displaced truth-ray hit comparison; not required for nominal reco-hit anchor"
 }

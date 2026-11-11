@@ -2,8 +2,20 @@
 
 For copyable direct and native Condor commands using the same v2 Stage 1
 reconstruction, see [howto/stage1.md](../../howto/stage1.md).
+The separate v5 Weaver flavour-tagging diagnostic, starting from v4 and
+leaving its candidate selection unchanged, is documented in
+[howto/stage1_v5_flavour_tagging.md](../../howto/stage1_v5_flavour_tagging.md).
+The output branch definitions and the signal pilot check are summarized in
+[the v5 variable dictionary](../../docs/STAGE1_V5_FLAVTAG_VARIABLES.md) and
+[the v5 pilot review](../../docs/STAGE1_V5_FLAVTAG_SIGNAL_PILOT_2026-10-05.md).
+The subsequent six-file Zbb/Zcc/Zss opposite-jet score pilot is described in
+[its review note](../../docs/STAGE1_V5_ZFLAVOUR_PILOT_2026-10-06.md) and can be
+recomputed with `compare_v5_zflavour_pilot.py` after flattening its ROOT files.
 For offline cuts, veto studies, BDT training and preserved per-candidate
 outputs, see [howto/stage2.md](../../howto/stage2.md).
+For a frozen v3 Physics-versus-available-Zbb candidate reference and a simple
+normalized plotting command, see
+[howto/v3_reference_plots.md](../../howto/v3_reference_plots.md).
 
 The completed direct-sample 3D/activity stage-1 v2 tuples (Physics, PHSP,
 and Λb→Λη reconstructed as one photon) are listed with hashes and exact
@@ -14,10 +26,13 @@ The historical tuples remain available; the v2 Zbb Condor production is
 reserved for the PI.
 
 The current post-stage-1 Physics MC versus catalogued Zbb study, including
-the default Lambda ±5 MeV offline cut, optional photon vetoes, candidate
+the historical Lambda ±5 MeV offline cut, optional photon vetoes, candidate
 tables, BDT training, score scan, and expected-yield plots, is documented in
 [OFFLINE_BDT_PIPELINE.md](OFFLINE_BDT_PIPELINE.md). Its PI review note is
 [docs/OFFLINE_BDT_REVIEW_2026-10-01.md](../../docs/OFFLINE_BDT_REVIEW_2026-10-01.md).
+The current v3 offline default is Λ⁰ ±12.5 MeV with Λb energy ≥10.5 GeV,
+without a photon veto. See [howto/stage2.md](../../howto/stage2.md) for the
+reproducible v3 training and scored-candidate recipe.
 
 Candidate-level isolation, π⁰ pairing, Z-recoil and pointing diagnostics are
 documented in [STAGE1_OBSERVABLES.md](STAGE1_OBSERVABLES.md).

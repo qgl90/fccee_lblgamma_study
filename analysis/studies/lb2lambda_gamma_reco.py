@@ -43,8 +43,8 @@ analysisName = "lb2lambda_gamma_reco"
 outputDir = "outputs/analysis/studies"
 nCPUS = 4
 includePaths = ["lb_event_selection.h", "lb_candidate_builder.h",
-                "lb_candidate_truth.h", "lb_candidate_observables.h"]
-
+                "lb_candidate_truth.h", "lb_candidate_observables.h",
+                "photon_pointing_v4.h", "flavour_tagging_v5.h"]
 CONFIG_PATH = Path(os.environ.get("LB_RECO_CONFIG",Path(__file__).resolve().parents[2] / "config" / "lb_reco.json"))
 CONFIG = json.loads(CONFIG_PATH.read_text())
 # Keep this positional mapping synchronized with LbCandidateBuilder::Config.

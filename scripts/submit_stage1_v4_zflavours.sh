@@ -27,7 +27,7 @@ for flavour in Zbb Zcc Zss; do
   lower=${flavour,,}
   input_glob="/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_${flavour}_ecm91/events_*.root"
   output_eos="/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/${lower}_full_condor/${run_tag}"
-  args=(run analysis/studies/analysis_preselection_v4.py
+  args=(run analysis/studies/analysis_preselection_zbb_v4.py
     --input-glob "$input_glob" --chunks 1200
     --comp-group group_u_FCC.local_gen --queue workday --ncpus 4
     --output-eos "$output_eos" --eos-type eoslhcb)

@@ -603,16 +603,19 @@
   "audit_rows": 133,
   "selected_rows": 129,
   "post_bdt_rows": 46,
+  "pointing_hit_anchor": "reco: origin projection from saved ReconstructedParticle photon momentum",
+  "pointing_direction": "matched truth photon momentum plus tangent-plane Gaussian angular smearing",
   "validation_bdt_cut": 0.9855620861,
   "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66",
-  "repository_base": "da33a38618fa399c3b5d57607e4bb305b52aea82",
+  "repository_base": "ca8c55e8a406889f6d45675dbcb860fe5ec8f232",
   "fccanalyses_revision": "0315db1e2941e2886813cb645193e348f3863d5d",
   "files_sha256": {
     "outputs/analysis/studies/pointing_trial_v4/signal_200_baseline_v3.root": "c0fe6aed8846f91331864d22dde68870aef06963c970c5b2a63f12793f253cf1",
     "outputs/analysis/studies/pointing_trial_v4/signal_200_validated_stage1_v4.root": "2304876f6f8d7f5b0ec17040227f3546727a30874a5d2e1eff120f7fd795b398",
     "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/config/lb_reco_preselection_15mev_45_65_3d.json": "b872906ad0b25f94299c2ba627b0804d558c407134ca01f3e212c638e6cffa18",
     "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/config/lb_observables.json": "d0ebc4c1b8c3bfdc409515bf6e0c5fd8df5892b53fd7798ec8789484d5d9e3df",
-    "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/analysis/studies/photon_pointing_v4.h": "ab84f63cb65d96aa6aa03b831233f731a5c0f7fb71127ecd2983167ad8426635"
+    "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/analysis/studies/photon_pointing_v4.h": "ab84f63cb65d96aa6aa03b831233f731a5c0f7fb71127ecd2983167ad8426635",
+    "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/studies/resolutions/smear_stage1_v4_pointing.py": "2ee4345da2d96c5e05399ab15cea5dcf96009afcbc46881cdc437765e2d7735b"
   },
   "baseline": "outputs/analysis/studies/pointing_trial_v4/signal_200_baseline_v3.root",
   "v4": "outputs/analysis/studies/pointing_trial_v4/signal_200_validated_stage1_v4.root"

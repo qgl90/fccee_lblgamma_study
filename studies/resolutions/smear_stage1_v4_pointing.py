@@ -17,7 +17,7 @@ PREFIX = "lb_photon_pointing_"
 SIGMAS = (0.5, 0.7, 0.9, 1.1, 1.3, 1.5)
 
 
-def augment(table, namespace, anchor="truth", seed=20261005):
+def augment(table, namespace, anchor="reco", seed=20261005, sigmas=SIGMAS):
     def col(name):
         return table[name].to_numpy()
     def vector(names):
@@ -41,7 +41,7 @@ def augment(table, namespace, anchor="truth", seed=20261005):
              np.isfinite(truth).all(axis=1) & (np.linalg.norm(truth,axis=1)>0) &
              np.isfinite(hit).all(axis=1) & np.isfinite(pv).all(axis=1))
     table = table.append_column("pointing_valid", pa.array(valid))
-    for sigma in SIGMAS:
+    for sigma in sigmas:
         direction = smear_direction(truth, sigma*1e-3, draws)
         ip3d, ipxy = photon_impact_parameters(hit, direction, pv)
         tag = str(sigma).replace(".", "p")
@@ -58,19 +58,25 @@ def main():
     ap.add_argument("--input", type=Path, required=True)
     ap.add_argument("--output", type=Path, required=True)
     ap.add_argument("--namespace", required=True, help="Unique frozen catalog/production ID, shared by its shards")
-    ap.add_argument("--anchor", choices=("truth","reco"), default="truth")
+    ap.add_argument("--anchor", choices=("reco", "truth"), default="reco",
+                    help="Hit position: origin projection from reconstructed photon momentum (default), or ideal truth-ray projection")
     ap.add_argument("--seed", type=int, default=20261005)
+    ap.add_argument("--sigmas", default=",".join(map(str, SIGMAS)),
+                    help="Comma-separated angular resolutions in mrad per tangent-plane component")
     args=ap.parse_args()
+    sigmas=tuple(float(x) for x in args.sigmas.split(","))
+    if not sigmas or any(not np.isfinite(x) or x < 0 for x in sigmas):
+        ap.error("--sigmas must contain finite nonnegative values in mrad")
     if args.output.exists():
         raise FileExistsError(args.output)
     args.output.parent.mkdir(parents=True,exist_ok=True)
-    scenario={"namespace":args.namespace,"anchor":args.anchor,"seed":args.seed,"sigma_mrad_per_component":SIGMAS,"input":str(args.input.resolve()),"geometry":"stored v4 effective IDEA surface","position_response":"ideal truth hit" if args.anchor=="truth" else "inherited reconstructed direction"}
+    scenario={"namespace":args.namespace,"anchor":args.anchor,"seed":args.seed,"sigma_mrad_per_component":sigmas,"input":str(args.input.resolve()),"geometry":"stored v4 effective IDEA surface","position_response":"ideal truth hit" if args.anchor=="truth" else "origin-projected reconstructed momentum"}
     reader=pq.ParquetFile(args.input)
     writer=None
     rows=valid=0
     try:
         for batch in reader.iter_batches(batch_size=50000):
-            table=augment(pa.Table.from_batches([batch]),args.namespace,args.anchor,args.seed)
+            table=augment(pa.Table.from_batches([batch]),args.namespace,args.anchor,args.seed,sigmas)
             if writer is None:
                 metadata=dict(table.schema.metadata or {})
                 metadata[b"pointing_scenario"]=json.dumps(scenario).encode()
@@ -80,7 +86,7 @@ def main():
     finally:
         if writer: writer.close()
     if writer is None:
-        empty=augment(pa.Table.from_batches([],schema=reader.schema_arrow),args.namespace,args.anchor,args.seed)
+        empty=augment(pa.Table.from_batches([],schema=reader.schema_arrow),args.namespace,args.anchor,args.seed,sigmas)
         metadata=dict(empty.schema.metadata or {})
         metadata[b"pointing_scenario"]=json.dumps(scenario).encode()
         pq.write_table(empty.replace_schema_metadata(metadata),args.output)

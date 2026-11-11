@@ -44,6 +44,7 @@ The current XGBoost scan and later Zcc/Zss mixture gates are in
 
 - [Reprocessing and offline hypotheses](../../howto/stage1_v4_photon_pointing.md).
 - [Paired validation review](../STAGE1_V4_POINTING_REVIEW_2026-10-05.md).
+- [10k signal pointing-resolution validation](../STAGE1_V4_POINTING_SIGNAL_STAT_VALIDATION_2026-10-05.md): 10,000 Stage-0 Physics signal events, 5,604 direct candidates; compares the near-zero reco baseline, generated signal line, and 0.1–2 mrad scans under reco-projected and ideal truth-ray hit anchors.
 
 ## v4 photon pointing reprocessing preparation (2026-10-05)
 
@@ -53,3 +54,29 @@ The current XGBoost scan and later Zcc/Zss mixture gates are in
 - [PI slide deck](../../presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf).
 
 - [v4 job preparation and 100k mode inventory](../STAGE1_V4_POINTING_JOBS_2026-10-05.md).
+
+## v5 flavour-tagging development
+
+- Stage 1 starts from v4 and adds Weaver event-jet scores plus candidate-aligned
+  nearest-jet and other-jet score vectors. A known energy gate is applied
+  before truth annotation/inference; the first iteration remains diagnostic:
+  no tag cut, reconstructed PV supplied to the impact-parameter features, and
+  candidate daughters not yet removed before clustering.
+- Implementation and bounded-run recipe:
+  [v5 flavour-tagging handoff](../../howto/stage1_v5_flavour_tagging.md).
+- Saved event and candidate FT variables:
+  [v5 FT variable dictionary](../STAGE1_V5_FLAVTAG_VARIABLES.md); signal and
+  Condor check-only evidence:
+  [v5 pilot review](../STAGE1_V5_FLAVTAG_SIGNAL_PILOT_2026-10-05.md).
+- The six-file Zbb/Zcc/Zss comparison found strong opposite-jet B/C/S
+  separation and 0/36 selected Zss events above an other-jet B score of 0.8
+  while retaining 506/572 direct signal events. This remains a low-statistics
+  proposal; see the [v5 Z-flavour review](../STAGE1_V5_ZFLAVOUR_PILOT_2026-10-06.md).
+- The ±0.15 GeV raw-pair mass prefilter trial retained 56.6% of shared-window
+  candidates on 200 signal events and is rejected. No production jobs have
+  been submitted; the local Zss pilot does not establish an inclusive rejection
+  efficiency.
+- A 1,000-event signal pilot validates saved and flattened score branches:
+  627 candidates, 572 truth matched; in the shared mass/energy region the raw
+  other-jet b score retains 88.5% of matched signal at score ≥0.8. This is
+  signal-only. No v5 Condor jobs have been submitted.

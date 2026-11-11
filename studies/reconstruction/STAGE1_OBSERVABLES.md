@@ -394,3 +394,92 @@ by seven candidates, so it is a diagnostic scale, not a reliable expected
 background or angular toy template. PI decision sought: whether to pursue
 these offline variables and which Λb production fraction/scenario to use;
 the reference reconstruction selection has not changed.
+
+## v5 Stage-1 columns and flattening contract (2026-10-07)
+
+“Flattening” can refer to two different scripts; they have different output
+contracts. `flatten_candidates.py` makes a general one-row-per-candidate
+table. `prepare_offline_bdt.py` makes the Stage-1 audit and offline-selected
+tables used by the current BDT workflow.
+
+### General candidate table: `flatten_candidates.py`
+
+The script retains every candidate in the input `events` tree, including
+wrong combinations and candidates with missing MC links. It records
+`event_entry`, `candidate_slot`, and `candidates_in_event`; when supplied,
+`source_id` distinguishes files whose event numbering restarts at zero. The
+stable cross-file key is therefore `(source_id, event_entry, candidate_slot)`.
+Truth and ancestry are copied as diagnostic labels and do not filter rows.
+
+The output contains every scalar event-tree branch, repeated on candidate
+rows; explicitly mapped Λb kinematics, sign, reconstructed and truth helicity
+angles, mass and truth-match fields, Λ⁰ and daughter momenta, daughter d0
+values, and listed photon-pair diagnostics; plus the candidate-observable
+branches declared by `analysis/studies/observables_stage1.py`. Those include
+isolation and daughter-removed isolation, photon counts and pair masses and
+indices, recoil and Z-closure quantities, Armenteros values, and the cone
+activity families. Each activity family has `all`, `charged`, and `neutral`
+px/py/pz, vector-sum p, energy, and multiplicity; charged activity also has
+signed and absolute d0 extrema and a count of linked d0 values.
+
+Available `lb_*` candidate vectors and `lambda_*` Lambda-slot vectors are
+also included. Lambda-slot quantities are indexed by each candidate's
+`lb_lambda_slot`; for historical tuples with a candidate-aligned Lambda field,
+the script checks the alignment and copies it directly. Proton, pion, photon,
+and second-photon reco indices, reco momenta/energy, and listed MC
+match/ancestry fields are copied. Missing second-photon fields in gamma/Zbb
+mode receive sentinels. LHCb-style aliases (`Lb_*`, `Lambda0_*`, `Proton_*`,
+`Pion_*`, `Gamma_*`) are added alongside the original audit columns. Derived
+kinematics include p, pT, eta, and phi. Older snapshots can also have PV-line
+pointing cosine/DCA derived from fitted momentum and PV/SV coordinates;
+`pointing_derived_in_flattening` records that provenance.
+
+This is not a full event-record dump. Vector branches are included when
+explicitly mapped, declared as candidate observables, named with `lb_` or
+`lambda_` prefixes, or among the indexed leg/ancestry fields. Other
+non-scalar collections—including complete reconstructed-particle, track, or
+jet constituent collections—are not copied. A new branch outside those
+groups must be added deliberately, with its candidate alignment defined.
+
+### Offline BDT tables: `prepare_offline_bdt.py`
+
+This script uses a narrower explicit input whitelist. Its `*_audit.parquet`
+contains every candidate present in each Stage-1 ROOT `events` tree before
+the offline cuts; `*_selected.parquet` contains candidates passing the named
+offline selection. “Every candidate” here means every candidate written by
+Stage 1, after the Stage-1 builder's own requirements. It cannot restore
+combinations removed before the ROOT output was written.
+
+The tables include candidate/event identity and audit labels (`sample`,
+`source_id`, `event_entry`, `candidate_slot`, `candidates_in_event`,
+`lb_mass`, `lambda_mass`, `lb_sign`, `cos_theta_p`, `truth_matched`); stage
+flags and π⁰/η/low-mass partner distances; Λb, Λ⁰, proton, pion, and photon
+kinematics; daughter d0 significances; Λ flight and vertex quantities;
+thrust, isolation, recoil/closure, and Armenteros observables. Derived
+particle p, pT, eta, energy, selected isolation-energy-to-photon-energy
+ratios, and `lb_thrust_abs_cos` are also materialized. Available photon-pair
+mass/index lists, optional Lambda-slot and pointing fields, and proton/pion/
+photon reco indices plus copied MC PDG/ancestry labels are retained. Truth
+labels are for categorization and validation, not selection or model input.
+
+For v5, the preparation whitelist preserves all ten candidate-aligned FT
+responses: B/C/S/Q/G for both `associated` and `otherjet_max`. The current
+feature set in `config/lb_bdt_features_v5_flavtag.json` uses six: B/C/S for
+both positions. Q/G remain diagnostics. The BDT tables do not contain the
+event-level `jet_*_flavtag_v5` vectors or temporary particle-flow inputs used
+internally by Weaver.
+
+The offline preparation script does not retain every ROOT branch. Arbitrary
+scalar event fields, unlisted candidate vectors, and full event-level
+particle/track/jet collections are omitted. To add a training variable, add
+it to Stage 1 if needed, to the preparation script's read-and-write whitelist,
+and to the named feature set; then verify its presence and candidate
+alignment in the prepared Parquet.
+
+As of this note, the v5 Stage-1 producer and six-feature configuration exist.
+The current offline preparation/training path is still signal-versus-Zbb; it
+does not yet combine signal, Zbb, Zcc, and Zss chunk catalogs with physical
+weights. The presence of FT columns is not evidence of completed
+three-flavour retraining or a final expected-yield estimate. Candidate-aligned
+FT definitions and Weaver input caveats are in
+[`docs/STAGE1_V5_FLAVTAG_VARIABLES.md`](../../docs/STAGE1_V5_FLAVTAG_VARIABLES.md).
