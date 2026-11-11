@@ -1,3 +1,4 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """Direct Lambda0/K0S proton and pion daughters: truth, reco match, origin."""
 
 processList = {}

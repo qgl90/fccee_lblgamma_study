@@ -1,0 +1,100 @@
+{
+  "mode": "eta_phsp",
+  "stage2_manifest": "/tmp/v3_eta_phsp_100k_stage2_bdt1091peak/manifest.json",
+  "generated_audit": "/tmp/v3_eta_phsp_100k_generated_audit.json",
+  "branching_config": "config/v3_pseudoscalar_branching_scenarios.json",
+  "generated_input_events": 100000,
+  "generated_direct_decays": 100003,
+  "generated_charge_counts": {
+    "Lambda_b": 49958,
+    "anti_Lambda_b": 50045
+  },
+  "reconstruction_hypothesis": "Lambda_b to Lambda gamma with one eta/pi0 daughter photon",
+  "offline_scenario": "lambda12p5_lbE10p5_same_hemi_all",
+  "bdt_score": 0.9538269639015198,
+  "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66",
+  "signal_peak_window_gev": [
+    5.4,
+    5.9
+  ],
+  "stages": {
+    "audit": {
+      "candidate_rows": 44932,
+      "candidate_bearing_events": 41957,
+      "direct_partial_candidate_rows": 39773,
+      "direct_partial_events": 39773,
+      "wrong_or_unmatched_candidate_rows": 5159,
+      "peak_candidate_rows": 8654,
+      "peak_candidate_events": 8505,
+      "peak_direct_partial_rows": 7559,
+      "peak_direct_partial_events": 7559,
+      "peak_wrong_or_unmatched_rows": 1095,
+      "candidate_rate_per_generated_decay_full_mass": 0.4493065208043759,
+      "candidate_rate_per_generated_decay_peak": 0.08653740387788367
+    },
+    "offline_selected": {
+      "candidate_rows": 35370,
+      "candidate_bearing_events": 34143,
+      "direct_partial_candidate_rows": 32796,
+      "direct_partial_events": 32796,
+      "wrong_or_unmatched_candidate_rows": 2574,
+      "peak_candidate_rows": 8162,
+      "peak_candidate_events": 8078,
+      "peak_direct_partial_rows": 7480,
+      "peak_direct_partial_events": 7480,
+      "peak_wrong_or_unmatched_rows": 682,
+      "candidate_rate_per_generated_decay_full_mass": 0.35368938931832045,
+      "candidate_rate_per_generated_decay_peak": 0.0816175514734558,
+      "conditional_candidate_retention": 0.7871895308466127,
+      "conditional_direct_partial_retention": 0.8245794885977925,
+      "cumulative_candidate_retention_from_stage1": 0.7871895308466127
+    },
+    "bdt_selected": {
+      "candidate_rows": 12382,
+      "candidate_bearing_events": 12375,
+      "direct_partial_candidate_rows": 12295,
+      "direct_partial_events": 12295,
+      "wrong_or_unmatched_candidate_rows": 87,
+      "peak_candidate_rows": 3492,
+      "peak_candidate_events": 3492,
+      "peak_direct_partial_rows": 3466,
+      "peak_direct_partial_events": 3466,
+      "peak_wrong_or_unmatched_rows": 26,
+      "candidate_rate_per_generated_decay_full_mass": 0.12381628551143466,
+      "candidate_rate_per_generated_decay_peak": 0.03491895243142706,
+      "conditional_candidate_retention": 0.3500706813683913,
+      "conditional_direct_partial_retention": 0.3748932796682522,
+      "cumulative_candidate_retention_from_stage1": 0.275571975429538
+    }
+  },
+  "branching_scenario": {
+    "meson_pdg": 221,
+    "BR_Lambdab_to_Lambda_meson": 9.3e-06,
+    "BR_Lambdab_to_Lambda_meson_range": [
+      4e-06,
+      1.66e-05
+    ],
+    "BR_meson_to_gamma_gamma": 0.3936,
+    "parent_br_kind": "LHCb 2015 evidence central value; PHSP generation shape diagnostic only; asymmetric uncertainty +7.3/-5.3e-6",
+    "parent_br_source": "https://arxiv.org/abs/1505.03295",
+    "daughter_br_source": "https://pdg.lbl.gov/2025/listings/rpp2025-list-eta.pdf"
+  },
+  "yield_formula": "N_Z*BR_Zbb*2*f_Lambdab*BR_mode*BR_Lambda_p_pi*BR_meson_gamma_gamma*candidate_rows/generated_direct_decays",
+  "projected_candidates": {
+    "factor_before_selection": 421028.4096000001,
+    "peak_candidates": 14701.871007101789,
+    "peak_direct_partial": 14592.406904528865,
+    "peak_wrong_or_unmatched": 109.46410257292283,
+    "full_mass_candidates": 52130.17377145887,
+    "peak_candidates_per_1e_minus_6_parent_br": 1580.8463448496545,
+    "peak_candidates_mc_95pct_poisson_interval": [
+      14218.24851355889,
+      15197.748637571118
+    ],
+    "peak_candidates_parent_br_range": [
+      6323.385379398618,
+      26242.049324504267
+    ],
+    "mc_interval_scope": "Approximate Poisson candidate-count interval; candidate correlations, parent branching-fraction, detector and model uncertainties excluded"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "stage1_scenario": "v3",
+  "input": "/tmp/lbgamma_eta_physics_100k_stage1_v3.root",
+  "root_bytes": 248805718,
+  "processed_input_events": 100000,
+  "candidate_bearing_output_events": 41752,
+  "validated_output_events": 41752,
+  "complete_validation": true,
+  "candidate_rows_validated": 44717,
+  "direct_truth_matched_candidates_validated": 0,
+  "checked_candidate_vector_branches": 338,
+  "validation_scope": "all_candidate_vectors",
+  "branch_schema_sha256": "8be4dbee92339c54fba50c760b61bb1e045a3f2bf246f524516cbfbe359d1eb7",
+  "candidate_vector_lengths": "passed"
+}

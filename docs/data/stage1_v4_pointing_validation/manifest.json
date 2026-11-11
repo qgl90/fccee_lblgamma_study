@@ -1,0 +1,33 @@
+{
+  "scenario": "stage1_v4_photon_pointing_tuple_extension",
+  "input": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+  "input_sha256_previously_audited": "f483c59cc2fc1274d439c76a2232f272d1c6d54737ddeece6889fb4edb8740dc",
+  "input_events_requested": 200,
+  "generator_scenario": "Lb2LambdaGammaPhysics; both charge conjugates",
+  "detector_response": "existing IDEA Stage0; no regeneration",
+  "geometry_basis": "docs/data/v3_photon_pointing_geometry_200events/geometry_audit.json",
+  "baseline_command": "scripts/run_reco_preselection.sh signal_physics /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root outputs/analysis/studies/pointing_trial_v4/signal_200_baseline_v3.root 200 config/lb_reco_preselection_15mev_45_65_3d.json 1",
+  "v4_command": "LB_RECO_ANALYSIS=analysis/studies/lb2lambda_gamma_reco_v4.py scripts/run_reco_preselection.sh signal_physics /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root outputs/analysis/studies/pointing_trial_v4/signal_200_validated_stage1_v4.root 200 config/lb_reco_preselection_15mev_45_65_3d.json 1",
+  "source_hashes": {
+    "analysis/studies/photon_pointing_v4.h": "ab84f63cb65d96aa6aa03b831233f731a5c0f7fb71127ecd2983167ad8426635",
+    "analysis/studies/lb2lambda_gamma_reco_v4.py": "9657795a0267166dd83cb3464dcffbf4be35591e944567c0660cf777a750c845",
+    "analysis/studies/photon_pointing_stage1.py": "2a2017b709c02b62021bd6345e568461004d36190e81c1b7c03b091f0a1bf8e6",
+    "studies/reconstruction/prepare_offline_bdt.py": "eb50e606319da93979a9958da0237f92ebcdcefcd484143b57e24d15e82a1395",
+    "studies/resolutions/smear_stage1_v4_pointing.py": "2ee4345da2d96c5e05399ab15cea5dcf96009afcbc46881cdc437765e2d7735b",
+    "studies/resolutions/validate_stage1_v4_pointing.py": "7fc7a280325a0dc80daa755ab0b3bc20937f72f674e00ed62e7acc3c118d4cab",
+    "studies/resolutions/plot_stage1_v4_pointing.py": "9ac2a7320272f9aa26b062ac1e9de266378d5c16d22dc7cd37461f40f1f71d88",
+    "studies/resolutions/test_stage1_v4_pointing.py": "86cb69b2896be0fe94f2ad2b9e64fe4b41855cfc4e085b9877b712ba921dc4c8"
+  },
+  "local_edits": "v4 implementation committed together with this manifest; unrelated pre-existing work excluded",
+  "fccanalyses_local_edit": "examples/FCCee/flavour/Bc2TauNu/analysis_B2TauNu_truth.py (unrelated example)",
+  "nominal_hit_anchor": "project saved ReconstructedParticle photon momentum from origin to effective ECAL surface",
+  "nominal_direction": "matched MC truth photon momentum, with two-component tangent-plane angular smearing",
+  "required_offline_inputs": [
+    "reconstructed photon energy",
+    "reconstructed photon px,py,pz",
+    "matched truth photon px,py,pz",
+    "reconstructed PV",
+    "effective calorimeter geometry or stored reco-projected hit"
+  ],
+  "truth_vertex_role": "validation and optional displaced truth-ray hit comparison; not required for nominal reco-hit anchor"
+}

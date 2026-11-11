@@ -1,3 +1,4 @@
+// Author: Renato Quagliani (rquaglia@cern.ch)
 #ifndef LBLGAMMA_STUDIES_LB_EVENT_SELECTION_H
 #define LBLGAMMA_STUDIES_LB_EVENT_SELECTION_H
 

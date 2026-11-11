@@ -1,0 +1,18 @@
+# Full Winter2023 central Z->bb campaign. Generate and inspect the 600 job cards
+# before submitting; each card contains its input chunk and runner settings.
+REPO_DIR = /afs/cern.ch/user/r/rquaglia/work/fcc_ee/fccee_lblgamma_study
+JOB_SPECS = $(REPO_DIR)/condor/zbb_winter2023_full/jobs.txt
+
+universe = vanilla
+executable = $(REPO_DIR)/scripts/run_zbb_preselection_shard.sh
+arguments = "$(JOB_SPEC)"
+initialdir = $(REPO_DIR)
+request_cpus = 4
+request_memory = 8 GB
+request_disk = 5 GB
+should_transfer_files = NO
+getenv = True
+output = /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/condor_logs/job.$(Process).out
+error = /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/condor_logs/job.$(Process).err
+log = /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/zbb_full_condor/condor_logs/condor.log
+queue JOB_SPEC from $(JOB_SPECS)

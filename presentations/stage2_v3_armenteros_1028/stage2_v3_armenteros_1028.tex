@@ -1,0 +1,42 @@
+\documentclass[aspectratio=169,10pt]{beamer}
+\usetheme{Boadilla}
+\usepackage{graphicx,booktabs}
+\title{v3 post-BDT Armenteros study}
+\subtitle{K$^0_S$ pair contamination in 1,028 Z$\to b\bar b$ chunks}
+\author{FCC-ee $\Lambda_b\to\Lambda\gamma$ analysis}
+\date{3 October 2026}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}{Fixed input and question}
+\begin{itemize}
+\item Offline: $|m(p\pi)-m_\Lambda|\leq12.5$ MeV, $E_{\Lambda_b}\geq10.5$ GeV; no photon veto.
+\item Frozen XGBoost score $\geq0.9787055254$; 100,000 forced signal events and 376,723,929 processed Zbb input events.
+\item After score: 228 nonmatched Zbb candidates, including 165 true $K^0_S\to\pi\pi$ pairs assigned $p\pi$.
+\item Veto proposal: $0.67\leq|\alpha|\leq0.78$ \emph{and} $0.075\leq q_T\leq0.120$ GeV. Reconstructed fitted-track variables only; ancestry is diagnostic.
+\end{itemize}
+\end{frame}
+\begin{frame}{Armenteros geometry after the fixed score}
+\centering\includegraphics[height=.80\textheight]{figures/broad_plane.png}
+\end{frame}
+\begin{frame}{Validation and test retention}
+\centering\includegraphics[height=.80\textheight]{figures/broad_retention.png}
+\end{frame}
+\begin{frame}{Counted effect and PI decision}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Test partition & Direct signal & Other Zbb & True $K^0_S$ pair\\
+\midrule
+Fixed score & 5,719 & 56 & 37\\
+Also Armenteros veto & 4,568 & 18 & 1\\
+\bottomrule
+\end{tabular}
+\vspace{.5em}
+\begin{itemize}
+\item Projected test S/B: 233,460/657,999 before; 186,474/211,500 after. Central purity 26.2\% $\to$ 46.9\%.
+\item The 18 test Zbb candidates imply a 95\% Poisson B interval 125,348--334,261. Zcc/Zss are absent.
+\item About 20\% of direct signal is lost. The box was explored after inspecting both partitions; the test is descriptive, not a blinded veto validation.
+\item Request: inspect this tradeoff, compare the reconstructed $\pi\pi$ mass veto, then validate on fresh chunks before adoption.
+\end{itemize}
+\end{frame}
+\end{document}

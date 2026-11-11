@@ -1,0 +1,30 @@
+# v4 pointing and Stage 1 reprocessing deck
+
+Build with `bash build.sh`. The PDF contains six slides on the saved v4 photon
+information, the reco-hit to truth-direction sequence, six offline angular smearing points, the paired 200-event signal
+check, Zbb/Zcc/Zss Condor preparation, and the available 100k forced modes.
+
+The slide figure is copied from
+`docs/figures/stage1_v4_pointing_validation.png` (SHA-256 recorded below).
+The frozen data and the paired Stage 1 commands are documented in
+`docs/data/stage1_v4_pointing_validation/manifest.json` and
+`docs/STAGE1_V4_POINTING_REVIEW_2026-10-05.md`. Condor check-only and forced
+sample inventory logs are frozen under
+`docs/data/stage1_v4_pointing_jobs_20261005/`.
+
+SHA-256 source record:
+
+```text
+5890c8bb050548fbc32c577e395986cd9d60a8b7d44b6adf7ebfd1de2ece3c34  presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.tex
+242f6eb1cc565d4d5fc26e0d85175462a5683ae63231072803e6f929cff56378  presentations/stage1_v4_pointing_20261005/stage1_v4_pointing_20261005.pdf
+ec4bbd0495a45685bac6973e1ef4c03941e08dd4b89f73b2176b8f8419b7e902  presentations/stage1_v4_pointing_20261005/build.sh
+e9d03dddefece571f7b1c18eb6056ff5424c21f91a645134f1103771348a5386  presentations/stage1_v4_pointing_20261005/figures/stage1_v4_pointing_validation.png
+e9d03dddefece571f7b1c18eb6056ff5424c21f91a645134f1103771348a5386  docs/figures/stage1_v4_pointing_validation.png
+ed6dfe06bd613a462cbd6a94fc913ba40694c1ea6c897d6cd112d518b6dd1e0c  docs/data/stage1_v4_pointing_validation/validation.json
+6bbaa93d0ef58d39e616cb3964e0cfcd3b730800eb78e58929c848d4a0016807  docs/data/stage1_v4_pointing_jobs_20261005/condor_check_only.log
+495746bb0c57366c7326f7c530b512c5eb83b976d3999ab81d0046bca2121aa1  docs/data/stage1_v4_pointing_jobs_20261005/forced_100k_inventory.log
+d12de046f6ac1c32eff4fe2bd3ce7cd05606cb71c6b2106c06e3aa6ca5939e3a  analysis/studies/analysis_preselection_v4.py
+ab84f63cb65d96aa6aa03b831233f731a5c0f7fb71127ecd2983167ad8426635  analysis/studies/photon_pointing_v4.h
+daa55f9e67c8275375129e289b9d5a79992552a79c1a3e8348e2519618bee5c9  scripts/submit_stage1_v4_zflavours.sh
+4de04101d0cb39d5e7d2b0662cbeec5101a36b51a548c8e847e2dacbc4dd88fe  scripts/run_stage1_v4_forced_100k.sh
+```

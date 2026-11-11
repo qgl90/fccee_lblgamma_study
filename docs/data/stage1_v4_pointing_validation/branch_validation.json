@@ -1,0 +1,15 @@
+{
+  "stage1_scenario": "v3",
+  "input": "outputs/analysis/studies/pointing_trial_v4/signal_200_validated_stage1_v4.root",
+  "root_bytes": 839985,
+  "processed_input_events": 200,
+  "candidate_bearing_output_events": 121,
+  "validated_output_events": 121,
+  "complete_validation": true,
+  "candidate_rows_validated": 133,
+  "direct_truth_matched_candidates_validated": 118,
+  "checked_candidate_vector_branches": 10,
+  "validation_scope": "required_v3_vectors",
+  "branch_schema_sha256": "122ad3c0221225197656f09206177a125a6b6aa3872cc81baff9c586f2b7f2e7",
+  "candidate_vector_lengths": "passed"
+}

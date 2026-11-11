@@ -1,0 +1,186 @@
+{
+  "input": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+  "input_bytes": 686453206,
+  "input_sha256": "f483c59cc2fc1274d439c76a2232f272d1c6d54737ddeece6889fb4edb8740dc",
+  "script_sha256": "e1cef6c05d34827fbd87fe4e327fdc22ef600e49a7bf18a407678e53d01914fd",
+  "geometry_module_sha256": "148382c98cc09dead6c18b6f038681474d637ae421c8204d1d63a618d571f3c3",
+  "command_arguments": [
+    "studies/resolutions/run_photon_pointing_pilot.py",
+    "--input",
+    "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+    "--events",
+    "200",
+    "--output-dir",
+    "docs/data/v3_photon_pointing_200events"
+  ],
+  "repository_head_at_run": "9748881bbc8d1f82904d174912f6f4c11267ccdd",
+  "config": {
+    "scenario": "v3_offline_photon_pointing_idealized",
+    "geometry": {
+      "barrel_radius_mm": 2250.0,
+      "endcap_abs_z_mm": 2500.0,
+      "endcap_inner_radius_mm": 249.5539241720568,
+      "endcap_outer_radius_mm": 2250.0
+    },
+    "geometry_basis": "200-event hit audit plus eta_max=3: endcap inner radius = 2500/sinh(3). Effective fast-simulation surface, not a detailed ECAL layout.",
+    "pointing_sigma_mrad": [
+      0.0,
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0
+    ],
+    "sigma_definition": "Gaussian standard deviation per orthogonal tangent-plane angular component; small-angle radial RMS = sqrt(2)*sigma",
+    "seed": 20261005,
+    "hit_anchor": "intersection of origin-based reconstructed photon direction with the active surface",
+    "position_response": "Inherited from existing reconstructed direction; no additional position smearing",
+    "selection": "Diagnostic only; existing Stage 1 and BDT selections are not recomputed"
+  },
+  "config_sha256": "7514d7dbd6622df32b21e19ef9ad89cc4b06982851deaeedfc9cc56e0a317961",
+  "events": 200,
+  "all_reco_type22_photons": 3632,
+  "unique_stable_mc_photons": 3621,
+  "unmatched_or_nonunique_or_nonphoton": 11,
+  "geometry_invalid_or_outside_aperture": 0,
+  "pv_assumption_mm": [
+    0,
+    0,
+    0
+  ],
+  "scope": "200-event Stage 0 object diagnostic; no Stage 1, BDT, or Zss rejection estimate",
+  "scenarios": {
+    "sigma_0mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.442431056856461,
+          "q50": 18.275825733574166,
+          "q84": 29.6341371272828,
+          "q95": 39.278586425868255
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.92312961489716,
+          "q50": 19.78715079397159,
+          "q84": 34.92766389213826,
+          "q95": 44.43163527996442
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_0p1mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.492101687380027,
+          "q50": 18.105781251038835,
+          "q84": 29.595314819278187,
+          "q95": 39.627843357574136
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.813669552030767,
+          "q50": 19.777938211944303,
+          "q84": 34.86653753160578,
+          "q95": 44.64169786636093
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_0p5mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.124462525260549,
+          "q50": 18.13553212638791,
+          "q84": 29.527202469672577,
+          "q95": 39.86344036577055
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.72722186649703,
+          "q50": 19.83090788219563,
+          "q84": 35.12132000261653,
+          "q95": 45.092656218066146
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_1mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.004519827501406,
+          "q50": 18.11701671131995,
+          "q84": 31.001143492323575,
+          "q95": 39.38366036545769
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.785597760310448,
+          "q50": 20.05739736208934,
+          "q84": 35.3831272664752,
+          "q95": 45.647268847870144
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_2mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.862419202515418,
+          "q50": 17.842869824870505,
+          "q84": 31.841589010296197,
+          "q95": 39.30589964362503
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 9.386531884009266,
+          "q50": 21.018354478968398,
+          "q84": 36.41766858690313,
+          "q95": 47.59124378403585
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_5mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 11.541532780328696,
+          "q50": 21.581242716459208,
+          "q84": 39.70384825466505,
+          "q95": 49.49704036624198
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 12.618831573438808,
+          "q50": 25.746973532308267,
+          "q84": 43.02054204842158,
+          "q95": 57.385616332582494
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    }
+  }
+}

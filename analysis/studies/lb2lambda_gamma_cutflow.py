@@ -1,3 +1,4 @@
+# Author: Renato Quagliani (rquaglia@cern.ch)
 """Truth-diagnostic event cutflow for the configured Gamma reconstruction.
 
 Run with fccanalysis run and --nevents 1000 on the Gamma signal EDM4hep file.

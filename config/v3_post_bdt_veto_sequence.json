@@ -1,0 +1,32 @@
+{
+  "N_Z": 6000000000000.0,
+  "f_Lambdab_per_b": 0.10,
+  "branching_fractions": {
+    "Zbb": 0.15,
+    "Zcc": 0.1203,
+    "Zss": 0.156,
+    "Lb_to_Lambda_gamma": 7.1e-6,
+    "Lambda_to_p_pi": 0.639
+  },
+  "Z_branching_sources": {
+    "Zcc": "PDG 2025 Z-boson listing: B(Z to ccbar)=(12.03 +/- 0.21)%",
+    "Zss": "PDG 2025 Z-boson listing gives (ddbar+ssbar+bbbar)/3=(15.6 +/- 0.4)%; using it for ssbar assumes equal down-type fractions, not a direct strange-only measurement",
+    "url": "https://pdg.lbl.gov/2025/listings/rpp2025-list-z-boson.pdf"
+  },
+  "signal_generated_direct_decays": 100002,
+  "mass_window_gev": [5.4, 5.9],
+  "armenteros_reject_box": {
+    "abs_alpha_min": 0.67,
+    "abs_alpha_max": 0.78,
+    "qt_min_gev": 0.075,
+    "qt_max_gev": 0.120
+  },
+  "photon_veto": {
+    "pair_definition": "same_hemi_all",
+    "pi0_mass_gev": 0.1349768,
+    "pi0_half_window_mev": 20,
+    "eta_mass_gev": 0.547862,
+    "eta_half_window_mev": 50
+  },
+  "interpretation": "The four staged curves are separate sample estimates. Forced eta/pi0 modes may overlap inclusive Zbb; do not sum them with Zbb before overlap audit."
+}

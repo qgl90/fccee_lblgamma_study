@@ -1,0 +1,316 @@
+{
+  "config": "config/v3_post_bdt_veto_sequence.json",
+  "config_sha256": "7a934dfac487ffa7de2a9a7bf9555293716198bad108081e8f6c4b172aed8acd",
+  "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66",
+  "bdt_score": 0.9538269639015198,
+  "zbb_catalog": "docs/data/stage2_v3_bdt_1091_peak/20261003_1091chunks.json",
+  "zbb_catalog_sha256": "40121821162fb42d01ffa60715f1a167b6e6ef5ed31bee405816bf6dcac1a038",
+  "input_files": {
+    "signal": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261004_1091chunks/scored_selected/signal_-1_selected.parquet",
+    "eta": "/tmp/v3_eta_physics_100k_stage2_bdt1091peak/bdt_selected/lb_lambdaeta_physics_v3_-5.parquet",
+    "pi0": "/tmp/v3_pi0_physics_100k_stage2_bdt1091peak/bdt_selected/lb_lambdapi0_physics_v3_-4.parquet",
+    "zbb_scored_dir": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage2_v3_incremental/models/20261004_1091chunks/scored_selected"
+  },
+  "scales_per_candidate": {
+    "signal": 8.166256674866503,
+    "signal_wrong": 8.166256674866503,
+    "zbb": 2274.8876749565875,
+    "eta": 4.2102840960000005,
+    "pi0": 0.01795836398860057
+  },
+  "raw_diagnostics": {
+    "zbb_direct_signal_after_bdt": 427,
+    "signal_wrong_after_bdt": 203
+  },
+  "stages": {
+    "post_bdt": {
+      "signal": {
+        "candidate_rows": 37802,
+        "candidate_bearing_events": 37802,
+        "peak_candidate_rows": 36900,
+        "peak_candidate_bearing_events": 36900,
+        "expected_full_mass_candidates": 308700.83482330356,
+        "expected_peak_candidates": 301334.87130257394,
+        "expected_peak_mc_95pct_candidate_interval": [
+          298268.04389348644,
+          304425.3759868838
+        ],
+        "peak_conditional_retention": null,
+        "peak_cumulative_retention": 1.0
+      },
+      "signal_wrong": {
+        "candidate_rows": 203,
+        "candidate_bearing_events": 203,
+        "peak_candidate_rows": 168,
+        "peak_candidate_bearing_events": 168,
+        "expected_full_mass_candidates": 1657.7501049979,
+        "expected_peak_candidates": 1371.9311213775725,
+        "expected_peak_mc_95pct_candidate_interval": [
+          1172.3148270554045,
+          1595.7932775284103
+        ],
+        "peak_conditional_retention": null,
+        "peak_cumulative_retention": 1.0
+      },
+      "zbb": {
+        "candidate_rows": 528,
+        "candidate_bearing_events": 528,
+        "peak_candidate_rows": 242,
+        "peak_candidate_bearing_events": 242,
+        "expected_full_mass_candidates": 1201140.692377078,
+        "expected_peak_candidates": 550522.8173394941,
+        "expected_peak_mc_95pct_candidate_interval": [
+          483340.9071973501,
+          624430.8805873164
+        ],
+        "peak_conditional_retention": null,
+        "peak_cumulative_retention": 1.0
+      },
+      "eta": {
+        "candidate_rows": 11125,
+        "candidate_bearing_events": 11123,
+        "peak_candidate_rows": 3120,
+        "peak_candidate_bearing_events": 3118,
+        "expected_full_mass_candidates": 46839.41056800001,
+        "expected_peak_candidates": 13136.086379520002,
+        "expected_peak_mc_95pct_candidate_interval": [
+          12679.155106147502,
+          13605.277182578617
+        ],
+        "peak_conditional_retention": null,
+        "peak_cumulative_retention": 1.0
+      },
+      "pi0": {
+        "candidate_rows": 11512,
+        "candidate_bearing_events": 11506,
+        "peak_candidate_rows": 5937,
+        "peak_candidate_bearing_events": 5937,
+        "expected_full_mass_candidates": 206.73668623676977,
+        "expected_peak_candidates": 106.6188070003216,
+        "expected_peak_mc_95pct_candidate_interval": [
+          103.92380185988341,
+          109.36601712380141
+        ],
+        "peak_conditional_retention": null,
+        "peak_cumulative_retention": 1.0
+      }
+    },
+    "post_bdt_armenteros": {
+      "signal": {
+        "candidate_rows": 29038,
+        "candidate_bearing_events": 29038,
+        "peak_candidate_rows": 28345,
+        "peak_candidate_bearing_events": 28345,
+        "expected_full_mass_candidates": 237131.7613247735,
+        "expected_peak_candidates": 231472.54544909103,
+        "expected_peak_mc_95pct_candidate_interval": [
+          228785.59513143887,
+          234183.17890578645
+        ],
+        "peak_conditional_retention": 0.7681571815718157,
+        "peak_cumulative_retention": 0.7681571815718157
+      },
+      "signal_wrong": {
+        "candidate_rows": 160,
+        "candidate_bearing_events": 160,
+        "peak_candidate_rows": 129,
+        "peak_candidate_bearing_events": 129,
+        "expected_full_mass_candidates": 1306.6010679786405,
+        "expected_peak_candidates": 1053.4471110577788,
+        "expected_peak_mc_95pct_candidate_interval": [
+          879.5126114379431,
+          1251.7123626530672
+        ],
+        "peak_conditional_retention": 0.7678571428571429,
+        "peak_cumulative_retention": 0.7678571428571429
+      },
+      "zbb": {
+        "candidate_rows": 156,
+        "candidate_bearing_events": 156,
+        "peak_candidate_rows": 35,
+        "peak_candidate_bearing_events": 35,
+        "expected_full_mass_candidates": 354882.4772932276,
+        "expected_peak_candidates": 79621.06862348056,
+        "expected_peak_mc_95pct_candidate_interval": [
+          55458.99161794075,
+          110733.6321716141
+        ],
+        "peak_conditional_retention": 0.1446280991735537,
+        "peak_cumulative_retention": 0.1446280991735537
+      },
+      "eta": {
+        "candidate_rows": 8488,
+        "candidate_bearing_events": 8486,
+        "peak_candidate_rows": 2338,
+        "peak_candidate_bearing_events": 2336,
+        "expected_full_mass_candidates": 35736.89140684801,
+        "expected_peak_candidates": 9843.644216448001,
+        "expected_peak_mc_95pct_candidate_interval": [
+          9448.638717751088,
+          10250.920645067294
+        ],
+        "peak_conditional_retention": 0.7493589743589744,
+        "peak_cumulative_retention": 0.7493589743589744
+      },
+      "pi0": {
+        "candidate_rows": 9595,
+        "candidate_bearing_events": 9590,
+        "peak_candidate_rows": 4699,
+        "peak_candidate_bearing_events": 4699,
+        "expected_full_mass_candidates": 172.31050247062248,
+        "expected_peak_candidates": 84.38635238243408,
+        "expected_peak_mc_95pct_candidate_interval": [
+          81.99062727055053,
+          86.83431069671028
+        ],
+        "peak_conditional_retention": 0.7914771770254337,
+        "peak_cumulative_retention": 0.7914771770254337
+      }
+    },
+    "post_bdt_armenteros_pi0": {
+      "signal": {
+        "candidate_rows": 28709,
+        "candidate_bearing_events": 28709,
+        "peak_candidate_rows": 28021,
+        "peak_candidate_bearing_events": 28021,
+        "expected_full_mass_candidates": 234445.06287874244,
+        "expected_peak_candidates": 228826.67828643427,
+        "expected_peak_mc_95pct_candidate_interval": [
+          226155.17324433464,
+          231521.86674114
+        ],
+        "peak_conditional_retention": 0.9885694125948139,
+        "peak_cumulative_retention": 0.7593766937669376
+      },
+      "signal_wrong": {
+        "candidate_rows": 150,
+        "candidate_bearing_events": 150,
+        "peak_candidate_rows": 124,
+        "peak_candidate_bearing_events": 124,
+        "expected_full_mass_candidates": 1224.9385012299754,
+        "expected_peak_candidates": 1012.6158276834464,
+        "expected_peak_mc_95pct_candidate_interval": [
+          842.2414549377738,
+          1207.334616773566
+        ],
+        "peak_conditional_retention": 0.9612403100775194,
+        "peak_cumulative_retention": 0.7380952380952381
+      },
+      "zbb": {
+        "candidate_rows": 154,
+        "candidate_bearing_events": 154,
+        "peak_candidate_rows": 35,
+        "peak_candidate_bearing_events": 35,
+        "expected_full_mass_candidates": 350332.70194331446,
+        "expected_peak_candidates": 79621.06862348056,
+        "expected_peak_mc_95pct_candidate_interval": [
+          55458.99161794075,
+          110733.6321716141
+        ],
+        "peak_conditional_retention": 1.0,
+        "peak_cumulative_retention": 0.1446280991735537
+      },
+      "eta": {
+        "candidate_rows": 8443,
+        "candidate_bearing_events": 8441,
+        "peak_candidate_rows": 2324,
+        "peak_candidate_bearing_events": 2322,
+        "expected_full_mass_candidates": 35547.428622528,
+        "expected_peak_candidates": 9784.700239104,
+        "expected_peak_mc_95pct_candidate_interval": [
+          9390.891213563144,
+          10190.780449671713
+        ],
+        "peak_conditional_retention": 0.9940119760479041,
+        "peak_cumulative_retention": 0.7448717948717949
+      },
+      "pi0": {
+        "candidate_rows": 7375,
+        "candidate_bearing_events": 7372,
+        "peak_candidate_rows": 3650,
+        "peak_candidate_bearing_events": 3650,
+        "expected_full_mass_candidates": 132.44293441592922,
+        "expected_peak_candidates": 65.54802855839209,
+        "expected_peak_mc_95pct_candidate_interval": [
+          63.43860869920936,
+          67.70971603165758
+        ],
+        "peak_conditional_retention": 0.7767610129814855,
+        "peak_cumulative_retention": 0.6147886137780023
+      }
+    },
+    "post_bdt_armenteros_pi0_eta": {
+      "signal": {
+        "candidate_rows": 24434,
+        "candidate_bearing_events": 24434,
+        "peak_candidate_rows": 23849,
+        "peak_candidate_bearing_events": 23849,
+        "expected_full_mass_candidates": 199534.31559368814,
+        "expected_peak_candidates": 194757.05543889123,
+        "expected_peak_mc_95pct_candidate_interval": [
+          192293.03974841183,
+          197244.7585481264
+        ],
+        "peak_conditional_retention": 0.8511116662503123,
+        "peak_cumulative_retention": 0.6463143631436314
+      },
+      "signal_wrong": {
+        "candidate_rows": 122,
+        "candidate_bearing_events": 122,
+        "peak_candidate_rows": 103,
+        "peak_candidate_bearing_events": 103,
+        "expected_full_mass_candidates": 996.2833143337134,
+        "expected_peak_candidates": 841.1244375112498,
+        "expected_peak_mc_95pct_candidate_interval": [
+          686.5530276773382,
+          1020.1080043516571
+        ],
+        "peak_conditional_retention": 0.8306451612903226,
+        "peak_cumulative_retention": 0.6130952380952381
+      },
+      "zbb": {
+        "candidate_rows": 127,
+        "candidate_bearing_events": 127,
+        "peak_candidate_rows": 27,
+        "peak_candidate_bearing_events": 27,
+        "expected_full_mass_candidates": 288910.7347194866,
+        "expected_peak_candidates": 61421.967223827865,
+        "expected_peak_mc_95pct_candidate_interval": [
+          40477.46343115737,
+          89365.7375326403
+        ],
+        "peak_conditional_retention": 0.7714285714285715,
+        "peak_cumulative_retention": 0.1115702479338843
+      },
+      "eta": {
+        "candidate_rows": 2279,
+        "candidate_bearing_events": 2279,
+        "peak_candidate_rows": 457,
+        "peak_candidate_bearing_events": 457,
+        "expected_full_mass_candidates": 9595.237454784,
+        "expected_peak_candidates": 1924.0998318720003,
+        "expected_peak_mc_95pct_candidate_interval": [
+          1751.713117450066,
+          2108.8640796521536
+        ],
+        "peak_conditional_retention": 0.19664371772805508,
+        "peak_cumulative_retention": 0.14647435897435898
+      },
+      "pi0": {
+        "candidate_rows": 6505,
+        "candidate_bearing_events": 6503,
+        "peak_candidate_rows": 3321,
+        "peak_candidate_bearing_events": 3321,
+        "expected_full_mass_candidates": 116.81915774584671,
+        "expected_peak_candidates": 59.6397268061425,
+        "expected_peak_mc_95pct_candidate_interval": [
+          57.62840943803411,
+          61.70332580827505
+        ],
+        "peak_conditional_retention": 0.9098630136986301,
+        "peak_cumulative_retention": 0.5593734209196564
+      }
+    }
+  },
+  "overlap_note": "The four staged curves are separate sample estimates. Forced eta/pi0 modes may overlap inclusive Zbb; do not sum them with Zbb before overlap audit."
+}

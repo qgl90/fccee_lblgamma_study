@@ -1,0 +1,104 @@
+{
+  "mode": "eta_physics",
+  "stage2_manifest": "/tmp/v3_eta_physics_100k_stage2_bdt1091peak/manifest.json",
+  "generated_audit": "/tmp/v3_eta_physics_100k_generated_audit.json",
+  "branching_config": "config/v3_pseudoscalar_branching_scenarios.json",
+  "generated_input_events": 100000,
+  "generated_direct_decays": 100000,
+  "generated_charge_counts": {
+    "Lambda_b": 49808,
+    "anti_Lambda_b": 50192
+  },
+  "reconstruction_hypothesis": "Lambda_b to Lambda gamma with one eta/pi0 daughter photon",
+  "offline_scenario": "lambda12p5_lbE10p5_same_hemi_all",
+  "bdt_score": 0.9538269639015198,
+  "model_sha256": "e2890376c7738ca1010758bee765aa62f2425d9c18e2522f08f3b77004de5b66",
+  "signal_peak_window_gev": [
+    5.4,
+    5.9
+  ],
+  "stages": {
+    "audit": {
+      "candidate_rows": 44717,
+      "candidate_bearing_events": 41752,
+      "direct_partial_candidate_rows": 39568,
+      "direct_partial_events": 39568,
+      "wrong_or_unmatched_candidate_rows": 5149,
+      "peak_candidate_rows": 8774,
+      "peak_candidate_events": 8624,
+      "peak_direct_partial_rows": 7590,
+      "peak_direct_partial_events": 7590,
+      "peak_wrong_or_unmatched_rows": 1184,
+      "candidate_rate_per_generated_decay_full_mass": 0.44717,
+      "candidate_rate_per_generated_decay_peak": 0.08774
+    },
+    "offline_selected": {
+      "candidate_rows": 35267,
+      "candidate_bearing_events": 34072,
+      "direct_partial_candidate_rows": 32675,
+      "direct_partial_events": 32675,
+      "wrong_or_unmatched_candidate_rows": 2592,
+      "peak_candidate_rows": 8213,
+      "peak_candidate_events": 8127,
+      "peak_direct_partial_rows": 7513,
+      "peak_direct_partial_events": 7513,
+      "peak_wrong_or_unmatched_rows": 700,
+      "candidate_rate_per_generated_decay_full_mass": 0.35267,
+      "candidate_rate_per_generated_decay_peak": 0.08213,
+      "conditional_candidate_retention": 0.7886709752443143,
+      "conditional_candidate_bearing_event_retention": 0.8160567158459475,
+      "conditional_direct_partial_retention": 0.8257935705620704,
+      "cumulative_candidate_retention_from_stage1": 0.7886709752443143,
+      "cumulative_candidate_bearing_event_retention_from_stage1": 0.8160567158459475
+    },
+    "bdt_selected": {
+      "candidate_rows": 11125,
+      "candidate_bearing_events": 11123,
+      "direct_partial_candidate_rows": 11042,
+      "direct_partial_events": 11042,
+      "wrong_or_unmatched_candidate_rows": 83,
+      "peak_candidate_rows": 3120,
+      "peak_candidate_events": 3118,
+      "peak_direct_partial_rows": 3099,
+      "peak_direct_partial_events": 3099,
+      "peak_wrong_or_unmatched_rows": 21,
+      "candidate_rate_per_generated_decay_full_mass": 0.11125,
+      "candidate_rate_per_generated_decay_peak": 0.0312,
+      "conditional_candidate_retention": 0.31545070462471997,
+      "conditional_candidate_bearing_event_retention": 0.3264557407842216,
+      "conditional_direct_partial_retention": 0.3379342004590666,
+      "cumulative_candidate_retention_from_stage1": 0.24878681485788404,
+      "cumulative_candidate_bearing_event_retention_from_stage1": 0.2664063996934279
+    }
+  },
+  "branching_scenario": {
+    "meson_pdg": 221,
+    "BR_Lambdab_to_Lambda_meson": 9.3e-06,
+    "BR_Lambdab_to_Lambda_meson_range": [
+      4e-06,
+      1.66e-05
+    ],
+    "BR_meson_to_gamma_gamma": 0.3936,
+    "parent_br_kind": "LHCb 2015 evidence central value; asymmetric uncertainty +7.3/-5.3e-6",
+    "parent_br_source": "https://arxiv.org/abs/1505.03295",
+    "daughter_br_source": "https://pdg.lbl.gov/2025/listings/rpp2025-list-eta.pdf"
+  },
+  "yield_formula": "N_Z*BR_Zbb*2*f_Lambdab*BR_mode*BR_Lambda_p_pi*BR_meson_gamma_gamma*candidate_rows/generated_direct_decays",
+  "projected_candidates": {
+    "factor_before_selection": 421028.4096000001,
+    "peak_candidates": 13136.086379520002,
+    "peak_direct_partial": 13047.670413504002,
+    "peak_wrong_or_unmatched": 88.41596601600001,
+    "full_mass_candidates": 46839.410568000014,
+    "peak_candidates_per_1e_minus_6_parent_br": 1412.4824064,
+    "peak_candidates_mc_95pct_poisson_interval": [
+      12679.155106147502,
+      13605.277182578617
+    ],
+    "peak_candidates_parent_br_range": [
+      5649.929625600001,
+      23447.207946240003
+    ],
+    "mc_interval_scope": "Approximate Poisson candidate-count interval; candidate correlations, parent branching-fraction, detector and model uncertainties excluded"
+  }
+}

@@ -1,0 +1,2 @@
+# One known Winter2023 central Z->bb file for the 1,000-event Condor smoke test.
+/eos/experiment/fcc/ee/generation/DelphesEvents/winter2023/IDEA/p8_ee_Zbb_ecm91/events_000083138.root

@@ -1,0 +1,296 @@
+{
+  "scenario": "lambda12p5_lbE10p5_same_hemi_all",
+  "fixed_score": 0.9787055253982544,
+  "veto_box": {
+    "abs_alpha_min": 0.7,
+    "abs_alpha_max": 0.75,
+    "qt_min_gev": 0.09,
+    "qt_max_gev": 0.11
+  },
+  "definition": "veto if abs(saved reconstructed arm_alpha) in interval AND saved reconstructed arm_qt in interval",
+  "model_manifest_sha256": "6b199bf1ad2f0e6be144c2e1c2cf2c2d81ec64ed7e486d9792ef48c711c100f5",
+  "training_summary_sha256": "0667cacc570974dcc522bd5fcb7c6ec6469a8c51125ab2ed0386ca5bdd6f8576",
+  "projection_sha256": "2344b7d44db447173b322c02837aa0c2d284475f35bfe8a90a4ab925f32057eb",
+  "zbb_scored_shards": 1028,
+  "denominators_input_events": {
+    "all": {
+      "signal": 100000,
+      "zbb": 376723929
+    },
+    "test": {
+      "signal": 20005,
+      "zbb": 76595888
+    }
+  },
+  "partitions": {
+    "all": {
+      "direct_signal": {
+        "before": {
+          "candidates": 28940,
+          "events": 28940
+        },
+        "after": {
+          "candidates": 26501,
+          "events": 26501
+        },
+        "conditional_candidate_retention": 0.9157221838286109
+      },
+      "signal_wrong_combination": {
+        "before": {
+          "candidates": 139,
+          "events": 139
+        },
+        "after": {
+          "candidates": 128,
+          "events": 128
+        },
+        "conditional_candidate_retention": 0.920863309352518
+      },
+      "zbb_other": {
+        "before": {
+          "candidates": 228,
+          "events": 228
+        },
+        "after": {
+          "candidates": 154,
+          "events": 154
+        },
+        "conditional_candidate_retention": 0.6754385964912281
+      },
+      "zbb_direct": {
+        "before": {
+          "candidates": 301,
+          "events": 301
+        },
+        "after": {
+          "candidates": 268,
+          "events": 268
+        },
+        "conditional_candidate_retention": 0.8903654485049833
+      },
+      "zbb_kshort_fake": {
+        "before": {
+          "candidates": 165,
+          "events": 165
+        },
+        "after": {
+          "candidates": 93,
+          "events": 93
+        },
+        "conditional_candidate_retention": 0.5636363636363636
+      },
+      "before_expected": {
+        "signal": 236336.1948,
+        "zbb_other": 544695.95426204,
+        "zbb_95pct_interval": [
+          476282.6800617524,
+          620177.2882085432
+        ],
+        "central_purity": 0.3025947076363268
+      },
+      "after_expected": {
+        "signal": 216418.29642,
+        "zbb_other": 367908.67086120247,
+        "zbb_95pct_interval": [
+          312096.5320404877,
+          430821.7057428728
+        ],
+        "central_purity": 0.37037191253890994
+      },
+      "zbb_pair_origin_before": {
+        "Kshort pi/pi assigned p/pi": 165,
+        "True Lambda pair": 55,
+        "Other or unmatched pair": 8
+      },
+      "zbb_pair_origin_after": {
+        "Kshort pi/pi assigned p/pi": 93,
+        "True Lambda pair": 53,
+        "Other or unmatched pair": 8
+      },
+      "zbb_photon_origin_before": {
+        "Other or unmatched photon": 177,
+        "direct Lambda_b photon": 45,
+        "pi0 photon": 5,
+        "eta photon": 1
+      },
+      "zbb_photon_origin_after": {
+        "Other or unmatched photon": 106,
+        "direct Lambda_b photon": 43,
+        "pi0 photon": 5
+      }
+    },
+    "validation": {
+      "direct_signal": {
+        "before": {
+          "candidates": 2877,
+          "events": 2877
+        },
+        "after": {
+          "candidates": 2652,
+          "events": 2652
+        },
+        "conditional_candidate_retention": 0.921793534932221
+      },
+      "signal_wrong_combination": {
+        "before": {
+          "candidates": 14,
+          "events": 14
+        },
+        "after": {
+          "candidates": 12,
+          "events": 12
+        },
+        "conditional_candidate_retention": 0.8571428571428571
+      },
+      "zbb_other": {
+        "before": {
+          "candidates": 28,
+          "events": 28
+        },
+        "after": {
+          "candidates": 17,
+          "events": 17
+        },
+        "conditional_candidate_retention": 0.6071428571428571
+      },
+      "zbb_direct": {
+        "before": {
+          "candidates": 29,
+          "events": 29
+        },
+        "after": {
+          "candidates": 25,
+          "events": 25
+        },
+        "conditional_candidate_retention": 0.8620689655172413
+      },
+      "zbb_kshort_fake": {
+        "before": {
+          "candidates": 19,
+          "events": 19
+        },
+        "after": {
+          "candidates": 9,
+          "events": 9
+        },
+        "conditional_candidate_retention": 0.47368421052631576
+      },
+      "zbb_pair_origin_before": {
+        "Kshort pi/pi assigned p/pi": 19,
+        "True Lambda pair": 9
+      },
+      "zbb_pair_origin_after": {
+        "Kshort pi/pi assigned p/pi": 9,
+        "True Lambda pair": 8
+      },
+      "zbb_photon_origin_before": {
+        "Other or unmatched photon": 22,
+        "direct Lambda_b photon": 4,
+        "pi0 photon": 1,
+        "eta photon": 1
+      },
+      "zbb_photon_origin_after": {
+        "Other or unmatched photon": 12,
+        "direct Lambda_b photon": 4,
+        "pi0 photon": 1
+      }
+    },
+    "test": {
+      "direct_signal": {
+        "before": {
+          "candidates": 5719,
+          "events": 5719
+        },
+        "after": {
+          "candidates": 5195,
+          "events": 5195
+        },
+        "conditional_candidate_retention": 0.9083755901381361
+      },
+      "signal_wrong_combination": {
+        "before": {
+          "candidates": 25,
+          "events": 25
+        },
+        "after": {
+          "candidates": 24,
+          "events": 24
+        },
+        "conditional_candidate_retention": 0.96
+      },
+      "zbb_other": {
+        "before": {
+          "candidates": 56,
+          "events": 56
+        },
+        "after": {
+          "candidates": 43,
+          "events": 43
+        },
+        "conditional_candidate_retention": 0.7678571428571429
+      },
+      "zbb_direct": {
+        "before": {
+          "candidates": 59,
+          "events": 59
+        },
+        "after": {
+          "candidates": 52,
+          "events": 52
+        },
+        "conditional_candidate_retention": 0.8813559322033898
+      },
+      "zbb_kshort_fake": {
+        "before": {
+          "candidates": 37,
+          "events": 37
+        },
+        "after": {
+          "candidates": 25,
+          "events": 25
+        },
+        "conditional_candidate_retention": 0.6756756756756757
+      },
+      "before_expected": {
+        "signal": 233460.41479630093,
+        "zbb_other": 657998.7688111926,
+        "zbb_95pct_interval": [
+          497045.19861911115,
+          854466.1327880479
+        ],
+        "central_purity": 0.26188570277727125
+      },
+      "after_expected": {
+        "signal": 212069.74206448387,
+        "zbb_other": 505249.05462288,
+        "zbb_95pct_interval": [
+          365651.2460665051,
+          680567.1608552311
+        ],
+        "central_purity": 0.29564224866801075
+      },
+      "zbb_pair_origin_before": {
+        "Kshort pi/pi assigned p/pi": 37,
+        "True Lambda pair": 17,
+        "Other or unmatched pair": 2
+      },
+      "zbb_pair_origin_after": {
+        "Kshort pi/pi assigned p/pi": 25,
+        "True Lambda pair": 16,
+        "Other or unmatched pair": 2
+      },
+      "zbb_photon_origin_before": {
+        "Other or unmatched photon": 39,
+        "direct Lambda_b photon": 14,
+        "pi0 photon": 3
+      },
+      "zbb_photon_origin_after": {
+        "Other or unmatched photon": 27,
+        "direct Lambda_b photon": 13,
+        "pi0 photon": 3
+      }
+    }
+  },
+  "candidate_truth_is_diagnostic_only": true,
+  "reference_cut_changed": false
+}

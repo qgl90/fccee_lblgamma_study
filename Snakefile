@@ -34,8 +34,14 @@ PRESELECT_FULL_INPUTS = {
     "signal_phsp": f"{OUT_DIR}/Lb2LambdaGamma_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
     "signal_physics": f"{OUT_DIR}/Lb2LambdaGammaPhysics_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
     "lbgamma_eta": f"{OUT_DIR}/Lb2LambdaEta_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+    "lbgamma_eta_physics": f"{OUT_DIR}/Lb2LambdaEtaPhysics_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+    "lbgamma_pi0_phsp": f"{OUT_DIR}/Lb2LambdaPi0_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
+    "lbgamma_pi0": f"{OUT_DIR}/Lb2LambdaPi0Physics_nev{PRESELECT_GEN_EVENTS}_IDEA_edm4hep.root",
 }
-PRESELECT_FULL_SOURCE_IDS = {"signal_phsp": 100, "signal_physics": 101, "lbgamma_eta": 102}
+PRESELECT_FULL_SOURCE_IDS = {"signal_phsp": 100, "signal_physics": 101,
+                             "lbgamma_eta": 102, "lbgamma_pi0": 103,
+                             "lbgamma_eta_physics": 104,
+                             "lbgamma_pi0_phsp": 105}
 
 if PRESELECT_EVENTS <= 0 or PRESELECT_EVENTS > 1000:
     raise ValueError("preselection.events must be between 1 and 1,000 for validation")
@@ -46,7 +52,8 @@ if (PRESELECT_GEN_EVENTS <= 0 or PRESELECT_GEN_CHUNKS <= 0 or
     raise ValueError("preselection_generation.events must divide evenly by chunks")
 
 wildcard_constraints:
-    sample="|".join([*SAMPLES, *PRESELECT_SAMPLES, *PRESELECT_GEN_SAMPLES]),
+    sample="|".join([*SAMPLES, *PRESELECT_SAMPLES, *PRESELECT_FULL_INPUTS,
+                     *PRESELECT_GEN_SAMPLES]),
     chunk="|".join(str(i) for i in range(NCHUNKS))
 
 

@@ -1,11 +1,100 @@
 # Stage-1 isolation and Z-pole observables
 
+## Candidate thrust, hemisphere closure, and enlarged cones (2026-10-01)
+
+Question: preserve reconstructed observables for a Z-at-rest momentum/energy
+check and study photon isolation at wider angular scales. The stage-1 source
+now writes `lb_thrust_cos` against the original event thrust axis;
+`opp_hemi_px/py/pz/p`, `opp_hemi_energy`, `opp_hemi_n` for the reconstructed
+objects opposite the fitted Λ direction on that axis; and two residuals
+against `(0,0,0,91.2 GeV)`. `z_partial_*` uses the candidate plus opposite
+hemisphere, while `z_full_*` uses the candidate plus every other reconstructed
+object. Only the latter is a full reconstructed-event closure test. Detector
+losses and neutrinos can prevent either residual from reaching zero.
+
+The candidate-removed `all`, `charged`, and `neutral` activity families now
+also cover ΔR=0.7, 1.0, and 7.0, with px/py/pz, vector-sum magnitude,
+energy sum, multiplicity, and charged-track d0 extrema. Both 0.7 and 7.0
+are saved because the requested final radius, written “7”, was ambiguous;
+the branches are named `R07` and `R70` respectively. The 7.0 cone is a
+very broad angular sum, still restricted to the fitted Λ hemisphere.
+No new quantity is used to select candidates or train the historical BDT.
+
+Exact validation: the same first 100 input entries from
+`/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root`
+were processed directly with `--nevents 100 --ncpus 1`, the named 3D
+reconstruction config, and the observable config. Output and checks are in
+`outputs/analysis/studies/offline_bdt_session_20261001/stage1_balance_trial_100/`.
+There were 63 candidate-bearing events and 71 candidates; their event IDs,
+multiplicities, and masses matched the older Physics ROOT output on those
+same 100 input entries. The validator checked Λb thrust cosines, both
+momentum closure magnitudes, partial energy and momentum arithmetic,
+all=charged+neutral isolation, d0 sentinels, Armenteros values, and photon
+pair-list nesting. Full Physics and Zbb production still await PI execution.
+Flattening this trial retained 71 candidate rows and the new closure,
+thrust, and R07/R10/R70 activity fields; that Parquet is saved alongside
+the ROOT trial.
+
+At validation, FCCAnalyses was `0315db1e2941e2886813cb645193e348f3863d5d`.
+SHA-256: observable config `75d849f40bd64164161b11b6652c1450a1cd173482c22cf1e3607bd12d632152`,
+reconstruction config `b872906ad0b25f94299c2ba627b0804d558c407134ca01f3e212c638e6cffa18`,
+builder header `97f148caae16adb4b9f493267cfbdc6fa5ed50a93c4b7eb8c3323f45947a5872`,
+observable header `2025114a31d7cc9a978b6fcc5a88ecc017495e18b484218442f142e319b1ec0e`,
+trial ROOT `319d6ce9931a75e0068cafe562418171a93a32d2ca9259c9a6a7985f052f1738`.
+
+## New named 3D/activity scenario for the next reprocessing
+
+The historical measurements below describe earlier ROOT files and their
+Rxy-based baseline. The next reprocessing uses
+`config/lb_reco_preselection_15mev_45_65_3d.json` as a **separate
+scenario**. It disables the old Rxy distance/significance cuts and requires
+`Lxyz ≥ 0.3 mm` and full 3D PV→SV significance ≥2.0; it retains the track
+d0-significance and vertex χ² requirements. The 3D significance projects
+the sum of fitted PV and SV covariances along the full flight direction,
+including xz and yz terms. Full Physics, PHSP, and η-as-γ direct v2 tuples
+have now been produced and compared; Zbb v2 remains for the PI's Condor
+campaign. Rates from the older ROOT files remain the old scenario's rates.
+
+The same C++ observable producer is used by direct Physics processing and
+the Zbb Condor wrapper. It now saves `arm_alpha`/`arm_qt`; complete diphoton
+mass/index lists restricted to the **fitted Λ thrust hemisphere** for both
+all raw type-22 and selected `Photon#0` partners; and candidate-removed
+R=0.2, 0.3, 0.5, 0.7, 1.0, 7.0 activity. For every cone, `all`, `charged`, and `neutral`
+contain summed px, py, pz, the magnitude of their vector sum, summed
+energy, and object count. Charged activity also records finite linked-track
+PV-corrected d0 minima/maxima (signed and absolute) and `n_d0`. A no-track
+case has `n_d0=0` and `-999` extrema. The legacy isolation ratios remain
+untouched solely so older downstream code can read the new files.
+The new snapshots also include `lb_thrust_cos`, the original-thrust-axis
+opposite-hemisphere four-momentum (`opp_hemi_*`), and both partial and
+full reconstructed Z-at-rest closure residuals (`z_partial_*`, `z_full_*`).
+The partial residual omits same-side residual objects; its energy and
+momentum are not expected to peak exactly at zero even for true signal.
+
+The new pair lists and their offline scenarios live in
+`config/lb_offline_selections.json`. Apply π⁰, η, or ≥1 GeV diphoton vetoes
+using a `same_hemi_all` or `same_hemi_selected` scenario on new snapshots;
+the older `all_raw_type22` scenarios describe the old both-hemisphere
+study and are not interchangeable. A candidate with no eligible partner
+passes these vetoes.
+
+A distinct 100-event Physics trial preserved under
+`outputs/analysis/studies/offline_bdt_session_20261001/stage1_3d_activity_trial_100/`
+produced 63
+candidate-bearing events and 71 candidates. The same event keys and
+candidate masses matched the older Physics ROOT file on those 100 input
+events. `validate_stage1_activity.py` also checked all=charged+neutral,
+vector-momentum magnitudes, d0 sentinels, Armenteros variables against
+fitted three-vectors, and pair-list nesting. The companion validation JSON
+is in the same folder. These trial files are development evidence, not a
+full-sample yield comparison.
+
 The existing `lb2lambda_gamma_reco.py` stage still builds and selects the
 same Λb→Λ⁰γ candidates. `observables_stage1.py` calls
 `lb_candidate_observables.h` after candidate construction. Its vectors align
 with `lb_mass`; no new selection or truth-dependent computation is applied.
 Constants are in `config/lb_observables.json`: ECM 91.2 GeV, the Λb/Λ/π⁰
-masses, and cone radii 0.2, 0.3, 0.5. The pinned FCCAnalyses checkout is
+masses, and cone radii 0.2, 0.3, 0.5, 0.7, 1.0, 7.0. The pinned FCCAnalyses checkout is
 `pre-edm4hep1` at `91c7d6c5a5c8ad5c3848d6d7cf8383e93c9b74e3`.
 
 ## Definitions
@@ -305,3 +394,92 @@ by seven candidates, so it is a diagnostic scale, not a reliable expected
 background or angular toy template. PI decision sought: whether to pursue
 these offline variables and which Λb production fraction/scenario to use;
 the reference reconstruction selection has not changed.
+
+## v5 Stage-1 columns and flattening contract (2026-10-07)
+
+“Flattening” can refer to two different scripts; they have different output
+contracts. `flatten_candidates.py` makes a general one-row-per-candidate
+table. `prepare_offline_bdt.py` makes the Stage-1 audit and offline-selected
+tables used by the current BDT workflow.
+
+### General candidate table: `flatten_candidates.py`
+
+The script retains every candidate in the input `events` tree, including
+wrong combinations and candidates with missing MC links. It records
+`event_entry`, `candidate_slot`, and `candidates_in_event`; when supplied,
+`source_id` distinguishes files whose event numbering restarts at zero. The
+stable cross-file key is therefore `(source_id, event_entry, candidate_slot)`.
+Truth and ancestry are copied as diagnostic labels and do not filter rows.
+
+The output contains every scalar event-tree branch, repeated on candidate
+rows; explicitly mapped Λb kinematics, sign, reconstructed and truth helicity
+angles, mass and truth-match fields, Λ⁰ and daughter momenta, daughter d0
+values, and listed photon-pair diagnostics; plus the candidate-observable
+branches declared by `analysis/studies/observables_stage1.py`. Those include
+isolation and daughter-removed isolation, photon counts and pair masses and
+indices, recoil and Z-closure quantities, Armenteros values, and the cone
+activity families. Each activity family has `all`, `charged`, and `neutral`
+px/py/pz, vector-sum p, energy, and multiplicity; charged activity also has
+signed and absolute d0 extrema and a count of linked d0 values.
+
+Available `lb_*` candidate vectors and `lambda_*` Lambda-slot vectors are
+also included. Lambda-slot quantities are indexed by each candidate's
+`lb_lambda_slot`; for historical tuples with a candidate-aligned Lambda field,
+the script checks the alignment and copies it directly. Proton, pion, photon,
+and second-photon reco indices, reco momenta/energy, and listed MC
+match/ancestry fields are copied. Missing second-photon fields in gamma/Zbb
+mode receive sentinels. LHCb-style aliases (`Lb_*`, `Lambda0_*`, `Proton_*`,
+`Pion_*`, `Gamma_*`) are added alongside the original audit columns. Derived
+kinematics include p, pT, eta, and phi. Older snapshots can also have PV-line
+pointing cosine/DCA derived from fitted momentum and PV/SV coordinates;
+`pointing_derived_in_flattening` records that provenance.
+
+This is not a full event-record dump. Vector branches are included when
+explicitly mapped, declared as candidate observables, named with `lb_` or
+`lambda_` prefixes, or among the indexed leg/ancestry fields. Other
+non-scalar collections—including complete reconstructed-particle, track, or
+jet constituent collections—are not copied. A new branch outside those
+groups must be added deliberately, with its candidate alignment defined.
+
+### Offline BDT tables: `prepare_offline_bdt.py`
+
+This script uses a narrower explicit input whitelist. Its `*_audit.parquet`
+contains every candidate present in each Stage-1 ROOT `events` tree before
+the offline cuts; `*_selected.parquet` contains candidates passing the named
+offline selection. “Every candidate” here means every candidate written by
+Stage 1, after the Stage-1 builder's own requirements. It cannot restore
+combinations removed before the ROOT output was written.
+
+The tables include candidate/event identity and audit labels (`sample`,
+`source_id`, `event_entry`, `candidate_slot`, `candidates_in_event`,
+`lb_mass`, `lambda_mass`, `lb_sign`, `cos_theta_p`, `truth_matched`); stage
+flags and π⁰/η/low-mass partner distances; Λb, Λ⁰, proton, pion, and photon
+kinematics; daughter d0 significances; Λ flight and vertex quantities;
+thrust, isolation, recoil/closure, and Armenteros observables. Derived
+particle p, pT, eta, energy, selected isolation-energy-to-photon-energy
+ratios, and `lb_thrust_abs_cos` are also materialized. Available photon-pair
+mass/index lists, optional Lambda-slot and pointing fields, and proton/pion/
+photon reco indices plus copied MC PDG/ancestry labels are retained. Truth
+labels are for categorization and validation, not selection or model input.
+
+For v5, the preparation whitelist preserves all ten candidate-aligned FT
+responses: B/C/S/Q/G for both `associated` and `otherjet_max`. The current
+feature set in `config/lb_bdt_features_v5_flavtag.json` uses six: B/C/S for
+both positions. Q/G remain diagnostics. The BDT tables do not contain the
+event-level `jet_*_flavtag_v5` vectors or temporary particle-flow inputs used
+internally by Weaver.
+
+The offline preparation script does not retain every ROOT branch. Arbitrary
+scalar event fields, unlisted candidate vectors, and full event-level
+particle/track/jet collections are omitted. To add a training variable, add
+it to Stage 1 if needed, to the preparation script's read-and-write whitelist,
+and to the named feature set; then verify its presence and candidate
+alignment in the prepared Parquet.
+
+As of this note, the v5 Stage-1 producer and six-feature configuration exist.
+The current offline preparation/training path is still signal-versus-Zbb; it
+does not yet combine signal, Zbb, Zcc, and Zss chunk catalogs with physical
+weights. The presence of FT columns is not evidence of completed
+three-flavour retraining or a final expected-yield estimate. Candidate-aligned
+FT definitions and Weaver input caveats are in
+[`docs/STAGE1_V5_FLAVTAG_VARIABLES.md`](../../docs/STAGE1_V5_FLAVTAG_VARIABLES.md).

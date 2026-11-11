@@ -1,0 +1,21 @@
+{
+  "feature_sets": {
+    "v5_offline_plus_flavtag": [
+      "lb_E", "proton_p", "pion_p", "gamma_E", "lambda_p",
+      "proton_d0sig", "pion_d0sig", "lambda_flight_xyz_sig",
+      "lb_thrust_abs_cos", "iso_R03_all_energy_over_gamma_E",
+      "iso_R05_charged_n", "iso_R03_neutral_n",
+      "lambda0_iso_R05_charged_n_d0",
+      "lambda0_iso_R05_charged_absd0_min",
+      "lambda0_iso_R05_charged_absd0_max",
+      "z_partial_deltaE", "z_partial_deltaP",
+      "d_pi0", "d_eta", "min_pair",
+      "lb_flavtag_v5_recojet_isB_flavtag_v5_associated",
+      "lb_flavtag_v5_recojet_isS_flavtag_v5_associated",
+      "lb_flavtag_v5_recojet_isC_flavtag_v5_associated",
+      "lb_flavtag_v5_recojet_isB_flavtag_v5_otherjet_max",
+      "lb_flavtag_v5_recojet_isS_flavtag_v5_otherjet_max",
+      "lb_flavtag_v5_recojet_isC_flavtag_v5_otherjet_max"
+    ]
+  }
+}

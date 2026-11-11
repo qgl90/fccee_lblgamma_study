@@ -1,0 +1,17 @@
+# Separate 1M-event Stage 0 + v5 Stage 1 campaign.
+campaign:
+  name: lbgamma_physics_1m_20261006
+  sample: Lb2LambdaGammaPhysics
+  decay_file: evtgen/Lb2LambdaGamma_trpol.dec
+  total_events: 1000000
+  chunks: 10
+  events_per_chunk: 100000
+  seed_base: 72601
+  stage0_output_dir: /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage0_lbgamma_physics_1m_20261006
+  stage1_output_dir: /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/stage1_v5_lbgamma_physics_1m_20261006
+  reco_analysis: analysis/studies/lb2lambda_gamma_reco_v5.py
+  reco_config: config/lb_reco_v5_training.json
+  batch:
+    queue: workday
+    accounting_group: group_u_FCC.local_gen
+    ncpus: 4

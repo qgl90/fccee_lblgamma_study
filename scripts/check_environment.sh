@@ -13,7 +13,11 @@ for local_input in \
     evtgen/DECAY.DEC \
     evtgen/evt.pdl \
     evtgen/Lb2LambdaGamma.dec \
-    evtgen/Lb2LambdaEta.dec; do
+    evtgen/Lb2LambdaGamma_trpol.dec \
+    evtgen/Lb2LambdaEta.dec \
+    evtgen/Lb2LambdaEtaPhysics.dec \
+    evtgen/Lb2LambdaPi0PHSP.dec \
+    evtgen/Lb2LambdaPi0.dec; do
     [[ -s "$repo_dir/$local_input" ]] || { echo "Missing local input: $local_input" >&2; exit 1; }
 done
 

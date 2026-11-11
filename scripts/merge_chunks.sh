@@ -12,7 +12,9 @@ Merge and validate ordered EDM4hep chunks for one generated sample.
 Usage:
   bash scripts/merge_chunks.sh SAMPLE TOTAL_EVENTS NCHUNKS
 
-SAMPLE is Lb2LambdaGamma, Lb2LambdaGammaPhysics, or Lb2LambdaEta.
+SAMPLE is Lb2LambdaGamma, Lb2LambdaGammaPhysics,
+Lb2LambdaEta, Lb2LambdaEtaPhysics, Lb2LambdaPi0,
+or Lb2LambdaPi0Physics.
 TOTAL_EVENTS must divide evenly by NCHUNKS. Inputs are read from
 outputs/delphes/chunks/ and the merged file is written under outputs/delphes/.
 Set GEN_SETUP to choose the Key4hep generation setup script.
@@ -27,7 +29,8 @@ sample=$1
 total_events=$2
 nchunks=$3
 [[ "$sample" == Lb2LambdaGamma || "$sample" == Lb2LambdaGammaPhysics ||
-   "$sample" == Lb2LambdaEta ]] || exit 2
+   "$sample" == Lb2LambdaEta || "$sample" == Lb2LambdaEtaPhysics ||
+   "$sample" == Lb2LambdaPi0 || "$sample" == Lb2LambdaPi0Physics ]] || exit 2
 [[ "$total_events" =~ ^[1-9][0-9]*$ && "$nchunks" =~ ^[1-9][0-9]*$ ]] || exit 2
 (( total_events % nchunks == 0 )) || { echo "Total events must divide evenly" >&2; exit 2; }
 chunk_events=$((total_events / nchunks))

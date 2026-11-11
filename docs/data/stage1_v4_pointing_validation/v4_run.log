@@ -1,0 +1,54 @@
+----> Info: Setting up Key4hep stack...
+----> Info: Sourcing stack fresh!
+source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
+AlmaLinux/RockyLinux/RHEL 9 detected
+Setting up the Key4hep software stack release 2024-03-10 from CVMFS
+Use the following command to reproduce the current environment:
+
+        source /cvmfs/sw.hsf.org/key4hep/setup.sh -r 2024-03-10
+
+If you have any issues, comments or requests, open an issue at https://github.com/key4hep/key4hep-spack/issues
+Tip: A new -d flag can be used to access debug builds, otherwise the default is the optimized build
+----> Info: Setting up environment variables...
+fccanalysis_python=/cvmfs/sw.hsf.org/key4hep/releases/2024-03-10/x86_64-almalinux9-gcc11.3.1-opt/python/3.10.13-od343s/bin/python3.10 (Python 3.10.13)
+sample=signal_physics
+input=/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root
+input_files=1
+events=200
+ncpus=1
+config=config/lb_reco_preselection_15mev_45_65_3d.json
+output=outputs/analysis/studies/pointing_trial_v4/signal_200_validated_stage1_v4.root
+----> INFO: Loading analyzers from libFCCAnalyses...
+----> INFO: Loading analysis file:
+            /afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/analysis/studies/lb2lambda_gamma_reco_v4.py
+----> INFO: No multithreading enabled. Running in single thread...
+----> INFO: Loading lb_event_selection.h...
+----> INFO: Loading lb_candidate_builder.h...
+----> INFO: Loading lb_candidate_truth.h...
+----> INFO: Loading lb_candidate_observables.h...
+----> INFO: Loading photon_pointing_v4.h...
+----> INFO: Running over files provided in command line argument...
+----> WARNING: Unknown EOS path type!
+               Please check with the developers as this might impact performance of the analysis.
+----> INFO: Creating dataframe object from files:
+            - /eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root
+
+----> INFO: Number of local events: 200
+----> INFO: Output file path:
+            outputs/analysis/studies/signal_200_validated_stage1_v4.root
+----> INFO: =================================== SUMMARY ====================================
+            Elapsed time (H:M:S):    00:00:53
+            Events processed/second: 3
+            Total events processed:  200
+            No. result events:       121
+            Reduction factor local:  0.605
+            ================================================================================
+
+Building Lambda_b candidate dataframe with config expression built from lb_reco.json:
+build_dataframe, with_vertices: True filter_min_photons: 1
+FCCAnalyses::LbCandidateBuilder::Config{1.115683, 0.7, 1.3, 1.100683, 1.130683, true, 9.0, 0.0, 3.0, 0.0, true, 22, -1.0, -1.0, 4.5, 6.5, true, -1.0, 0.3, 2.0}
+Filtering on event counts:
+Filter for has PV
+Filter for min-nphotons found >= 1
+Filter for min-ncharged-tracks found >= 2
+Filter for min-npositive-tracks found >= 1 and min-nnegative-tracks found >= 1

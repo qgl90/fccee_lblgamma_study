@@ -1,0 +1,22 @@
+{
+  "study": "v3_photon_pointing_geometry_200events",
+  "input": "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/outputs/delphes/chunks/Lb2LambdaEtaPhysics_nev100000_chunk0_IDEA_edm4hep.root",
+  "input_sha256": "e66ced535064193732454d5e491e740a07b2b7bde5adec8b39b4c3e26064fcc6",
+  "card": "/afs/cern.ch/work/r/rquaglia/fcc_ee/fccee_lblgamma_study/cards/card_IDEA.tcl",
+  "card_sha256": "11d81b4ee2bafa33e0715c4a390d235e38487521ce8e43bdb360890c9e8ec3d3",
+  "events_inspected": 200,
+  "calorimeter_hits": 4472,
+  "eflow_photons": 4052,
+  "surface_tolerance_mm": 1.0,
+  "barrel_radius_mm": 2250.0,
+  "endcap_abs_z_mm": 2500.0,
+  "surface_estimator": "Most frequent 10 mm-rounded radius and absolute z; check all hit positions within 1 mm of either surface.",
+  "hits_on_barrel": 3188,
+  "hits_on_endcap": 1286,
+  "hits_on_both_seam": 2,
+  "hits_on_neither": 0,
+  "hits_with_nonzero_energy": 0,
+  "eflow_photons_with_nonzero_position": 0,
+  "eflow_photons_with_nonzero_direction_error": 0,
+  "interpretation": "Hit positions support an idealized barrel/endcap surface; zero energy and EFlowPhoton direction/position fields do not provide measured pointing."
+}

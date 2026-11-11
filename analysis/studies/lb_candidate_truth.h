@@ -1,3 +1,4 @@
+// Author: Renato Quagliani (rquaglia@cern.ch)
 #ifndef LBLGAMMA_STUDIES_LB_CANDIDATE_TRUTH_H
 #define LBLGAMMA_STUDIES_LB_CANDIDATE_TRUTH_H
 
@@ -22,6 +23,8 @@ struct Labels {
   std::vector<int> reco_mc_index, reco_mc_pdg, reco_mc_n_parents;
   std::vector<int> reco_mc_parent_index, reco_mc_parent_pdg;
   std::vector<int> reco_mc_grandparent_index, reco_mc_grandparent_pdg;
+  std::vector<int> reco_mc_greatgrandparent_index, reco_mc_greatgrandparent_pdg;
+  std::vector<int> reco_mc_greatgreatgrandparent_index, reco_mc_greatgreatgrandparent_pdg;
   std::vector<float> reco_p, reco_energy, reco_mc_p, reco_mc_energy;
   std::vector<float> reco_mc_cos_opening;
   std::vector<float> reco_mc_pt, reco_mc_eta, reco_mc_vertex_rxy;
@@ -133,6 +136,10 @@ inline Labels label(const Result& candidates,
   out.reco_mc_parent_pdg.reserve(reco.size());
   out.reco_mc_grandparent_index.reserve(reco.size());
   out.reco_mc_grandparent_pdg.reserve(reco.size());
+  out.reco_mc_greatgrandparent_index.reserve(reco.size());
+  out.reco_mc_greatgrandparent_pdg.reserve(reco.size());
+  out.reco_mc_greatgreatgrandparent_index.reserve(reco.size());
+  out.reco_mc_greatgreatgrandparent_pdg.reserve(reco.size());
   out.reco_mc_pt.reserve(reco.size());
   out.reco_mc_eta.reserve(reco.size());
   out.reco_mc_vertex_rxy.reserve(reco.size());
@@ -147,12 +154,24 @@ inline Labels label(const Result& candidates,
     const auto gp = parent >= 0 ? parents(parent, mc, parent_indices) :
                                   std::vector<int>{};
     const int grandparent = gp.empty() ? -1 : gp.front();
+    const auto ggp = grandparent >= 0 ? parents(grandparent, mc, parent_indices) :
+                                         std::vector<int>{};
+    const int greatgrandparent = ggp.empty() ? -1 : ggp.front();
+    const auto gggp = greatgrandparent >= 0 ?
+        parents(greatgrandparent, mc, parent_indices) : std::vector<int>{};
+    const int greatgreatgrandparent = gggp.empty() ? -1 : gggp.front();
     out.reco_mc_n_parents.push_back(static_cast<int>(pp.size()));
     out.reco_mc_parent_index.push_back(parent);
     out.reco_mc_parent_pdg.push_back(parent >= 0 ? mc[parent].PDG : 0);
     out.reco_mc_grandparent_index.push_back(grandparent);
     out.reco_mc_grandparent_pdg.push_back(
         grandparent >= 0 ? mc[grandparent].PDG : 0);
+    out.reco_mc_greatgrandparent_index.push_back(greatgrandparent);
+    out.reco_mc_greatgrandparent_pdg.push_back(
+        greatgrandparent >= 0 ? mc[greatgrandparent].PDG : 0);
+    out.reco_mc_greatgreatgrandparent_index.push_back(greatgreatgrandparent);
+    out.reco_mc_greatgreatgrandparent_pdg.push_back(
+        greatgreatgrandparent >= 0 ? mc[greatgreatgrandparent].PDG : 0);
     const float px = unique ? mc[m].momentum.x : 0.f;
     const float py = unique ? mc[m].momentum.y : 0.f;
     const float pz = unique ? mc[m].momentum.z : 0.f;

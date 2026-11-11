@@ -1,0 +1,188 @@
+{
+  "input": "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+  "input_bytes": 686453206,
+  "input_sha256": "f483c59cc2fc1274d439c76a2232f272d1c6d54737ddeece6889fb4edb8740dc",
+  "script_sha256": "345b58d0bbe72bf961bf02c71ddfa6f70089a501d1ef2da96329a2dbec793f01",
+  "geometry_module_sha256": "148382c98cc09dead6c18b6f038681474d637ae421c8204d1d63a618d571f3c3",
+  "command_arguments": [
+    "studies/resolutions/run_photon_pointing_pilot.py",
+    "--input",
+    "/eos/lhcb/lbdt3/user/rquaglia/fcc_ee/lblgamma/outputs/Lb2LambdaGammaPhysics_nev100000_IDEA_edm4hep.root",
+    "--config",
+    "config/photon_pointing_scan_0p5_1p5_v3.json",
+    "--events",
+    "200",
+    "--output-dir",
+    "docs/data/v3_photon_pointing_scan_0p5_1p5_200events"
+  ],
+  "repository_head_at_run": "5c4855276a5c55271bdb3ab3159fd02282d49e6f",
+  "config": {
+    "scenario": "v3_offline_photon_pointing_0p5_to_1p5_mrad",
+    "geometry": {
+      "barrel_radius_mm": 2250.0,
+      "endcap_abs_z_mm": 2500.0,
+      "endcap_inner_radius_mm": 249.5539241720568,
+      "endcap_outer_radius_mm": 2250.0
+    },
+    "geometry_basis": "200-event hit audit plus eta_max=3: endcap inner radius = 2500/sinh(3). Effective fast-simulation surface, not a detailed ECAL layout.",
+    "pointing_sigma_mrad": [
+      0.5,
+      0.7,
+      0.9,
+      1.1,
+      1.3,
+      1.5
+    ],
+    "sigma_definition": "Gaussian standard deviation per orthogonal tangent-plane angular component; small-angle radial RMS = sqrt(2)*sigma",
+    "seed": 20261005,
+    "hit_anchor": "intersection of origin-based reconstructed photon direction with the active surface",
+    "position_response": "Inherited from existing reconstructed direction; no additional position smearing",
+    "selection": "Diagnostic only; existing Stage 1 and BDT selections are not recomputed"
+  },
+  "config_sha256": "4cfa3b04b207ed584c501f8c6e697b73148cc06a00a26101d0f63360b1238e48",
+  "events": 200,
+  "all_reco_type22_photons": 3632,
+  "unique_stable_mc_photons": 3621,
+  "unmatched_or_nonunique_or_nonphoton": 11,
+  "geometry_invalid_or_outside_aperture": 0,
+  "pv_assumption_mm": [
+    0,
+    0,
+    0
+  ],
+  "scope": "200-event Stage 0 object diagnostic; no Stage 1, BDT, or Zss rejection estimate",
+  "scenarios": {
+    "sigma_0p5mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.124462525260549,
+          "q50": 18.13553212638791,
+          "q84": 29.527202469672577,
+          "q95": 39.86344036577055
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.72722186649703,
+          "q50": 19.83090788219563,
+          "q84": 35.12132000261653,
+          "q95": 45.092656218066146
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_0p7mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 6.955023631731186,
+          "q50": 18.284682306436316,
+          "q84": 30.29377120340161,
+          "q95": 39.48526814451733
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.656844312672568,
+          "q50": 19.847032875011053,
+          "q84": 35.26220552990365,
+          "q95": 45.49255405815322
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_0p9mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 6.746008053187815,
+          "q50": 18.159131035241693,
+          "q84": 31.144694901599987,
+          "q95": 39.357233972830294
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.728229586282078,
+          "q50": 19.966115467214156,
+          "q84": 35.324692375841536,
+          "q95": 45.6749477586348
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_1p1mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.075723132026764,
+          "q50": 18.1969799337634,
+          "q84": 30.863731374981374,
+          "q95": 39.652893169397046
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.831461607992145,
+          "q50": 20.06029188028216,
+          "q84": 35.46458019232239,
+          "q95": 45.70098744557211
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_1p3mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.135723908298811,
+          "q50": 18.305971389945356,
+          "q84": 31.40536184347677,
+          "q95": 40.19236687007019
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 8.974876281374177,
+          "q50": 20.218012534765187,
+          "q84": 35.75550751005175,
+          "q95": 45.80383275349249
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    },
+    "sigma_1p5mrad": {
+      "direct_lb_photons": {
+        "photons": 200,
+        "ip3d_quantiles_mm": {
+          "q16": 7.070691989806587,
+          "q50": 18.197165444792613,
+          "q84": 31.597458048097444,
+          "q95": 40.02277069715201
+        },
+        "truth_ip3d_median_mm": 0.4211906135878347
+      },
+      "other_matched_photons": {
+        "photons": 3421,
+        "ip3d_quantiles_mm": {
+          "q16": 9.061108740680059,
+          "q50": 20.340039570054106,
+          "q84": 36.01087224634123,
+          "q95": 46.18307211258294
+        },
+        "truth_ip3d_median_mm": 0.2830814248465196
+      }
+    }
+  }
+}
