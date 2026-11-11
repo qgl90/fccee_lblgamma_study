@@ -111,6 +111,7 @@ def main():
         counts[name] = table.num_rows
     manifest = {"command": sys.argv, "input": str(args.input),
                 "input_bytes": args.input.stat().st_size,
+                "input_sha256": sha(args.input),
                 "model_summary": str(args.model_dir / "training_summary.json"),
                 "model_summary_sha256": sha(args.model_dir / "training_summary.json"),
                 "model_sha256": sha(args.model_dir / "bdt_model.json"),
