@@ -83,12 +83,15 @@ def main():
         expected = preparation.preparation_identity(namespace, catalog)
         sources = [args.reuse_dir / "prepared"] + sorted(
             (args.reuse_dir / "workers").glob("part_*"))
+        verified_sources = []
         for source in sources:
             identity_path = source / "preparation_identity.json"
             if not identity_path.exists():
                 continue
             if json.loads(identity_path.read_text()) != expected:
                 raise ValueError(f"Preparation identity differs: {source}")
+            verified_sources.append(source)
+        sources = verified_sources
         for worker, _, _ in workers:
             identity_path = worker / "preparation_identity.json"
             if identity_path.exists() and json.loads(identity_path.read_text()) != expected:
