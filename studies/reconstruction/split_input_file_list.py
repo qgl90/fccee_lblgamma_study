@@ -108,6 +108,8 @@ def main():
             spec_path.write_text("\n".join(lines) + "\n")
             job_paths.append(str(spec_path.resolve()))
     if args.queue_list:
+        if not args.job_spec_dir:
+            parser.error("--queue-list requires --job-spec-dir")
         args.queue_list.parent.mkdir(parents=True, exist_ok=True)
         args.queue_list.write_text("\n".join(job_paths) + "\n")
     digest = hashlib.sha256(args.input_list.read_bytes()).hexdigest()
